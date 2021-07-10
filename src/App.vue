@@ -23,7 +23,12 @@
     </router-link>
 
     <router-link class="tab-bar-item" to="/profile">
-      <div class="icon"><i class="iconfont icon-icon_pc"></i></div>
+      <div class="icon">
+        <van-badge :content="50" max="20">
+          <div class="child" />
+          <i class="iconfont icon-icon_pc"></i>
+        </van-badge>
+      </div>
       <div>我的</div>
     </router-link>
   </div>
