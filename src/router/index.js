@@ -1,20 +1,60 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+const Shortmold = () => import('@/views/shortmold/Shortmold')
+const Bom = () => import('@/views/bom/Bom')
+const Order = () => import('@/views/order/Order')
+const Unsettled = () => import('@/views/unsettled/Unsettled')
+const Profile = () => import('@/views/profile/Profile')
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Default',
+    component: Shortmold,
+    meta: {
+      title: '缺料'
+    }
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+    path: '/shortmold',
+    name: 'Shortmold',
+    component: Shortmold,
+    meta: {
+      title: '缺料'
+    }
+  },
+  {
+    path: '/bom',
+    name: 'Bom',
+    component: Bom,
+    meta: {
+      title: '缺料'
+    }
+  },
+  {
+    path: '/order',
+    name: 'Order',
+    component: Order,
+    meta: {
+      title: '订单'
+    }
+  },
+  {
+    path: '/unsettled',
+    name: 'Unsettled',
+    component: Unsettled,
+    meta: {
+      title: '未决'
+    }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    meta: {
+      title: '个人中心'
+    }
+  },
+
 ]
 
 const router = createRouter({

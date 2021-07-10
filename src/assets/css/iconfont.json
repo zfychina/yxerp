@@ -1,0 +1,58 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "833984",
+      "name": "个人中心",
+      "font_class": "icon_pc",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "6998282",
+      "name": "计划",
+      "font_class": "jihua",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "11765453",
+      "name": "erp",
+      "font_class": "ERP",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "12786393",
+      "name": "订单",
+      "font_class": "dingdan",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "20302323",
+      "name": "icon_未决管理",
+      "font_class": "icon_weijueguanli",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "21327251",
+      "name": "bom",
+      "font_class": "bom",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "22530820",
+      "name": "缺",
+      "font_class": "que",
+      "unicode": "e6c7",
+      "unicode_decimal": 59079
+    }
+  ]
+}

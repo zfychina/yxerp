@@ -1,4 +1,3 @@
-
 module.exports = {
   configureWebpack: {
     resolve: {
@@ -10,7 +9,7 @@ module.exports = {
         'network': '@/network',
         'utils': '@/utils',
       }
-    }
+    },
 
   },
   publicPath: './'

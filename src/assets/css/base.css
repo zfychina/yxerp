@@ -3,8 +3,8 @@
 /*:root -> 获取根元素html*/
 :root {
     --color-text: #666;
-    --color-high-text: #42bBAA;
-    --color-tint: #42b983;;
+    --color-high-text: #0366d6;
+    --color-tint: #62d9e5;;
     --color-background: #fff;
     --font-size: 14px;
     --line-height: 1.5;

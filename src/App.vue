@@ -1,13 +1,39 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
   <router-view/>
+
+  <div id="nav">
+    <router-link class="tab-bar-item" to="/">
+      <div class="icon"><i class="iconfont icon-que"></i></div>
+      <div>缺料</div>
+    </router-link>
+
+    <router-link class="tab-bar-item" to="/order">
+      <div class="icon"><i class="iconfont icon-dingdan"></i></div>
+      <div>订单</div>
+    </router-link>
+
+    <router-link class="tab-bar-item" to="/bom">
+      <div class="icon"><i class="iconfont icon-bom"></i></div>
+      <div>BOM</div>
+    </router-link>
+
+    <router-link class="tab-bar-item" to="/unsettled">
+      <div class="icon"><i class="iconfont icon-icon_weijueguanli"></i></div>
+      <div>未决</div>
+    </router-link>
+
+    <router-link class="tab-bar-item" to="/profile">
+      <div class="icon"><i class="iconfont icon-icon_pc"></i></div>
+      <div>我的</div>
+    </router-link>
+  </div>
+
 </template>
 
 <style lang="scss">
 @import "assets/css/base.css";
+@import "assets/css/iconfont.css";
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -17,15 +43,34 @@
 }
 
 #nav {
-  padding: 30px;
-
+  background-color: #f6f6f6;
+  display: flex;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  //设置阴影
+  box-shadow: 0 -3px 1px rgba(100,100,100,0.1);
   a {
-    font-weight: bold;
-    color: #2c3e50;
+
+    color: var(--color-text);
 
     &.router-link-exact-active {
-      color: #42b983;
+      color: var(--color-high-text);
     }
+  }
+  .tab-bar-item {
+    flex: 1;
+    text-align: center;
+    height: 50px;
+    font-size: var(--font-size);
+  }
+  .tab-bar-item .icon {
+    width: 24px;
+    height: 24px;
+    margin-top: 5px;
+    vertical-align: middle;
+    display: inline-block;
   }
 }
 </style>
