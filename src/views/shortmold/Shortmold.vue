@@ -15,6 +15,7 @@
 import { reactive } from 'vue';
 
 export default {
+
   name: "Shortmold",
   setup() {
     const state = reactive({
