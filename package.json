@@ -10,6 +10,8 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "element-plus": "^1.0.2-beta.55",
+    "element-ui": "^2.15.3",
     "vant": "^3.1.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
