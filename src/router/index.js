@@ -18,6 +18,7 @@ const routes = [
     path: '/shortmold',
     name: 'Shortmold',
     component: Shortmold,
+    props: true,
     meta: {
       title: '缺料'
     }

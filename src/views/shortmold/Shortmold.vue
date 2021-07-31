@@ -12,11 +12,11 @@
     <table style="width: 100%">
       <thead>
       <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%" @click="sorttable">缺料数</th>
-        <th style="width: 20%">供应商</th>
+        <th style="width: 20%" @click="sorttable('coding')">物料编号</th>
+        <th style="width: 30%" @click="sorttable('name')">物料名称</th>
+        <th style="width: 17%" @click="sorttable('orderNum')">需求量</th>
+        <th style="width: 17%" @click="sorttable('shortmoldNum')">缺数</th>
+        <th style="width: 16%" @click="sorttable('suppliers')">供应商</th>
       </tr>
       </thead>
     </table>
@@ -30,191 +30,17 @@
         finished-text="没有更多了"
         @load="onLoad"
     >
-<!--      <van-cell v-for="item in state.list" :key="item" :title="item">-->
-    <table style="width: 100%">
+<!--      <van-cell v-for="item in state.list" :key="item" :title="item"/>-->
+    <table style="width: 100%;margin-left: 8px;">
       <tbody>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
+      <tr v-for="item in state.list" :key="item">
+        <th style="width: 20%">{{ item.coding }}</th>
+        <th style="width: 30%">{{ item.name }}</th>
+        <th style="width: 17%">{{ item.orderNum }}</th>
+        <th style="width: 17%">{{ item.shortmoldNum }}</th>
+        <th style="width: 16%">{{ item.suppliers }}</th>
       </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
-      <tr>
-        <th style="width: 20%">物料编号</th>
-        <th style="width: 30%">物料名称</th>
-        <th style="width: 15%">需求量</th>
-        <th style="width: 15%">缺料数</th>
-        <th style="width: 20%">供应商</th>
-      </tr>
+
       </tbody>
     </table>
 
@@ -224,7 +50,9 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import {onMounted, reactive} from 'vue';
+import {shortmoldDate} from 'network/shortmold'
+
 
 export default {
 
@@ -239,6 +67,8 @@ export default {
       loading: false,
       finished: false,
       refreshing: false,
+      sortType: 'in_price',
+
 
       month: {page:0, list: []},
       amig: {page:0, list: []},
@@ -255,21 +85,30 @@ export default {
     const onLoad = () => {
       setTimeout(() => {
         if (state.refreshing) {
-          state.list = [];
+          //state.list = [];
           state.refreshing = false;
         }
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 2; i++) {
           state.list.push(state.list.length + 1);
         }
         state.loading = false;
 
-        if (state.list.length >= 40) {
+        if (state.list.length >= 10) {
           state.finished = true;
         }
       }, 1000);
     };
 
+    //数据
+    onMounted(()=>{
+      shortmoldDate().then(res=>{
+        state.list = res
+        // console.log(state.list);
+      })
+    })
+
+    // 下拉刷新
     const onRefresh = () => {
       // 清空列表数据
       state.finished = false;
@@ -279,9 +118,48 @@ export default {
       state.loading = true;
       onLoad();
     };
-    // 排序
-    const sorttable = () => {
-      console.log("llsjldfjlas")
+
+    // 根据数组中对象为字母情况进行排序
+    const sortBykey = (ary, key)=> {
+      return ary.sort(function (a, b) {
+        let x = a[key]
+        let y = b[key]
+        return ((x < y) ? -1 : (x > y) ? 1 : 0)
+      })
+    }
+    // 根据数组中对象为数字情况进行排序
+    const sortList = (attr)=>{
+      return function(a,b){
+        let val1 = a[attr];
+        let val2 = b[attr];
+        return val1 - val2;
+      }
+    }
+
+    // 根据中文首字拼音排序
+
+
+    // 根据数组中对象为中文情况进行排序
+    const sortChinese = (attr, key)=>{
+      attr.sort(function (item1, item2) {
+        return item1[key].localeCompare(item2[key], 'zh-CN');// localeCompare为string内置函数
+      })
+    }
+    // 排序按钮
+    const sorttable = (type) => {
+      if (type === 'shortmoldNum' | type === 'orderNum'){
+        state.sortType = type
+        state.list.sort(sortList(state.sortType))
+      } else if (type === 'coding' | type === 'name'){
+        state.sortType = type
+        sortBykey(state.list, type)
+      } else {
+
+        state.sortType = type
+        sortChinese(state.list, type)
+        console.log("等待添加排序功能")
+      }
+
     }
 
 
@@ -310,7 +188,7 @@ table {
       height: 40px;
       th{
         text-align: left;
-        padding: 10px ;
+        padding: 10px 8px ;
         font-size: 12PX;
         color: var(--color-high-text);
         font-weight: 800;
@@ -319,10 +197,13 @@ table {
   }
 
   tbody {
+
     tr {
+      width: 100%;
       th {
+        display: inline-block;
         text-align: left;
-        padding: 10px ;
+        padding: 10px 0px ;
         font-size: 10PX;
         color: var(--color-text);
         font-weight: 400;

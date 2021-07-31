@@ -1,5 +1,12 @@
 <template>
-  <router-view/>
+<!--  <router-view/>-->
+  <router-view v-slot="{ Component, route }">
+    <transition>
+      <keep-alive >
+        <component :is="Component" v-bind="route.params" />
+      </keep-alive>
+    </transition>
+  </router-view>
 
   <div id="nav">
     <router-link class="tab-bar-item" to="/">
@@ -34,6 +41,10 @@
   </div>
 
 </template>
+<script>
+
+
+</script>
 
 <style lang="scss">
 @import "assets/css/base.css";

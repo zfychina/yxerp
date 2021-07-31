@@ -12,5 +12,11 @@ module.exports = {
     },
 
   },
-  publicPath: './'
+  publicPath: './',
+  devServer: {
+    host:'localhost',
+    port:8081,
+    https:false,
+    open:false,
+  }
 }

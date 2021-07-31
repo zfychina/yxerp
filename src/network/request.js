@@ -2,7 +2,7 @@ import axios from "axios";
 
 export function request(config) {
   const instance =axios.create({
-    baseURL: 'https://api.shop.eduwork.cn',
+    baseURL: 'http://api.zfychina.cn:8000',
     timeout: 5000
   })
 
