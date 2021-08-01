@@ -200,8 +200,9 @@ table {
 
     tr {
       width: 100%;
+      //display: list-item;
       th {
-        display: inline-block;
+        display: run-in;
         text-align: left;
         padding: 10px 0px ;
         font-size: 10PX;
