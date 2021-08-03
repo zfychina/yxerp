@@ -30,19 +30,36 @@
 
       </van-uploader>
     </div>
+    <div class="uploader">
+      <van-uploader :after-read="Supplierimport" name='files' :accept="accept" result-type="file">
+        <van-button icon="plus" type="primary">
+          点击供应商批量更新（请上供应商.xls）
+        </van-button>
 
+      </van-uploader>
+    </div>
+
+
+
+
+    <div class="reg" style="margin: 10px">
+      <div @click="toRegister">没有账号？立即注册</div>
+<!--      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>-->
+    </div>
 
   </div>
 </template>
 
 <script>
 import {reactive} from "vue";
+import { useRouter } from 'vue-router'
 import {Dialog} from "vant";
-import {upSkuimport, upShortmold} from "network/upimport";
+import {upSkuimport, upShortmold, upSupplier} from "network/upimport";
 
 export default {
   name: "Profile",
   setup(){
+    const router = useRouter()
     const props =reactive( {
       accept: '.xls, .xlsx',
 
@@ -74,10 +91,30 @@ export default {
       })
     }
 
+    // 供应商更新
+    const Supplierimport = (file)=>{
+      const data = new FormData();
+      data.append('files', file.file)
+      upSupplier(data).then(res=>{
+        Dialog.alert({
+          message: res,
+        }).then(() => {
+          // on close
+        });
+      })
+    }
+
+    // 跳转到注册页面
+    const toRegister=()=>{
+      router.push({path:'/register'})
+    }
+
     return{
       ...props,
       Shortmold,
-      Skuimport
+      Skuimport,
+      Supplierimport,
+      toRegister
     }
   }
 }

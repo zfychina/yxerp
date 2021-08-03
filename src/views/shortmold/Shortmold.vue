@@ -16,7 +16,7 @@
         <th style="width: 30%" @click="sorttable('name')">物料名称</th>
         <th style="width: 17%" @click="sorttable('orderNum')">需求量</th>
         <th style="width: 17%" @click="sorttable('shortmoldNum')">缺数</th>
-        <th style="width: 16%" @click="sorttable('suppliers')">供应商</th>
+        <th style="width: 16%" @click="sorttable('supplier')">供应商</th>
       </tr>
       </thead>
     </table>
@@ -38,7 +38,7 @@
         <th style="width: 30%">{{ item.name }}</th>
         <th style="width: 17%">{{ item.orderNum }}</th>
         <th style="width: 17%">{{ item.shortmoldNum }}</th>
-        <th style="width: 16%">{{ item.suppliers }}</th>
+        <th style="width: 16%">{{ item.supplier }}</th>
       </tr>
 
       </tbody>
@@ -60,6 +60,8 @@ export default {
   setup() {
 
     const state = reactive({
+      // 排序
+      order_by:true,
       // 导航栏
       value1: 0,
       // 列表
@@ -102,7 +104,7 @@ export default {
 
     //数据
     onMounted(()=>{
-      shortmoldDate().then(res=>{
+      shortmoldDate({ordering: 'coding'}).then(res=>{
         state.list = res
         // console.log(state.list);
       })
@@ -119,16 +121,10 @@ export default {
       onLoad();
     };
 
-    // 根据数组中对象为字母情况进行排序
-    const sortBykey = (ary, key)=> {
-      return ary.sort(function (a, b) {
-        let x = a[key]
-        let y = b[key]
-        return ((x < y) ? -1 : (x > y) ? 1 : 0)
-      })
-    }
+
     // 根据数组中对象为数字情况进行排序
-    const sortList = (attr)=>{
+    // 升序
+    const upsortList = (attr)=>{
       return function(a,b){
         let val1 = a[attr];
         let val2 = b[attr];
@@ -136,30 +132,40 @@ export default {
       }
     }
 
-    // 根据中文首字拼音排序
-
-
-    // 根据数组中对象为中文情况进行排序
-    const sortChinese = (attr, key)=>{
-      attr.sort(function (item1, item2) {
-        return item1[key].localeCompare(item2[key], 'zh-CN');// localeCompare为string内置函数
-      })
+    // 降序
+    const downsortList = (attr)=>{
+      return function(a,b){
+        let val1 = a[attr];
+        let val2 = b[attr];
+        return val2 - val1;
+      }
     }
+
+
     // 排序按钮
     const sorttable = (type) => {
-      if (type === 'shortmoldNum' | type === 'orderNum'){
-        state.sortType = type
-        state.list.sort(sortList(state.sortType))
-      } else if (type === 'coding' | type === 'name'){
-        state.sortType = type
-        sortBykey(state.list, type)
-      } else {
-
-        state.sortType = type
-        sortChinese(state.list, type)
-        console.log("等待添加排序功能")
+      state.order_by = !state.order_by
+      if(state.order_by) {
+        if (type === 'shortmoldNum' | type === 'orderNum'){
+          state.sortType = type
+          state.list.sort(upsortList(state.sortType))
+        } else {
+          shortmoldDate({ordering: type}).then(res => {
+            state.list = res
+            // console.log(state.list);
+          })
+        }
+      }else {
+        if (type === 'shortmoldNum' | type === 'orderNum'){
+          state.sortType = type
+          state.list.sort(downsortList(state.sortType))
+        } else {
+          shortmoldDate({ordering:'-'+type}).then(res => {
+            state.list = res
+            // console.log(state.list);
+          })
+        }
       }
-
     }
 
 
@@ -200,16 +206,16 @@ table {
 
     tr {
       width: 100%;
-      //display: list-item;
+      border-bottom: 1pt solid #efecec;
       th {
-        display: run-in;
+        display: inline-block;
+        //display: inline-block;
         text-align: left;
         padding: 10px 0px ;
         font-size: 10PX;
         color: var(--color-text);
         font-weight: 400;
 
-        border-bottom: 1pt solid #efecec;
       }
     }
 }

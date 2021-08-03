@@ -4,6 +4,7 @@ const Bom = () => import('@/views/bom/Bom')
 const Order = () => import('@/views/order/Order')
 const Unsettled = () => import('@/views/unsettled/Unsettled')
 const Profile = () => import('@/views/profile/Profile')
+const Register = () => import('@/views/profile/Register')
 
 const routes = [
   {
@@ -28,7 +29,7 @@ const routes = [
     name: 'Bom',
     component: Bom,
     meta: {
-      title: '缺料'
+      title: 'BOM'
     }
   },
   {
@@ -53,6 +54,14 @@ const routes = [
     component: Profile,
     meta: {
       title: '个人中心'
+    }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
+    meta: {
+      title: '用户注册'
     }
   },
 
