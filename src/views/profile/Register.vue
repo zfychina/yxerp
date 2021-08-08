@@ -129,7 +129,7 @@ export default {
           if(res.status === 201) {
             Toast.success('注册成功')
             setTimeout(() => {
-                // sessionStorage.clear("regis");
+                sessionStorage.clear("regis");
               toRegister();
               }, 1000);
           } else {
