@@ -42,8 +42,8 @@
 
 
 
-    <div class="reg" style="margin: 10px">
-      <div @click="toRegister">没有账号？立即注册</div>
+    <div class="reg" style="margin: 10px; font-size: 10px; color:var(--color-high-text)">
+      <div @click="toRegister">已有账号？立即登录</div>
 <!--      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>-->
     </div>
 
@@ -106,7 +106,7 @@ export default {
 
     // 跳转到注册页面
     const toRegister=()=>{
-      router.push({path:'/register'})
+      router.push({path:'/login'})
     }
 
     return{

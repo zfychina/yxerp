@@ -152,17 +152,15 @@ export default {
         } else {
           shortmoldDate({ordering: type}).then(res => {
             state.list = res
-            // console.log(state.list);
           })
         }
       }else {
-        if (type === 'shortmoldNum' | type === 'orderNum'){
+        if (type === 'shortmoldNum' | type === '0'){
           state.sortType = type
           state.list.sort(downsortList(state.sortType))
         } else {
           shortmoldDate({ordering:'-'+type}).then(res => {
             state.list = res
-            // console.log(state.list);
           })
         }
       }

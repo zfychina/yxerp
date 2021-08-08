@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.55",
     "element-ui": "^2.15.3",
+    "nanoid": "^3.1.23",
     "pinyin": "^2.10.2",
     "vant": "^3.1.2",
     "vue": "^3.0.0",

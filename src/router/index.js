@@ -5,6 +5,7 @@ const Order = () => import('@/views/order/Order')
 const Unsettled = () => import('@/views/unsettled/Unsettled')
 const Profile = () => import('@/views/profile/Profile')
 const Register = () => import('@/views/profile/Register')
+const Login = () => import('@/views/profile/Login')
 
 const routes = [
   {
@@ -29,7 +30,8 @@ const routes = [
     name: 'Bom',
     component: Bom,
     meta: {
-      title: 'BOM'
+      title: 'BOM',
+      isAuthRequired: true
     }
   },
   {
@@ -37,7 +39,8 @@ const routes = [
     name: 'Order',
     component: Order,
     meta: {
-      title: '订单'
+      title: '订单',
+      isAuthRequired: true
     }
   },
   {
@@ -45,7 +48,8 @@ const routes = [
     name: 'Unsettled',
     component: Unsettled,
     meta: {
-      title: '未决'
+      title: '未决',
+      isAuthRequired: true
     }
   },
   {
@@ -53,7 +57,8 @@ const routes = [
     name: 'Profile',
     component: Profile,
     meta: {
-      title: '个人中心'
+      title: '个人中心',
+      isAuthRequired: true
     }
   },
   {
@@ -62,6 +67,14 @@ const routes = [
     component: Register,
     meta: {
       title: '用户注册'
+    }
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    meta: {
+      title: '用户登录'
     }
   },
 

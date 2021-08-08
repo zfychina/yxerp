@@ -2,7 +2,7 @@ import {request} from "./request";
 
 export function shortmoldDate(params) {
   return request({
-    url: '/shortmold',
+    url: '/shortmold/',
     params,
 
   })
