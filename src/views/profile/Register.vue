@@ -126,14 +126,14 @@ export default {
         Toast('密码输入两次不一致！');
       } else {
         register(state).then(res=>{
-          console.log(res);
-          console.log(res.status);
-          if(res['mobile'] === state.mobile) {
+          if(res.status === 201) {
             Toast.success('注册成功')
             setTimeout(() => {
                 // sessionStorage.clear("regis");
               toRegister();
               }, 1000);
+          } else {
+            Toast.fail('注册失败')
           }
         }).catch(err=>{
           console.log('reg + err' + err);

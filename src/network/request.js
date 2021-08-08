@@ -25,19 +25,23 @@ export function request(config) {
   // 响应拦截
   instance.interceptors.response.use(res=>{
 
+    // 201表示创建成功
+    if(res.status === 201){
+      return res
+    } else {
 
-    // 如果数据有data,则返返加在res.data， 否则返回res
-    return res.data ? res.data : res
-
+      // 如果数据有data,则返返加在res.data， 否则返回res
+      return res.data ? res.data : res
+    }
   }, err => {
     // 如果有需要授权才可以访问的接口，统一去login授权
-    if(err.response.status == '401') {
+    if(err.response.status === 401) {
       Toast.fail('请先登录')
       router.push({path:'/login'})
     }
 
     // 注册用户不成功，返回的错误信息
-    if(err.response.status == '400' | err.response.data.length > 0) {
+    if(err.response.status === 400 || err.response.data.length > 0) {
       const data = err.response.data
       if ('mobile' in data){
         Toast.fail(data['mobile'][0])
