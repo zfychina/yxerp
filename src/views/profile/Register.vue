@@ -1,4 +1,5 @@
 <template>
+  <div class="register">
    <div>
     <van-nav-bar title="注册" left-arrow>
       <template #right>
@@ -69,11 +70,11 @@
   </div>
 
   <div class="reg" style="margin: 5px; font-size: 10px; color:var(--color-high-text)">
-    <div @click="toRegister">已有账号？立即登录</div>
+    <span @click="toRegister">已有账号？立即登录</span>
     <!--      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>-->
   </div>
 
-
+  </div>
 </template>
 
 <script>
@@ -120,9 +121,9 @@ export default {
 
     // 注册按钮提交
     const onsubmit = ()=> {
-      if (state.mobile == "" || state.img_code == "" || state.password == "" || state.password1 == "") {
+      if (state.mobile === "" || state.img_code === "" || state.password === "" || state.password1 === "") {
         Toast('注册失败！信息未完善');
-      } else if (state.password != state.password1) {
+      } else if (state.password !== state.password1) {
         Toast('密码输入两次不一致！');
       } else {
         register(state).then(res=>{
@@ -158,6 +159,5 @@ export default {
 </script>
 
 <style scoped>
-
 
 </style>

@@ -13,7 +13,7 @@ export function request(config) {
     // 如果有一个接口需要认证才可以访问，就在这里统一设置
     const token = window.localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = 'Bearer ' + token
+      config.headers.Authorization = 'JWT ' + token
     }
 
     // 直接放行

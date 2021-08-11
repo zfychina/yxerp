@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar title="我的" left-arrow>
+    <van-nav-bar :title="state.username" left-arrow>
       <template #right>
         <van-icon name="search" size="18" />
       </template>
@@ -11,7 +11,7 @@
         fit="cover"
         width="120px"
         height="120px"
-        src="https://img01.yzcdn.cn/vant/cat.jpeg"
+        :src="state.avatar_img"
     />
     </div>
     <div class="uploader">
@@ -43,7 +43,7 @@
 
 
     <div class="reg" style="margin: 10px; font-size: 10px; color:var(--color-high-text)">
-      <div @click="toRegister">已有账号？立即登录</div>
+      <span @click="tologout">退出登录</span>
 <!--      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>-->
     </div>
 
@@ -51,18 +51,36 @@
 </template>
 
 <script>
-import {reactive} from "vue";
+import {onMounted, reactive} from "vue";
 import { useRouter } from 'vue-router'
-import {Dialog} from "vant";
+import {Dialog, Toast} from "vant";
 import {upSkuimport, upShortmold, upSupplier} from "network/upimport";
+import {getuserinfo} from "network/user";
+import { useStore } from 'vuex'
 
 export default {
   name: "Profile",
   setup(){
     const router = useRouter()
+    const store = useStore()
     const props =reactive( {
       accept: '.xls, .xlsx',
+    })
+    const state = reactive({
+      user_id: sessionStorage.user_id || localStorage.user_id,
+      username: '',
+      mobile: '',
+      avatar_img: '',
+    })
 
+    // 登录后获取user信息
+    onMounted(()=>{
+      getuserinfo().then(res=>{
+        state.user_id = res.id
+        state.username = res.username
+        state.mobile = res.mobile
+        state.avatar_img = res.avatar_img
+      })
     })
 
     // 缺料表更新
@@ -109,12 +127,29 @@ export default {
       router.push({path:'/login'})
     }
 
+    // 退出登录
+    const tologout = ()=>{
+      // 清除boken window.localStroage
+      window.localStorage.setItem('token', "")
+      sessionStorage.clear();
+      localStorage.clear();
+      Toast.success('退出成功')
+
+      // 在vuex isLogin
+      store.commit('setIsLogin', false);
+      setTimeout(()=>{
+        router.push({path:'/'})
+      },500)
+    }
+
     return{
       ...props,
+      state,
       Shortmold,
       Skuimport,
       Supplierimport,
-      toRegister
+      toRegister,
+      tologout,
     }
   }
 }

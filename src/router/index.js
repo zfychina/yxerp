@@ -13,7 +13,8 @@ const routes = [
     name: 'Default',
     component: Shortmold,
     meta: {
-      title: '缺料'
+      title: '缺料',
+      showNav: true,
     }
   },
   {
@@ -22,7 +23,8 @@ const routes = [
     component: Shortmold,
     props: true,
     meta: {
-      title: '缺料'
+      title: '缺料',
+      showNav: true,
     }
   },
   {
@@ -31,7 +33,8 @@ const routes = [
     component: Bom,
     meta: {
       title: 'BOM',
-      isAuthRequired: true
+      isAuthRequired: true,
+      showNav: true,
     }
   },
   {
@@ -40,7 +43,8 @@ const routes = [
     component: Order,
     meta: {
       title: '订单',
-      isAuthRequired: true
+      isAuthRequired: true,
+      showNav: true,
     }
   },
   {
@@ -49,7 +53,8 @@ const routes = [
     component: Unsettled,
     meta: {
       title: '未决',
-      isAuthRequired: true
+      isAuthRequired: true,
+      showNav: true,
     }
   },
   {
@@ -58,7 +63,8 @@ const routes = [
     component: Profile,
     meta: {
       title: '个人中心',
-      isAuthRequired: true
+      isAuthRequired: true,
+      showNav: true,
     }
   },
   {
@@ -66,7 +72,7 @@ const routes = [
     name: 'Register',
     component: Register,
     meta: {
-      title: '用户注册'
+      title: '用户注册',
     }
   },
   {
@@ -74,7 +80,7 @@ const routes = [
     name: 'Login',
     component: Login,
     meta: {
-      title: '用户登录'
+      title: '用户登录',
     }
   },
 

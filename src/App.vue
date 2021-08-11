@@ -1,14 +1,14 @@
 <template>
-<!--  <router-view/>-->
-  <router-view v-slot="{ Component, route }">
-    <transition>
-      <keep-alive >
-        <component :is="Component" v-bind="route.params" />
-      </keep-alive>
-    </transition>
-  </router-view>
+  <router-view/>
+<!--  <router-view v-slot="{ Component, route }">-->
+<!--    <transition>-->
+<!--      <keep-alive >-->
+<!--        <component :is="Component" v-bind="route.params" />-->
+<!--      </keep-alive>-->
+<!--    </transition>-->
+<!--  </router-view>-->
 
-  <div id="nav">
+  <div v-show="$route.meta.showNav" id="nav">
     <router-link class="tab-bar-item" to="/">
       <div class="icon"><i class="iconfont icon-que"></i></div>
       <div>缺料</div>

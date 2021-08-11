@@ -30,7 +30,7 @@
             :rules="[{ required: true, message: '请填写密码' }]"
         />
         <van-field
-            v-model="state.sms"
+            v-model="state.img_code"
             name="value1"
             center
             clearable
@@ -44,13 +44,13 @@
         </van-field>
       </van-cell-group>
       <div style="margin: 16px;">
-        <van-button round block type="primary" native-type="submit">
+        <van-button round block type="primary" native-type="submit" @click="onsubmit">
           登录
         </van-button>
       </div>
     </van-form>
   <div class="reg" style="margin: 10px; font-size: 10px; color:var(--color-high-text)">
-    <div @click="toRegister">没有账号？立即注册</div>
+    <span @click="toRegister">没有账号？立即注册</span>
     <!--      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>-->
   </div>
 
@@ -60,6 +60,9 @@
 import {onMounted, reactive} from "vue";
 import {useRouter} from "vue-router";
 import {nanoid} from "nanoid";
+import {login} from "network/user";
+import { Toast } from 'vant';
+import { useStore } from 'vuex'
 
 
 export default {
@@ -67,11 +70,13 @@ export default {
 
   setup () {
     const router = useRouter()
+    const store = useStore()
     const img_code_url = {img_code_url:''}
     const state = reactive({
       username: '',
       password: '',
-      sms: '',
+      img_code:'',
+      image_code_id:'',
     });
 
     onMounted(()=>{
@@ -82,12 +87,32 @@ export default {
     const onimg = ()=>{
       state.image_code_id = nanoid()
       img_code_url['img_code_url'] = 'http://www.zfychina.cn:8000/image_codes/' +  state.image_code_id
-      console.log(img_code_url['img_code_url']);
     }
 
     // 登录按钮提交
-    const onSubmit = (values) => {
-      console.log('submit', values);
+    const onSubmit = () => {
+      login(state).then(res=>{
+        // 将token保存在本地 window.localStorage setItem(key, value) getItem(key)
+        // eduwork2@lmonkey.com user123
+        // console.log(res);
+        sessionStorage.clear();
+        localStorage.clear();
+        window.localStorage.setItem('token', res.token);
+        // 在vuex isLogin
+        // console.log(store);
+        store.commit('setIsLogin', true);
+
+
+        Toast.success('登录成功')
+        state.username = ""
+        state.password = ""
+        state.img_code = ""
+        state.image_code_id = ""
+
+        setTimeout(()=> {
+          router.go(-1);
+        },500)
+      })
     };
 
     // 跳转到注册页面
@@ -95,12 +120,14 @@ export default {
       router.push({path:'/register'})
     }
 
-    return {
+
+     return {
       state,
       onSubmit,
       toRegister,
       onimg,
       img_code_url,
+      onsubmit,
     }
   }
 }
