@@ -92,26 +92,32 @@ export default {
     // 登录按钮提交
     const onSubmit = () => {
       login(state).then(res=>{
-        // 将token保存在本地 window.localStorage setItem(key, value) getItem(key)
-        // eduwork2@lmonkey.com user123
-        // console.log(res);
-        sessionStorage.clear();
-        localStorage.clear();
-        window.localStorage.setItem('token', res.token);
-        // 在vuex isLogin
-        // console.log(store);
-        store.commit('setIsLogin', true);
+        if (res.status === 400){
+          setTimeout(()=> {
+            Toast.fail(res.msg)
+          },1000)
+        } else
+        {
+          // 将token保存在本地 window.localStorage setItem(key, value) getItem(key)
+          // eduwork2@lmonkey.com user123
+          // console.log(res);
+          sessionStorage.clear();
+          localStorage.clear();
+          window.localStorage.setItem('token', res.token);
+          // 在vuex isLogin
+          // console.log(store);
+          store.commit('setIsLogin', true);
 
+          Toast.success('登录成功')
+          state.username = ""
+          state.password = ""
+          state.img_code = ""
+          state.image_code_id = ""
 
-        Toast.success('登录成功')
-        state.username = ""
-        state.password = ""
-        state.img_code = ""
-        state.image_code_id = ""
-
-        setTimeout(()=> {
-          router.go(-1);
-        },500)
+          setTimeout(() => {
+            router.go(-1);
+          }, 500)
+        }
       })
     };
 
