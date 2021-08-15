@@ -28,3 +28,13 @@ export function upSupplier(data) {
   })
 }
 
+// 上传销售订单数据
+export function uporderimport(data) {
+  return request({
+    url: '/orderimport/',
+    method: 'post',
+    timeout: 30000,
+    data
+  })
+}
+

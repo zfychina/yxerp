@@ -5,7 +5,7 @@ import router from '../router/index'
 export function request(config) {
   const instance =axios.create({
     baseURL: 'http://api.zfychina.cn:8000',
-    timeout: 5000
+    timeout: 10000
   })
 
   // 请求拦截

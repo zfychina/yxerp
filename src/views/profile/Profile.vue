@@ -33,7 +33,15 @@
     <div class="uploader">
       <van-uploader :after-read="Supplierimport" name='files' :accept="accept" result-type="file">
         <van-button icon="plus" type="primary">
-          点击供应商批量更新（请上供应商.xls）
+          点击供应商批量更新（上传供应商.xls）
+        </van-button>
+
+      </van-uploader>
+    </div>
+    <div class="uploader">
+      <van-uploader :after-read="Orderimport" name='files' :accept="accept" result-type="file">
+        <van-button icon="plus" type="primary">
+          点击销售订单导入（上传订单情况.xls）
         </van-button>
 
       </van-uploader>
@@ -54,9 +62,10 @@
 import {onMounted, reactive} from "vue";
 import { useRouter } from 'vue-router'
 import {Dialog, Toast} from "vant";
-import {upSkuimport, upShortmold, upSupplier} from "network/upimport";
+import {upSkuimport, upShortmold, upSupplier, uporderimport} from "network/upimport";
 import {getuserinfo} from "network/user";
 import { useStore } from 'vuex'
+
 
 export default {
   name: "Profile",
@@ -122,6 +131,19 @@ export default {
       })
     }
 
+    // 订单信息导入
+    const Orderimport = (file)=>{
+      const data = new FormData();
+      data.append('files', file.file)
+      uporderimport(data).then(res=>{
+        Dialog.alert({
+          message: res,
+        }).then(() => {
+          // on close
+        });
+      })
+    }
+
     // 跳转到注册页面
     const toRegister=()=>{
       router.push({path:'/login'})
@@ -150,6 +172,7 @@ export default {
       Supplierimport,
       toRegister,
       tologout,
+      Orderimport,
     }
   }
 }
