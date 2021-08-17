@@ -1,11 +1,14 @@
 <template>
   <div>
-    <van-nav-bar :title="state.username" left-arrow>
+    <van-sticky>
+    <van-nav-bar :title="state.username" left-arrow  fixed="true">
       <template #right>
         <van-icon name="search" size="18" />
       </template>
     </van-nav-bar>
-    <div style="margin-top: 20px">
+    </van-sticky>
+
+    <div style="margin-top: 60px">
       <van-image
         round
         fit="cover"

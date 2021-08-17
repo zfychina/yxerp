@@ -62,6 +62,7 @@
   background-color: #f6f6f6;
   display: flex;
   position: fixed;
+  z-index: 100;
   left: 0;
   right: 0;
   bottom: 0;
