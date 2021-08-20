@@ -19,8 +19,8 @@ export function login(data) {
 export function getuserinfo() {
   return request({
     url: '/user/',
-    headers:{
-      'Authorization': 'JWT ' + window.localStorage.token
-    },
+    // headers:{
+    //   'Authorization': 'JWT ' + window.localStorage.token
+    // },
   })
 }

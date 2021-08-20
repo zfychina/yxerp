@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.55",
     "element-ui": "^2.15.3",
+    "muse-ui": "^3.0.2",
     "nanoid": "^3.1.23",
     "pinyin": "^2.10.2",
     "quasar": "^2.0.3",
