@@ -40,19 +40,19 @@
 
           <table style="width: 100%">
             <tbody>
-            <tr v-for="(item,index) in state.orderall[index].list" :key="index">
+            <tr v-for="(item,index1) in state.orderall[index].list" :key="index1">
               <th style="width: 8%"><van-checkbox v-model="checked" icon-size="15px"></van-checkbox></th>
-              <th style="width: 20%" @click="sorttable('order_date')">{{item.order_date?.split(" ")[0]}}</th>
-              <th style="width: 20%" @click="sorttable('delivery')">{{item.delivery?.split(" ")[0]}}</th>
-              <th style="width: 18%" @click="sorttable('customer')">{{ item.customer?.coding }}</th>
-              <th style="width: 30%" @click="sorttable('orderhao')">{{ item.orderhao }}</th>
+              <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.order_date?.split(" ")[0]}}</th>
+              <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.delivery?.split(" ")[0]}}</th>
+              <th style="width: 18%" @click="Extensionline(item.orderhao, index)">{{ item.customer?.coding }}</th>
+              <th style="width: 30%" @click="Extensionline(item.orderhao, index)">{{ item.orderhao }}</th>
               <br>
-              <div v-show="false" v-for=" i in 5" :key="i">
-              <th style="width: 15%"><van-checkbox v-model="checked" icon-size="15px"></van-checkbox></th>
-              <th style="width: 20%" @click="sorttable('order_date')">{{item.order_date?.split(" ")[0]}}</th>
-              <th style="width: 20%" @click="sorttable('delivery')">{{item.delivery?.split(" ")[0]}}</th>
-              <th style="width: 18%" @click="sorttable('customer')">{{ item.customer?.coding }}</th>
-              <th style="width: 30%" @click="sorttable('orderhao')">{{ item.orderhao }}</th>
+              <div v-show="state.isshow[index].[item.orderhao]" v-for=" i in 2" :key="i" style="margin-left: 10px">
+              <th style="width: 8%"><van-checkbox v-model="checked" icon-size="13px"></van-checkbox></th>
+              <th style="width: 20%">{{item.orderhao}}</th>
+              <th style="width: 20%">{{item.orderhao}}</th>
+              <th style="width: 18%">{{item.orderhao}}</th>
+              <th style="width: 30%">{{item.orderhao}}</th>
               </div>
             </tr>
             </tbody>
@@ -82,8 +82,13 @@ export default {
   name: "Order",
   setup() {
 
+
+
     // list组件
     const state = reactive({
+      // 是否扩展
+      isshow: [{}, {}, {}, {},],
+
       ordering: ['delivery', 'delivery', 'delivery', 'delivery'],
       order_by: [true, true, true, true],
       orderstaus: [2 ,1 ,3 ,4 ],
@@ -114,7 +119,6 @@ export default {
       getdate(state.orderstaus[3], state.ordering[3], 3)
 
     })
-
     // 获取订单数据
     const getdate = (orderstatus, ordering, index)=> {
 
@@ -126,9 +130,8 @@ export default {
 
       }).catch(err =>{console.log(err)})
 
-      console.log(state.orderall)
+      // console.log(state.orderall)
     }
-
 
     const onLoad = (index) => {
       setTimeout(() => {
@@ -162,7 +165,6 @@ export default {
       state.loading = true;
       onLoad(index);
     };
-
     // 排序
     const sorttable = (ordering, index) => {
 
@@ -179,9 +181,17 @@ export default {
 
       }
   }
-
     // 提交订单按钮
     const onSubmit = () => Toast('点击按钮');
+
+    // 扩展行
+    const Extensionline = (orderhao, index) => {
+      if (state.isshow[index].[orderhao]){
+        delete state.isshow[index].[orderhao]
+      } else (state.isshow[index].[orderhao] = true)
+      console.log(state.isshow);
+
+    }
 
     return {
       sorttable,
@@ -191,6 +201,7 @@ export default {
       onRefresh,
       checked: false,
       getdate,
+      Extensionline,
 
     };
   },
