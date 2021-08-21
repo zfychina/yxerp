@@ -10,3 +10,14 @@ export function getOrderinfo(orderstatus, page, ordering) {
     }
   })
 }
+
+//获取订单详情信息
+export function getOrderdetail(orderhao) {
+  return request({
+    url: "/orders/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}

@@ -20,7 +20,7 @@
          <table style="width: 100%">
            <thead>
            <tr>
-             <th style="width: 8%"></th>
+             <th style="width: 12%"></th>
              <th style="width: 20%" @click="sorttable('order_date', index)">下单日期</th>
              <th style="width: 20%" @click="sorttable('delivery', index)">交货日期</th>
              <th style="width: 18%" @click="sorttable('customer', index)">客户</th>
@@ -40,19 +40,19 @@
 
           <table style="width: 100%">
             <tbody>
-            <tr v-for="(item,index1) in state.orderall[index].list" :key="index1">
+            <tr v-for="(item,index1) in state.orderall[index].list" :key="index1" style="margin-left: 3px">
               <th style="width: 8%"><van-checkbox v-model="checked" icon-size="15px"></van-checkbox></th>
               <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.order_date?.split(" ")[0]}}</th>
               <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.delivery?.split(" ")[0]}}</th>
-              <th style="width: 18%" @click="Extensionline(item.orderhao, index)">{{ item.customer?.coding }}</th>
-              <th style="width: 30%" @click="Extensionline(item.orderhao, index)">{{ item.orderhao }}</th>
+              <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{ item.customer?.coding }}</th>
+              <th style="width: 30%" @click="Extensionline(item.orderhao, index)"><b>{{ item.orderhao }}</b></th>
               <br>
-              <div v-show="state.isshow[index].[item.orderhao]" v-for=" i in 2" :key="i" style="margin-left: 10px">
-              <th style="width: 8%"><van-checkbox v-model="checked" icon-size="13px"></van-checkbox></th>
-              <th style="width: 20%">{{item.orderhao}}</th>
-              <th style="width: 20%">{{item.orderhao}}</th>
-              <th style="width: 18%">{{item.orderhao}}</th>
-              <th style="width: 30%">{{item.orderhao}}</th>
+              <div v-show="state.isshow[index].[item.orderhao]" v-for=" (orderitem, index2) in state.orderdetail.[item.orderhao]" :key="index2" style="margin-left: 0px">
+              <th style="width: 5%"><van-checkbox v-model="checked" icon-size="13px"></van-checkbox></th>
+              <th style="width: 25%;word-break:break-all">{{orderitem.sku.coding}}</th>
+              <th style="width: 35%;word-break:break-all;margin-right:10px">{{orderitem.sku.name}}</th>
+              <th style="width: 15%">{{orderitem.quantity}}</th>
+              <th style="width: 10%">{{orderitem.unit}}</th>
               </div>
             </tr>
             </tbody>
@@ -76,7 +76,7 @@
 <script>
 import { reactive, onMounted} from 'vue';
 import {Toast} from "vant";
-import {getOrderinfo} from "network/order";
+import {getOrderinfo, getOrderdetail} from "network/order";
 
 export default {
   name: "Order",
@@ -98,6 +98,7 @@ export default {
         {count: 0, page: 0, list:[] },
         {count: 0, page: 0, list:[] },
       ],
+      orderdetail: {},
       loading: false,
       finished: [false, false, false, false,],
       refreshing: false,
@@ -189,7 +190,14 @@ export default {
       if (state.isshow[index].[orderhao]){
         delete state.isshow[index].[orderhao]
       } else (state.isshow[index].[orderhao] = true)
-      console.log(state.isshow);
+      // console.log(state.isshow);
+      // 获取订单详情信息
+      getOrderdetail(orderhao).then(res=>{
+        state.orderdetail.[orderhao] = res.results
+        console.log(state.orderdetail);
+      }).catch(err =>{console.log(err)})
+
+
 
     }
 
