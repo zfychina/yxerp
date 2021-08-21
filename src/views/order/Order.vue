@@ -14,7 +14,7 @@
             animated
             offset-top=46px >
     <van-tab v-for="(item, index) in state.tabtitle" :title="item" :key="index">
-       <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
+       <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh(index)">
 
 <!--表头-->
          <table style="width: 100%">
@@ -31,9 +31,11 @@
 
         <van-list
             v-model:loading="state.loading"
-            :finished="state.finished"
+            :finished="state.finished[index]"
             finished-text="没有更多了"
-            @load="onLoad"
+            @load="onLoad(index)"
+            offset="500"
+
         >
 
           <table style="width: 100%">
@@ -83,6 +85,7 @@ export default {
     // list组件
     const state = reactive({
       ordering:'delivery',
+      orderstaus: [2 ,1 ,3 ,4 ],
       orderall: [
         {count: 0, page: 0, list:[] },
         {count: 0, page: 0, list:[] },
@@ -90,66 +93,71 @@ export default {
         {count: 0, page: 0, list:[] },
       ],
       loading: false,
-      finished: false,
+      finished: [false, false, false, false,],
       refreshing: false,
       tabtitle: ['未完成订单', '物料待生成', '生产中订单', '全部订单']
     });
 
-    // 获取数据
+    // 获取默认数据
     onMounted(()=>{
       // 未完成订单数据获取
-      getdate(2, 1, state.ordering, 0)
+      getdate(2, state.ordering, 0)
 
       // 物料待生成数据获取
-      getdate(1, 1, state.ordering, 1)
+      getdate(1, state.ordering, 1)
 
       // 生产中订单数据获取
-      getdate(3, 1, state.ordering, 2)
+      getdate(3, state.ordering, 2)
 
       // 全部订单数据获取
-      getdate(4, 1, state.ordering, 3)
+      getdate(4, state.ordering, 3)
 
     })
 
     // 获取订单数据
-    const getdate = (orderstatus, page, ordering, index)=> {
-
+    const getdate = (orderstatus, ordering, index)=> {
+      const page = state.orderall[index].page += 1
+      console.log(page)
       getOrderinfo(orderstatus, page, ordering).then(res => {
-        console.log(res)
-        state.orderall[index].list = res.results
+        state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-        state.orderall[index].page += 1
-        console.log(state.orderall);
+
       })
+      console.log(state.orderall)
     }
 
 
-    const onLoad = () => {
+    const onLoad = (index) => {
       setTimeout(() => {
+        // 下拉刷新前清空数据
         if (state.refreshing) {
-          state.list = [];
+          state.orderall[index] =  {count: 0, page: 0, list:[] },
           state.refreshing = false;
+          getdate(2, state.ordering, index)
         }
-
-        for (let i = 0; i < 1; i++) {
-          state.list.push(state.list.length + 1);
-        }
+        console.log('加载下一页',index)
+        // 所有页获取完，设置true，没有更多了
+        if (state.orderall[index].list.length >= state.orderall[index].count) {
+          state.finished[index] = true;
+        } else {
+        // 加载下一页数据
+        const orderstaus = state.orderstaus[index]
+        getdate(orderstaus, state.ordering, index)
+        console.log('加载下一页loading')
         state.loading = false;
-
-        if (state.list.length >= 40) {
-          state.finished = true;
         }
+
       }, 1000);
     };
 
-    const onRefresh = () => {
+    const onRefresh = (index) => {
       // 清空列表数据
-      state.finished = false;
+      state.finished[index] = false;
 
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       state.loading = true;
-      onLoad();
+      onLoad(index);
     };
 
 
