@@ -21,10 +21,10 @@
            <thead>
            <tr>
              <th style="width: 8%"></th>
-             <th style="width: 20%" @click="sorttable('order_date')">下单日期</th>
-             <th style="width: 20%" @click="sorttable('delivery')">交货日期</th>
-             <th style="width: 18%" @click="sorttable('customer')">客户</th>
-             <th style="width: 30%" @click="sorttable('orderhao')">订单编号</th>
+             <th style="width: 20%" @click="sorttable('order_date', index)">下单日期</th>
+             <th style="width: 20%" @click="sorttable('delivery', index)">交货日期</th>
+             <th style="width: 18%" @click="sorttable('customer', index)">客户</th>
+             <th style="width: 30%" @click="sorttable('orderhao', index)">订单编号</th>
            </tr>
            </thead>
          </table>
@@ -84,7 +84,8 @@ export default {
 
     // list组件
     const state = reactive({
-      ordering:'delivery',
+      ordering: ['delivery', 'delivery', 'delivery', 'delivery'],
+      order_by: [true, true, true, true],
       orderstaus: [2 ,1 ,3 ,4 ],
       orderall: [
         {count: 0, page: 0, list:[] },
@@ -101,31 +102,30 @@ export default {
     // 获取默认数据
     onMounted(()=>{
       // 未完成订单数据获取
-      getdate(2, state.ordering, 0)
+      getdate(state.orderstaus[0], state.ordering[0], 0)
 
       // 物料待生成数据获取
-      getdate(1, state.ordering, 1)
+      getdate(state.orderstaus[1], state.ordering[1], 1)
 
       // 生产中订单数据获取
-      getdate(3, state.ordering, 2)
+      getdate(state.orderstaus[2], state.ordering[2], 2)
 
       // 全部订单数据获取
-      getdate(4, state.ordering, 3)
+      getdate(state.orderstaus[3], state.ordering[3], 3)
 
     })
 
     // 获取订单数据
     const getdate = (orderstatus, ordering, index)=> {
+
       const page = state.orderall[index].page += 1
-      console.log(page)
-      if (state.orderall[index].list.length >= state.orderall[index].count){
-        state.orderall[index].page -= 1
-      }
-      getOrderinfo(orderstatus, page, ordering).then(res => {
+
+      getOrderinfo(orderstatus, page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
 
-      })
+      }).catch(err =>{console.log(err)})
+
       console.log(state.orderall)
     }
 
@@ -138,12 +138,11 @@ export default {
           state.refreshing = false;
           getdate(2, state.ordering, index)
         }
-        console.log('加载下一页',index)
 
         // 加载下一页数据
         const orderstaus = state.orderstaus[index]
-        getdate(orderstaus, state.ordering, index)
-        console.log('加载下一页loading')
+        const ordering = state.ordering[index]
+        getdate(orderstaus, ordering, index)
         state.loading = false;
 
         // 所有页获取完，设置true，没有更多了
@@ -164,11 +163,28 @@ export default {
       onLoad(index);
     };
 
+    // 排序
+    const sorttable = (ordering, index) => {
+
+      // 确定正序和倒序
+      state.order_by[index] = !state.order_by[index]
+      if (state.order_by[index]){
+        state.ordering[index] = ordering
+        state.orderall[index] =  {count: 0, page: 0, list:[] },
+        getdate(state.orderstaus[index],  state.ordering[index], index)
+      } else {
+        state.ordering[index] = '-'+ordering
+        state.orderall[index] =  {count: 0, page: 0, list:[] },
+            getdate(state.orderstaus[index],  state.ordering[index], index)
+
+      }
+  }
 
     // 提交订单按钮
     const onSubmit = () => Toast('点击按钮');
 
     return {
+      sorttable,
       onSubmit,
       state,
       onLoad,
