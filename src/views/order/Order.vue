@@ -118,6 +118,9 @@ export default {
     const getdate = (orderstatus, ordering, index)=> {
       const page = state.orderall[index].page += 1
       console.log(page)
+      if (state.orderall[index].list.length >= state.orderall[index].count){
+        state.orderall[index].page -= 1
+      }
       getOrderinfo(orderstatus, page, ordering).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
@@ -136,15 +139,16 @@ export default {
           getdate(2, state.ordering, index)
         }
         console.log('加载下一页',index)
-        // 所有页获取完，设置true，没有更多了
-        if (state.orderall[index].list.length >= state.orderall[index].count) {
-          state.finished[index] = true;
-        } else {
+
         // 加载下一页数据
         const orderstaus = state.orderstaus[index]
         getdate(orderstaus, state.ordering, index)
         console.log('加载下一页loading')
         state.loading = false;
+
+        // 所有页获取完，设置true，没有更多了
+        if (state.orderall[index].list.length >= state.orderall[index].count) {
+          state.finished[index] = true;
         }
 
       }, 1000);
