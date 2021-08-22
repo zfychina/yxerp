@@ -41,14 +41,14 @@
           <table style="width: 100%">
             <tbody>
             <tr v-for="(item,index1) in state.orderall[index].list" :key="index1" style="margin-left: 3px">
-              <th style="width: 8%"><van-checkbox v-model="checked" icon-size="15px"></van-checkbox></th>
+              <th style="width: 8%"><van-checkbox @click="oncheckorder(item.orderhao)" v-model="state.checkorder[index].[item.orderhao]" icon-size="15px"></van-checkbox></th>
               <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.order_date?.split(" ")[0]}}</th>
               <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.delivery?.split(" ")[0]}}</th>
               <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{ item.customer?.coding }}</th>
               <th style="width: 30%" @click="Extensionline(item.orderhao, index)"><b>{{ item.orderhao }}</b></th>
               <br>
-              <div v-show="state.isshow[index].[item.orderhao]" v-for=" (orderitem, index2) in state.orderdetail.[item.orderhao]" :key="index2" style="margin-left: 0px">
-              <th style="width: 5%"><van-checkbox v-model="checked" icon-size="13px"></van-checkbox></th>
+              <div class="detailorder" v-show="state.isshow[index]?.[item.orderhao]" v-for=" (orderitem, index2) in state.orderdetail?.[item.orderhao]" :key="index2" style="margin-left: 2px">
+              <th style="width: 5%"><van-checkbox @click="oncheckgood(item.orderhao, orderitem.id)" v-model="state.checkdetail[index].[item.orderhao + '&' + orderitem.id]" icon-size="13px"></van-checkbox></th>
               <th style="width: 25%;word-break:break-all">{{orderitem.sku.coding}}</th>
               <th style="width: 35%;word-break:break-all;margin-right:10px">{{orderitem.sku.name}}</th>
               <th style="width: 15%">{{orderitem.quantity}}</th>
@@ -62,30 +62,40 @@
         </van-list>
       </van-pull-refresh>
 
+
+
     </van-tab>
   </van-tabs>
 
 <!--提交订单部分-->
   <van-submit-bar button-color=var(--color-high-text)
                   :price="305000" button-text="提交订单" decimal-length=1 @submit="onSubmit">
-    <van-checkbox v-model="checked">全选</van-checkbox>
+    <van-checkbox v-model="state.checkall[active]" @click="oncheckall">全选</van-checkbox>
   </van-submit-bar>
 
 </template>
 
 <script>
-import { reactive, onMounted} from 'vue';
+import {ref, reactive, onMounted} from 'vue';
 import {Toast} from "vant";
 import {getOrderinfo, getOrderdetail} from "network/order";
 
 export default {
   name: "Order",
   setup() {
-
+    // Tab当前位置
+    const active = ref(0);
 
 
     // list组件
     const state = reactive({
+
+
+      // 是否全选
+      checkall:[false, false, false, false,],
+      checkorder: [{}, {}, {}, {}],
+      checkdetail: [{}, {}, {}, {}],
+
       // 是否扩展
       isshow: [{}, {}, {}, {},],
 
@@ -184,20 +194,99 @@ export default {
   }
     // 提交订单按钮
     const onSubmit = () => Toast('点击按钮');
-
     // 扩展行
     const Extensionline = (orderhao, index) => {
-      if (state.isshow[index].[orderhao]){
-        delete state.isshow[index].[orderhao]
+      if (state.isshow[index]?.[orderhao]){
+        delete state.isshow[index]?.[orderhao]
       } else (state.isshow[index].[orderhao] = true)
       // console.log(state.isshow);
       // 获取订单详情信息
       getOrderdetail(orderhao).then(res=>{
         state.orderdetail.[orderhao] = res.results
-        console.log(state.orderdetail);
       }).catch(err =>{console.log(err)})
+    }
+    // 选择-全选
+    const oncheckall = () =>{
+      if(state.checkall[active.value]){
+        // 清空数组里数据-订单号
+        state.checkorder[active.value] = {}
+        state.checkdetail[active.value] = {}
+        //将已加载的数据-订单号，添加到数组里
+        let x
+        for (x in state.orderall[active.value].list) {
+          const order_hao = state.orderall[active.value].list[x].orderhao
+          state.checkorder[active.value].[order_hao] = true
+
+          // 如果这个订单没有获取订单详情 则跳过
+          const orderdetail = state.orderdetail[order_hao]
+          if(orderdetail){
+            let y
+            for( y in orderdetail){
+              const orderhao_detail = order_hao + '&' + orderdetail[y].id
+              state.checkdetail[active.value].[orderhao_detail] = true
+          }}
+        }
+      }else {
+        // 清空数组里数据-订单号
+        state.checkorder[active.value] = {}
+        state.checkdetail[active.value] = {}
+      }
+
+    }
+    // 选择-订单全选
+    const oncheckorder = (orderhao) =>{
+
+      // 检查未选中的删除掉
+      if (state.checkorder[active.value]?.[orderhao] ===false){
+        delete state.checkorder[active.value]?.[orderhao]
+        state.checkall[active.value] = false
+
+        // 删除订单详情里选中的
+        if (state.isshow[active.value]?.[orderhao]){
+
+        const orderdetail = state.orderdetail[orderhao]
+        if(orderdetail){
+          let y
+          for( y in orderdetail){
+            const orderhao_detail = orderhao + '&' + orderdetail[y].id
+            state.checkdetail[active.value].[orderhao_detail] = false
+            delete state.checkdetail[active.value]?.[orderhao_detail]
+          }}}
+
+      }
+
+      // 检查选中的，是否展开订单详情，
+      if (state.checkorder[active.value]?.[orderhao]){
+        if (state.isshow[active.value]?.[orderhao]){
+
+          const orderdetail = state.orderdetail[orderhao]
+          if(orderdetail){
+            let y
+            for( y in orderdetail){
+              const orderhao_detail = orderhao + '&' + orderdetail[y].id
+              state.checkdetail[active.value].[orderhao_detail] = true
+            }}
+      }}
 
 
+      if(Object.keys(state.checkorder[active.value]).length === state.orderall[active.value].list.length){
+        state.checkall[active.value] = true
+      } else {state.checkall[active.value] = false}
+
+    }
+
+    // 选择-商品选择
+    const oncheckgood = (orderhao, orderdetail) =>{
+      // 不勾选的商品，为false，需要删除
+      const orderhao_detail = orderhao + '&' + orderdetail
+      if (state.checkdetail[active.value]?.[orderhao_detail] ===false){
+        delete state.checkdetail[active.value]?.[orderhao_detail]
+        state.checkall[active.value] = false
+      }
+
+      if(Object.keys(state.checkdetail[active.value]).length === Object.keys(state.orderdetail?.[orderhao]).length){
+        state.checkorder[active.value].[orderhao] = true
+      } else {state.checkorder[active.value].[orderhao] = false}
 
     }
 
@@ -207,9 +296,12 @@ export default {
       state,
       onLoad,
       onRefresh,
-      checked: false,
       getdate,
       Extensionline,
+      oncheckall,
+      oncheckorder,
+      oncheckgood,
+      active,
 
     };
   },
@@ -270,6 +362,7 @@ table {
       display: inline-block;
 
       th {
+
         display: inline-block;
         //display: inline-block;
         text-align: left;
@@ -282,5 +375,11 @@ table {
     }
   }
 }
+// 隔行填充
+table tbody tr:nth-child(odd){ background : #f9faff;}
 
+.detailorder {
+  font-family: "微软雅黑", "仿宋", sans-serif;
+  font-weight: bold; //bold：加粗；bloder：深度加粗；lighter：细体；
+}
 </style>
