@@ -14,7 +14,7 @@
             animated
             offset-top=46px >
     <van-tab v-for="(item, index) in state.tabtitle" :title="item" :key="index">
-       <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh(index)">
+       <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
 
 <!--表头-->
          <table style="width: 100%">
@@ -34,8 +34,7 @@
             :finished="state.finished[index]"
             finished-text="没有更多了"
             @load="onLoad(index)"
-            offset="500"
-
+            offset="300"
         >
 
           <table style="width: 100%">
@@ -139,45 +138,40 @@ export default {
       getOrderinfo(orderstatus, page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-
-      }).catch(err =>{console.log(err)})
-
-      // console.log(state.orderall)
+      }).catch(err => err)
     }
 
     const onLoad = (index) => {
       setTimeout(() => {
-        // 是否展开所有订单 复位
-        state.orderdialog[active.value] = true
-        // 下拉刷新前清空数据
-        if (state.refreshing) {
-          state.orderall[index] =  {count: 0, page: 0, list:[] },
-          state.refreshing = false;
-          getdate(2, state.ordering, index)
-        }
-
-        // 加载下一页数据
         const orderstaus = state.orderstaus[index]
         const ordering = state.ordering[index]
+
+        // 加载下一页数据
         getdate(orderstaus, ordering, index)
         state.loading = false;
-
         // 所有页获取完，设置true，没有更多了
-        if (state.orderall[index].list.length >= state.orderall[index].count) {
+        if ( (state.orderall[index].count !== 0) && state.orderall[index].list.length >= state.orderall[index].count) {
           state.finished[index] = true;
         }
-
       }, 1000);
     };
 
-    const onRefresh = (index) => {
+    const onRefresh = () => {
       // 清空列表数据
-      state.finished[index] = false;
+      state.finished[active.value] = false;
+      state.refreshing = false;
+      state.orderall[active.value] =  {count: 0, page: 0, list:[] },
 
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       state.loading = true;
-      onLoad(index);
+
+      // 是否展开所有订单 复位
+      state.orderdialog[active.value] = true
+
+      // 下拉刷新前清空数据
+      // getdate(state.orderstaus[active.value], state.ordering[active.value], [active.value])
+      onLoad([active.value]);
     };
     // 排序
     const sorttable = (ordering, index) => {
@@ -210,7 +204,8 @@ export default {
     }
     // 选择-全选
     const oncheckall = () =>{
-      if (state.orderdialog[active.value] && state.checkall[active.value]){
+
+      if (state.orderdialog[active.value] && state.checkall[active.value] && (Object.keys(state.isshow[active.value]).length !== state.orderall[active.value].list.length)){
 
       Dialog.confirm({
         // title: `是否展开所有订单内的产品？`,
@@ -220,7 +215,7 @@ export default {
           .then(() => {
             state.orderdialog[active.value] = false
            const orderobj = Object.keys(state.checkorder[active.value]);
-            Toast.loading({message:'订单展开中...', forbidClick:true});
+            Toast.loading({message:'订单展开中...', forbidClick:true, duration: 4000});
             orderobj.forEach(item=>Extensionline(item,active.value))
             // on confirm
           })

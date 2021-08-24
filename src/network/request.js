@@ -40,6 +40,7 @@ export function request(config) {
       router.push({path:'/login'})
     }
 
+
     // 注册用户不成功，返回的错误信息
     if(err.response.status === 400 || err.response.data.length > 0) {
       const data = err.response.data
