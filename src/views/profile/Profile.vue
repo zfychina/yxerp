@@ -99,6 +99,7 @@ export default {
     const Shortmold=(file)=> {
       const data = new FormData();
       data.append('files', file.file)
+      Toast.loading({message:'缺料导入中...', forbidClick:true});
       upShortmold(data).then(res=>{
         Dialog.alert({
           message: res,
@@ -112,6 +113,7 @@ export default {
     const Skuimport=(file)=> {
       const data = new FormData();
       data.append('files', file.file)
+      Toast.loading({message:'物料更新中...', forbidClick:true});
       upSkuimport(data).then(res=>{
         Dialog.alert({
           message: res,
@@ -125,6 +127,7 @@ export default {
     const Supplierimport = (file)=>{
       const data = new FormData();
       data.append('files', file.file)
+      Toast.loading({message:'供就商更新中...', forbidClick:true});
       upSupplier(data).then(res=>{
         Dialog.alert({
           message: res,
@@ -138,6 +141,7 @@ export default {
     const Orderimport = (file)=>{
       const data = new FormData();
       data.append('files', file.file)
+      Toast.loading({message:'订单导入中...', forbidClick:true});
       uporderimport(data).then(res=>{
         Dialog.alert({
           message: res,

@@ -69,15 +69,16 @@
 
 <!--提交订单部分-->
   <van-submit-bar button-color=var(--color-high-text)
-                  :price="305000" button-text="提交订单" decimal-length=1 @submit="onSubmit">
+                  :price="total*100" button-text="提交订单" decimal-length=1 @submit="onSubmit">
     <van-checkbox v-model="state.checkall[active]" @click="oncheckall">全选</van-checkbox>
+
   </van-submit-bar>
 
 </template>
 
 <script>
-import {ref, reactive, onMounted} from 'vue';
-import {Toast} from "vant";
+import {ref, reactive, onMounted, computed} from 'vue';
+import {Toast, Dialog} from "vant";
 import {getOrderinfo, getOrderdetail} from "network/order";
 
 export default {
@@ -89,8 +90,8 @@ export default {
 
     // list组件
     const state = reactive({
-
-
+      // 控制第一次全选，提示是否展开所有订单内的商品信息
+      orderdialog: [true, true, true, true],
       // 是否全选
       checkall:[false, false, false, false,],
       checkorder: [{}, {}, {}, {}],
@@ -146,6 +147,8 @@ export default {
 
     const onLoad = (index) => {
       setTimeout(() => {
+        // 是否展开所有订单 复位
+        state.orderdialog[active.value] = true
         // 下拉刷新前清空数据
         if (state.refreshing) {
           state.orderall[index] =  {count: 0, page: 0, list:[] },
@@ -207,6 +210,26 @@ export default {
     }
     // 选择-全选
     const oncheckall = () =>{
+      if (state.orderdialog[active.value] && state.checkall[active.value]){
+
+      Dialog.confirm({
+        // title: `是否展开所有订单内的产品？`,
+        message: `是否展开所有订单内的产品？`,
+        // theme: 'round-button',
+      })
+          .then(() => {
+            state.orderdialog[active.value] = false
+           const orderobj = Object.keys(state.checkorder[active.value]);
+            Toast.loading({message:'订单展开中...', forbidClick:true});
+            orderobj.forEach(item=>Extensionline(item,active.value))
+            // on confirm
+          })
+          .catch(() => {
+            state.orderdialog[active.value] = false
+            // on cancel
+          });
+
+      }
       if(state.checkall[active.value]){
         // 清空数组里数据-订单号
         state.checkorder[active.value] = {}
@@ -231,7 +254,6 @@ export default {
         state.checkorder[active.value] = {}
         state.checkdetail[active.value] = {}
       }
-
     }
     // 选择-订单全选
     const oncheckorder = (orderhao) =>{
@@ -274,7 +296,6 @@ export default {
       } else {state.checkall[active.value] = false}
 
     }
-
     // 选择-商品选择
     const oncheckgood = (orderhao, orderdetail) =>{
       // 不勾选的商品，为false，需要删除
@@ -289,6 +310,22 @@ export default {
       } else {state.checkorder[active.value].[orderhao] = false}
 
     }
+    // 通过计算属性 计算选中产品数量
+    const total = computed(()=> {
+      let sum = 0;
+      const data = Object.keys(state.checkdetail[active.value])
+      let x
+      for (x in data){
+        const totalorder = data[x].split('&')[0]
+        const totalgoodid = data[x].split('&')[1]
+        state.orderdetail?.[totalorder].forEach(item=>{
+          if (item.id ===  parseInt(totalgoodid)){
+            sum +=  parseInt(item.quantity)
+          }
+        })
+      }
+      return sum;
+    })
 
     return {
       sorttable,
@@ -302,6 +339,7 @@ export default {
       oncheckorder,
       oncheckgood,
       active,
+      total,
 
     };
   },
