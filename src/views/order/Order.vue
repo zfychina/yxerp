@@ -1,6 +1,6 @@
 <template>
   <van-sticky>
-  <van-nav-bar title="销售订单" left-arrow fixed >
+  <van-nav-bar title="销售订单" left-text="+新增" fixed @click-left="onClickLeft"  @click-right="onClickRight">
     <template #right>
       <van-icon name="search" size="18" />
     </template>
@@ -79,10 +79,12 @@
 import {ref, reactive, onMounted, computed} from 'vue';
 import {Toast, Dialog} from "vant";
 import {getOrderinfo, getOrderdetail} from "network/order";
+import {useRouter} from "vue-router";
 
 export default {
   name: "Order",
   setup() {
+    const router = useRouter()
     // Tab当前位置
     const active = ref(0);
 
@@ -322,6 +324,14 @@ export default {
       return sum;
     })
 
+    // click-left 导航栏左点击，增加订单按钮
+    const onClickLeft = ()=>{
+      router.push({path:'/createorder'})
+    }
+    // click-right 导航栏右点击，搜索按钮
+    const onClickRight = ()=>{
+      router.push({path:'/search'})
+    }
     return {
       sorttable,
       onSubmit,
@@ -335,7 +345,8 @@ export default {
       oncheckgood,
       active,
       total,
-
+      onClickLeft,
+      onClickRight,
     };
   },
 

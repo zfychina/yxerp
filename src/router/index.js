@@ -2,10 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 const Shortmold = () => import('@/views/shortmold/Shortmold')
 const Bom = () => import('@/views/bom/Bom')
 const Order = () => import('@/views/order/Order')
+const CreateOrder = () => import('@/views/order/CreateOrder')
+const search = () => import('@/views/search/search')
 const Unsettled = () => import('@/views/unsettled/Unsettled')
 const Profile = () => import('@/views/profile/Profile')
 const Register = () => import('@/views/profile/Register')
 const Login = () => import('@/views/profile/Login')
+
 
 const routes = [
   {
@@ -67,6 +70,25 @@ const routes = [
       showNav: true,
     }
   },
+  {
+    path: '/createorder',
+    name: 'createorder',
+    component: CreateOrder,
+    meta: {
+      title: '创建订单',
+      isAuthRequired: true,
+    }
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: search,
+    meta: {
+      title: '搜索',
+      isAuthRequired: true,
+    }
+  },
+
   {
     path: '/register',
     name: 'Register',

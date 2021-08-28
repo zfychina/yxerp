@@ -21,3 +21,15 @@ export function getOrderdetail(orderhao) {
     }
   })
 }
+
+
+// 校验订单编号是否重复
+export function countOrderhao(orderhao) {
+  return request({
+    url: "/orders/" + orderhao + '/count/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
