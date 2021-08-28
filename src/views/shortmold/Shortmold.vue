@@ -33,7 +33,6 @@
 <!--      <van-cell v-for="item in state.list" :key="item" :title="item"/>-->
     <table style="width: 100%;margin-left: 8px;">
       <tbody>
-      <div class="shortmold">
       <tr v-for="item in state.list" :key="item">
         <th style="width: 20%">{{ item.coding }}</th>
         <th style="width: 30%">{{ item.name }}</th>
@@ -41,7 +40,6 @@
         <th style="width: 17%">{{ item.shortmoldNum }}</th>
         <th style="width: 16%">{{ item.supplier }}</th>
       </tr>
-      </div>
       </tbody>
     </table>
 
@@ -222,9 +220,15 @@ table {
       }
     }
 }
-
 }
 
+.demo-list-wrap {
+  width: 100%;
+  max-width: 360px;
+  overflow: hidden;
+}
+
+table tbody tr:nth-child(odd){ background : #f9faff;}
 
 
 </style>
