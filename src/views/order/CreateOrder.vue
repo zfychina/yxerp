@@ -34,7 +34,24 @@
         :rules="[{validator, message: '订单编号已存在或含有特殊字符，请重新输入'}]"
     />
 
-
+    <!--客户编号-->
+    <!--ELEMENT-->
+    <van-cell>
+    <nobr class="sub-title"><nobr style="color:red;">*</nobr>客&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <el-autocomplete
+        input-style='{width:100%;border=none}'
+        resize="horizontal "
+        class="inline-input"
+        v-model="customer"
+        :fetch-suggestions="querySearch"
+        placeholder="请输入客户编号"
+        @select="handleSelect"
+        clearable
+        name="customer"
+        value-key="coding"
+    />
+      </nobr>
+    </van-cell>
 
     <div style="margin: 16px;">
       <van-button round block type="primary" native-type="submit">
@@ -47,14 +64,17 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import {useRouter} from "vue-router";
 import {countOrderhao} from "network/order";
+import {customerslist} from "network/customer";
 
 export default {
   name: "CreateOrder",
   setup() {
     const router = useRouter()
+    // 带建议输入用
+    const restaurants = ref([])
 
     // 订单data
     const showCalendar = ref(false);
@@ -65,6 +85,7 @@ export default {
 
     const orderdate = ref('');
     const orderhao = ref('');
+    const customer = ref('');
     // 校验订单编号是否重复
     const validator =  (val) => {
       return countOrderhao(val).then(res=> {
@@ -75,13 +96,48 @@ export default {
         }
       })
     };
-
+    // 带建议输入
+    const querySearch = (queryString, cb) => {
+      var results = queryString
+          ? restaurants.value.filter(createFilter(queryString))
+          : restaurants.value;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    };
+    const createFilter = (queryString) => {
+      return (restaurant) => {
+        return (
+            restaurant.coding.toLowerCase().indexOf(queryString.toLowerCase()) ===
+            0
+        );
+      };
+    };
+    const handleSelect = (item) => {
+      console.log(item);
+    };
+    onMounted(() => {
+      restaurants.value = loadAll();
+    });
+    // 客户数据加载
+    const loadAll = () => {
+      let arr1=[]
+      customerslist().then(res=>{
+        // 将json对象转换成列表
+        for(let i in res){
+          arr1.push(res[i])
+        }
+      })
+      return arr1
+    };
 
     // 返回上一页
     const onClickLeft = () => {
       router.go(-1)
     }
     return {
+      loadAll,
+      handleSelect,
+      querySearch,
       onClickLeft,
 
       onConfirm,
@@ -89,12 +145,14 @@ export default {
       validator,
       orderhao,
       orderdate,
+      customer,
     };
   },
 
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
 
 </style>
