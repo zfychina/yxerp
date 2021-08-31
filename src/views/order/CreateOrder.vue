@@ -9,7 +9,7 @@
         <van-field
           required
           colon
-          v-model="orderdate"
+          v-model="delivery"
           is-link
           readonly
           name="calendar"
@@ -50,6 +50,16 @@
           />
         </nobr>
       </van-cell>
+<!--技术要求-->
+        <van-field
+            v-model="remarks"
+            rows="1"
+            autosize
+            label="技术要求:"
+            type="textarea"
+            placeholder="请输入技术要求"
+            border
+        />
 
 
 <!--    订单商品-->
@@ -65,13 +75,17 @@
         </thead>
       </table>
       </van-sticky>
-      <van-list>
+      <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
+      <van-list
+          v-model:loading="state.loading"
+          :finished="state.finished"
+          @load="onLoad">
         <van-swipe-cell v-for="index in state.cellnum" v-bind:key="index">
 
-        <table cellpadding = 10px style="width: 100%">
+        <table cellpadding = 8px style="width: 100%">
           <tbody>
             <tr>
-              <td style="width: 5%;word-break:break-all">{{ index }}.</td>
+              <td style="width: 7%;word-break:break-all">{{ index }}.</td>
 
               <td style="width: 30%;word-break:break-all"><el-autocomplete
                   v-model="goodcoding[index]"
@@ -90,9 +104,9 @@
                 </template>
               </el-autocomplete></td>
 
-              <td style="width: 20%;word-break:break-all;font-size: 12PX;" >产品名称</td>
+              <td style="width: 20%;word-break:break-all;font-size: 12PX;" >{{ goodname[index] }}</td>
               <td style="width: 20%;word-break:break-all"> <input v-model="goodnum[index]" style="height:30px;width: 70%; border: 0;background-color: #eeeeee"/></td>
-              <td style="width: 10%;word-break:break-all;font-size: 12PX;">单位</td>
+              <td style="width: 10%;word-break:break-all;font-size: 12PX;">{{ goodunit[index] }}</td>
               <td style="width: 3%"></td>
             </tr>
         </tbody>
@@ -103,24 +117,26 @@
         </template>
           <van-divider style="margin: 0 0 0 0"/>
       </van-swipe-cell>
-        <P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 20px">+ 增加行 +</P>
+        <P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 15px">+ 增加行 +</P>
       </van-list>
+      </van-pull-refresh>
     </van-form>
 
 
 
   <div class="submit-bar">
-    <van-submit-bar :price="3050 * 100" button-text="创建订单" button-color=var(--color-high-text) @submit="onSubmit" />
+    <van-submit-bar :price="total * 100" button-text="创建订单" button-color=var(--color-high-text) @submit="onSubmit" />
   </div>
 
 </template>
 
 <script>
-import {ref, onMounted, reactive} from 'vue';
+import {ref, onMounted, reactive, computed} from 'vue';
 import {useRouter} from "vue-router";
 import {countOrderhao} from "network/order";
 import {customerslist} from "network/customer";
 import {goodslist} from "network/good";
+import {Toast} from "vant";
 
 export default {
   name: "CreateOrder",
@@ -132,13 +148,14 @@ export default {
     // 订单data
     const showCalendar = ref(false);
     const onConfirm = (date) => {
-      orderdate.value = `${date.getYear() + 1900}年${date.getMonth() + 1}月${date.getDate()}日`;
+      delivery.value = `${date.getYear() + 1900}年${date.getMonth() + 1}月${date.getDate()}日`;
       showCalendar.value = false;
     };
 
-    const orderdate = ref('');
+    const delivery = ref('');
     const orderhao = ref('');
     const customer = ref('');
+    const remarks = ref('');
     // 校验订单编号是否重复
     const validator =  (val) => {
       return countOrderhao(val).then(res=> {
@@ -164,8 +181,15 @@ export default {
         );
       };
     };
+
+
     const handleSelect = (item) => {
-      console.log(item);
+      for (let i in goodcoding.value) {
+        if (item.coding.indexOf(goodcoding.value[i])===0){
+          goodname.value[i]=item.name
+          goodunit.value[i]= item.unit
+        }
+      }
     };
     onMounted(() => {
       restaurants.value = loadAll();
@@ -191,11 +215,14 @@ export default {
     const restaurantsgoods = ref([])
     const goodcoding = ref([])
     const goodnum = ref([])
+    const goodname = ref([])
+    const goodunit = ref([])
     const state = reactive({
       cellnum: 5,
+      loading: false,
+      finished: true,
+      list: []
     })
-
-
     // 产品数据加载
     let timeout;
     const querySearchAsync = (queryString, cb)=> {
@@ -207,26 +234,95 @@ export default {
         cb(restaurantsgoods.value);
       }, 300);
     }
-
-
     // 增加行
     const oncellnum = ()=>{
       state.cellnum += 1
     }
-
     // 提交创建
     const onSubmit=()=>{
-      console.log(goodcoding.value.length)
-      console.log(goodcoding.value)
-      console.log(goodnum.value)
+      let data = {}
+      data.delivery = delivery.value
+      if (!data.delivery){
+        Toast({message:'请输入订单交货期', duration: 1000 })
+        return
+      }
+      data.orderhao = orderhao.value
+      if (!data.orderhao){
+        Toast({message:'请输入订单编号', duration: 1000 })
+        return
+      }
+      data.customer = customer.value
+      if (!data.customer){
+        Toast({message:'请输入选择客户编号', duration: 1000 })
+        return
+      }
+      data.remarks = remarks.value
+      data.sku = []
+      for (let i in goodcoding.value){
+        if(!goodname.value[i] || !goodnum.value[i] || parseInt(goodnum.value[i]) === 0){
+          continue
+        }
+
+        data.sku.push({'coding':goodcoding.value[i], 'quantity':goodnum.value[i]})
+      }
+      if (data.sku.length === 0){
+        Toast({message:'产品编号有误或未添加产品数量', duration: 1000 })
+        return
+      }
+      console.log(data);
+
+
     }
 
+    // 下拉刷新
+    const onRefresh = () => {
+      // 清空列表数据
+      state.finished = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      state.loading = true;
+      onLoad();
+    };
+    // 列表
+    const onLoad = () => {
+      setTimeout(() => {
+        if (state.refreshing) {
+          //state.list = [];
+          state.refreshing = false;
+        }
+
+        for (let i = 0; i < 2; i++) {
+          state.list.push(state.list.length + 1);
+        }
+        state.loading = false;
+
+        if (state.list.length >= 10) {
+          state.finished = true;
+        }
+      }, 1000);
+    };
+
+    // 通过计算属性 计算数量列的和
+    const total = computed(()=> {
+      let sum = 0;
+      for (let i in goodnum.value){
+            sum +=  parseInt(goodnum.value[i])
+      }
+      return sum;
+    })
+
     return {
+      remarks,
+      total,
+      onRefresh,
       querySearchAsync,
       state,
       oncellnum,
       goodcoding,
       goodnum,
+      goodname,
+      goodunit,
       loadAll,
       handleSelect,
       querySearch,
@@ -236,8 +332,9 @@ export default {
       showCalendar,
       validator,
       orderhao,
-      orderdate,
+      delivery,
       customer,
+
     };
   },
 
@@ -278,14 +375,10 @@ export default {
   background-color: #f6f6f6;
   display: flex;
   position: fixed;
-  z-index: 100;
+  z-index: 98;
   left: 0;
   right: 0;
-  bottom: 10px;
+  margin-bottom: 10px;
 }
-.el-autocomplete-suggestion{
-  width: 300px !important;
-}
-
 
 </style>
