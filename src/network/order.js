@@ -33,3 +33,21 @@ export function countOrderhao(orderhao) {
     }
   })
 }
+
+// 创建订单
+export function createorder(data) {
+  return request({
+    url: '/orders/create/',
+    method: 'post',
+    data
+  })
+}
+
+// 更新订单
+export function updateorder(data) {
+  return request({
+    url: '/orders/create',
+    method: 'put',
+    data
+  })
+}

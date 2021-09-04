@@ -30,7 +30,6 @@
         name="orderhao"
         label="订单编号"
         placeholder="请输入订单编号"
-        :rules="[{validator, message: '订单编号已存在或含有特殊字符，请重新输入'}]"
       />
     <!--客户编号-->
     <!--ELEMENT-->
@@ -136,7 +135,8 @@ import {useRouter} from "vue-router";
 import {countOrderhao} from "network/order";
 import {customerslist} from "network/customer";
 import {goodslist} from "network/good";
-import {Toast} from "vant";
+import {Toast, Dialog} from "vant";
+import {createorder, updateorder} from "../../network/order";
 
 export default {
   name: "CreateOrder",
@@ -156,16 +156,7 @@ export default {
     const orderhao = ref('');
     const customer = ref('');
     const remarks = ref('');
-    // 校验订单编号是否重复
-    const validator =  (val) => {
-      return countOrderhao(val).then(res=> {
-        if (res.count >= 1 || val.match('[:;/|,*&?"><]') != null) {
-          return false
-        } else {
-          return true
-        }
-      })
-    };
+
     // 带建议输入
     const querySearch = (queryString, cb) => {
       var results = queryString
@@ -269,9 +260,33 @@ export default {
         Toast({message:'产品编号有误或未添加产品数量', duration: 1000 })
         return
       }
-      console.log(data);
 
+      // 校验订单编号是否重复
+      countOrderhao(data.orderhao).then(res=> {
+        if (res.count >= 1) {
+          // 订单已存在，弹出对话框选择是覆盖 还是取消
+          Dialog.confirm({
+            message: `订单编号已存在，需要更新原订单，请点击"确认"`,
+          })
+              .then(() => {
+                console.log('确认');
+                updateorder(data).then(res=>{
+                  console.log(res);
+                })
+                return
+              })
+              .catch(() => {
+                // on cancel
+              });
+        } else {
+          // 订单不存在，创建订单执行下面的代码
+          createorder(data).then(res=>{
+            console.log(res);
+          })
 
+          console.log(data);
+        }
+      })
     }
 
     // 下拉刷新
@@ -330,7 +345,6 @@ export default {
       onSubmit,
       onConfirm,
       showCalendar,
-      validator,
       orderhao,
       delivery,
       customer,
