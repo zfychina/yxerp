@@ -46,8 +46,19 @@ export function createorder(data) {
 // 更新订单
 export function updateorder(data) {
   return request({
-    url: '/orders/create',
+    url: '/orders/update/',
     method: 'put',
     data
+  })
+}
+
+// 获取订单
+export function getorder(orderhao) {
+  return request({
+    url: '/orders/get/' + orderhao + "/",
+    method: 'get',
+    params: {
+
+    }
   })
 }

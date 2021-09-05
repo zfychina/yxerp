@@ -30,6 +30,8 @@
         name="orderhao"
         label="订单编号"
         placeholder="请输入订单编号"
+        :rules="[{ validator, message: '订单编号已存在' }]"
+
       />
     <!--客户编号-->
     <!--ELEMENT-->
@@ -112,7 +114,7 @@
         </table>
 
         <template #right>
-          <van-button square type="danger" text="删除" />
+          <van-button square type="danger" text="清除" @click="cleargood(index)"/>
         </template>
           <van-divider style="margin: 0 0 0 0"/>
       </van-swipe-cell>
@@ -136,7 +138,7 @@ import {countOrderhao} from "network/order";
 import {customerslist} from "network/customer";
 import {goodslist} from "network/good";
 import {Toast, Dialog} from "vant";
-import {createorder, updateorder} from "../../network/order";
+import {createorder, updateorder} from "network/order";
 
 export default {
   name: "CreateOrder",
@@ -148,7 +150,7 @@ export default {
     // 订单data
     const showCalendar = ref(false);
     const onConfirm = (date) => {
-      delivery.value = `${date.getYear() + 1900}年${date.getMonth() + 1}月${date.getDate()}日`;
+      delivery.value = `${date.getYear() + 1900}-${date.getMonth() + 1}-${date.getDate()}`;
       showCalendar.value = false;
     };
 
@@ -172,8 +174,6 @@ export default {
         );
       };
     };
-
-
     const handleSelect = (item) => {
       for (let i in goodcoding.value) {
         if (item.coding.indexOf(goodcoding.value[i])===0){
@@ -269,11 +269,14 @@ export default {
             message: `订单编号已存在，需要更新原订单，请点击"确认"`,
           })
               .then(() => {
-                console.log('确认');
+                // 覆盖原订单
                 updateorder(data).then(res=>{
-                  console.log(res);
+                  if(res === 'ok'){
+                    Toast.success('订单更新成功')
+                  } else {
+                    Toast("在订单列表页面打开，查看是否更新成功")
+                  }
                 })
-                return
               })
               .catch(() => {
                 // on cancel
@@ -281,10 +284,12 @@ export default {
         } else {
           // 订单不存在，创建订单执行下面的代码
           createorder(data).then(res=>{
-            console.log(res);
+            if(res === 'ok'){
+              Toast.success('订单创建成功')
+            } else {
+              Toast("在订单列表页面打开，查看是否创建成功")
+            }
           })
-
-          console.log(data);
         }
       })
     }
@@ -318,6 +323,14 @@ export default {
       }, 1000);
     };
 
+    // 检查订单号是否存在，如果存在，是否打开已存在的订单
+    // const validator = (val) => /1\d{10}/.test(val);
+    const validator = (val) =>
+      countOrderhao(val).then(res=> {
+        return res.count < 1
+      })
+
+
     // 通过计算属性 计算数量列的和
     const total = computed(()=> {
       let sum = 0;
@@ -326,6 +339,26 @@ export default {
       }
       return sum;
     })
+
+    // 侧滑 清除 内容
+    const cleargood = (index) => {
+      Dialog.confirm({
+        message: '确认清除吗？',
+      })
+          .then(() => {
+            // on confirm
+            delete goodcoding.value?.[index]
+            delete goodnum.value?.[index]
+            delete goodname.value?.[index]
+            delete goodunit.value?.[index]
+            Toast('清除成功')
+
+          })
+          .catch(() => {
+            // on cancel
+          });
+
+    };
 
     return {
       remarks,
@@ -348,6 +381,8 @@ export default {
       orderhao,
       delivery,
       customer,
+      validator,
+      cleargood,
 
     };
   },
