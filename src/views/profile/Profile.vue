@@ -36,7 +36,7 @@
     <div class="uploader">
       <van-uploader :after-read="Supplierimport" name='files' :accept="accept" result-type="file">
         <van-button icon="plus" type="primary">
-          点击供应商批量更新（上传供应商.xls）
+          点击更新物料供应商（上传供应商.xls）
         </van-button>
 
       </van-uploader>
@@ -45,6 +45,22 @@
       <van-uploader :after-read="Orderimport" name='files' :accept="accept" result-type="file">
         <van-button icon="plus" type="primary">
           点击销售订单导入（上传订单情况.xls）
+        </van-button>
+
+      </van-uploader>
+    </div>
+    <div class="uploader">
+      <van-uploader :after-read="Suppledirimport" name='files' :accept="accept" result-type="file">
+        <van-button icon="plus" type="primary">
+          点击供应商名录导入（上传供应商.xls）
+        </van-button>
+
+      </van-uploader>
+    </div>
+    <div class="uploader">
+      <van-uploader :after-read="Customerimport" name='files' :accept="accept" result-type="file">
+        <van-button icon="plus" type="primary">
+          点击客户名录导入（上传客户名录.xls）
         </van-button>
 
       </van-uploader>
@@ -65,7 +81,7 @@
 import {onMounted, reactive} from "vue";
 import { useRouter } from 'vue-router'
 import {Dialog, Toast} from "vant";
-import {upSkuimport, upShortmold, upSupplier, uporderimport} from "network/upimport";
+import {upSkuimport, upShortmold, upSupplier, uporderimport, upCustomer, upSupplierdir} from "network/upimport";
 import {getuserinfo} from "network/user";
 import { useStore } from 'vuex'
 
@@ -127,7 +143,7 @@ export default {
     const Supplierimport = (file)=>{
       const data = new FormData();
       data.append('files', file.file)
-      Toast.loading({message:'供就商更新中...', forbidClick:true});
+      Toast.loading({message:'供应商更新中...', forbidClick:true});
       upSupplier(data).then(res=>{
         Dialog.alert({
           message: res,
@@ -150,6 +166,37 @@ export default {
         });
       })
     }
+
+    // 供应商名录导入
+    const Suppledirimport = (file)=>{
+      const data = new FormData();
+      data.append('files', file.file)
+      Toast.loading({message:'供应商名录导入中...', forbidClick:true});
+      upSupplierdir(data).then(res=>{
+        Dialog.alert({
+          message: res,
+        }).then(() => {
+          // on close
+        });
+      })
+    }
+
+    // 客户名录导入
+    const Customerimport = (file)=>{
+      const data = new FormData();
+      data.append('files', file.file)
+      Toast.loading({message:'客户名录导入中...', forbidClick:true});
+      upCustomer(data).then(res=>{
+        Dialog.alert({
+          message: res,
+        }).then(() => {
+          // on close
+        });
+      })
+    }
+
+
+
 
     // 跳转到注册页面
     const toRegister=()=>{
@@ -180,6 +227,8 @@ export default {
       toRegister,
       tologout,
       Orderimport,
+      Suppledirimport,
+      Customerimport,
     }
   }
 }

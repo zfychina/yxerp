@@ -5,7 +5,7 @@
   </van-sticky>
     <van-form style="margin-top: 50px" @submit="onSubmit">
 <!--  日历选择器-->
-      <van-sticky :offset-top="45">
+        <van-sticky :offset-top="45">
         <van-field
           required
           colon

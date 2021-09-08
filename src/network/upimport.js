@@ -19,7 +19,7 @@ export function upSkuimport(data) {
   })
 }
 
-// 上传供应商更新数据
+// 上传物料供应商更新数据
 export function upSupplier(data) {
   return request({
     url: '/skuimport/',
@@ -34,6 +34,24 @@ export function uporderimport(data) {
     url: '/orderimport/',
     method: 'post',
     timeout: 30000,
+    data
+  })
+}
+
+// 上传供应商名录更新数据
+export function upSupplierdir(data) {
+  return request({
+    url: '/supplierimport/',
+    method: 'post',
+    data
+  })
+}
+
+// 上传客户名录更新数据
+export function upCustomer(data) {
+  return request({
+    url: '/customerimport/',
+    method: 'post',
     data
   })
 }
