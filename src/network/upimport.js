@@ -56,3 +56,12 @@ export function upCustomer(data) {
   })
 }
 
+// 上传产品表数据
+export function upBOM(data) {
+  return request({
+    url: '/bomimport/',
+    method: 'post',
+    data
+  })
+}
+

@@ -1,5 +1,4 @@
 <template>
-  <div>
     <van-sticky>
     <van-nav-bar :title="state.username" left-arrow  fixed="true">
       <template #right>
@@ -64,24 +63,31 @@
         </van-button>
 
       </van-uploader>
-    </div>
+      </div>
+    <div class="uploader">
+        <van-uploader :after-read="Bomimport" name='files' :accept="accept" result-type="file">
+          <van-button icon="plus" type="primary">
+            点击BOM表导入（上传产品BOM.xls）
+          </van-button>
+
+        </van-uploader>
+      </div>
 
 
 
 
-    <div class="reg" style="margin: 10px; font-size: 10px; color:var(--color-high-text)">
+    <div class="reg" style="margin-top: 30px; font-size: 10px; color:var(--color-high-text)">
       <span @click="tologout">退出登录</span>
 <!--      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>-->
     </div>
 
-  </div>
 </template>
 
 <script>
 import {onMounted, reactive} from "vue";
 import { useRouter } from 'vue-router'
 import {Dialog, Toast} from "vant";
-import {upSkuimport, upShortmold, upSupplier, uporderimport, upCustomer, upSupplierdir} from "network/upimport";
+import {upSkuimport, upShortmold, upSupplier, uporderimport, upCustomer, upSupplierdir, upBOM} from "network/upimport";
 import {getuserinfo} from "network/user";
 import { useStore } from 'vuex'
 
@@ -195,6 +201,19 @@ export default {
       })
     }
 
+    // 产品BOM表导入
+    const Bomimport = (file)=>{
+      const data = new FormData();
+      data.append('files', file.file)
+      Toast.loading({message:'客户名录导入中...', forbidClick:true});
+      upBOM(data).then(res=>{
+        Dialog.alert({
+          message: res,
+        }).then(() => {
+          // on close
+        });
+      })
+    }
 
 
 
@@ -229,6 +248,7 @@ export default {
       Orderimport,
       Suppledirimport,
       Customerimport,
+      Bomimport,
     }
   }
 }
@@ -239,6 +259,7 @@ export default {
   margin-top: 20px;
   display:inline-block;
   width: 90%;
+  height: 30px;
 }
 
 </style>
