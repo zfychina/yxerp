@@ -265,6 +265,7 @@ export default {
       countOrderhao(data.orderhao).then(res=> {
         if (res.count >= 1) {
           // 订单已存在，弹出对话框选择是覆盖 还是取消
+          console.log(data);
           Dialog.confirm({
             message: `订单编号已存在，需要更新原订单，请点击"确认"`,
           })

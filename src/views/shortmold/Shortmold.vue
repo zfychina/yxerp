@@ -34,15 +34,69 @@
     <table style="width: 100%;margin-left: 8px;">
       <tbody>
       <tr v-for="item in state.list" :key="item">
-        <th style="width: 20%">{{ item.coding }}</th>
-        <th style="width: 30%">{{ item.name }}</th>
-        <th style="width: 17%">{{ item.orderNum }}</th>
-        <th style="width: 17%">{{ item.shortmoldNum }}</th>
-        <th style="width: 16%">{{ item.supplier }}</th>
+        <th style="width: 20%" @click="Extensionline(item.id)">{{ item.coding }}</th>
+        <th style="width: 30%" @click="Extensionline(item.id)">{{ item.name }}</th>
+        <th style="width: 17%" @click="Extensionline(item.id)">{{ item.orderNum }}</th>
+        <th style="width: 17%" @click="Extensionline(item.id)">{{ item.shortmoldNum }}</th>
+        <th style="width: 16%" @click="Extensionline(item.id)">{{ item.supplier }}</th>
+        <br>
+<!--        一层-->
+        <div class="detailorder" v-show="state.isshow?.[item.id]" v-for=" (item1, index1) in state.bomdetail?.[item.id]?.subs" :key="index1" style="margin-left: 2px">
+          <th style="width: 5%"></th>
+          <th style="width: 20%" @click="Extensionline(item1.coding.split(':')[0])">{{ item1.coding.split(':')[1] }}</th>
+          <th style="width: 30%" @click="Extensionline(item1.coding.split(':')[0])">{{ item1.coding.split(':')[2] }}</th>
+          <th style="width: 17%" @click="Extensionline(item1.coding.split(':')[0])">{{ item1.stock }}</th>
+          <th style="width: 17%" @click="Extensionline(item1.coding.split(':')[0])">{{ item1.coding.split(':')[3] }}</th>
+          <th style="width: 11%"></th>
+        <!--        二层-->
+          <div class="detailorder" v-show="state.isshow?.[ item1.coding.split(':')[0] ]" v-for=" (item2, index2) in state.bomdetail?.[item1.coding.split(':')[0]]?.subs" :key="index2" style="margin-left: 6px">
+            <th style="width: 8%"></th>
+          <th style="width: 20%" @click="Extensionline(item2.coding.split(':')[0])">{{ item2.coding.split(':')[1] }}</th>
+          <th style="width: 30%" @click="Extensionline(item2.coding.split(':')[0])">{{ item2.coding.split(':')[2] }}</th>
+          <th style="width: 17%" @click="Extensionline(item2.coding.split(':')[0])">{{ item2.stock }}</th>
+          <th style="width: 17%" @click="Extensionline(item2.coding.split(':')[0])">{{ item2.coding.split(':')[3] }}</th>
+            <th style="width: 8%"></th>
+          <!--        三层-->
+          <div class="detailorder" v-show="state.isshow?.[ item2.coding.split(':')[0] ]" v-for=" (item3, index3) in state.bomdetail?.[item2.coding.split(':')[0]]?.subs" :key="index3" style="margin-left: 6px">
+            <th style="width: 11%"></th>
+            <th style="width: 20%" @click="Extensionline(item3.coding.split(':')[0])">{{ item3.coding.split(':')[1] }}</th>
+            <th style="width: 30%" @click="Extensionline(item3.coding.split(':')[0])">{{ item3.coding.split(':')[2] }}</th>
+            <th style="width: 17%" @click="Extensionline(item3.coding.split(':')[0])">{{ item3.stock }}</th>
+            <th style="width: 17%" @click="Extensionline(item3.coding.split(':')[0])">{{ item3.coding.split(':')[3] }}</th>
+            <th style="width: 5%"></th>
+            <!--        四层-->
+            <div class="detailorder" v-show="state.isshow?.[ item3.coding.split(':')[0] ]" v-for=" (item4, index4) in state.bomdetail?.[item3.coding.split(':')[0]]?.subs" :key="index4" style="margin-left: 6px">
+              <th style="width: 14%"></th>
+              <th style="width: 20%" @click="Extensionline(item4.coding.split(':')[0])">{{ item4.coding.split(':')[1] }}</th>
+              <th style="width: 30%" @click="Extensionline(item4.coding.split(':')[0])">{{ item4.coding.split(':')[2] }}</th>
+              <th style="width: 17%" @click="Extensionline(item4.coding.split(':')[0])">{{ item4.stock }}</th>
+              <th style="width: 17%" @click="Extensionline(item4.coding.split(':')[0])">{{ item4.coding.split(':')[3] }}</th>
+              <th style="width: 1%"></th>
+              <!--        五层-->
+              <div class="detailorder" v-show="state.isshow?.[ item4.coding.split(':')[0] ]" v-for=" (item5, index5) in state.bomdetail?.[item4.coding.split(':')[0]]?.subs" :key="index5" style="margin-left: 6px">
+                <th style="width: 14%"></th>
+                <th style="width: 20%" @click="Extensionline(item5.coding.split(':')[0])">{{ item5.coding.split(':')[1] }}</th>
+                <th style="width: 30%" @click="Extensionline(item5.coding.split(':')[0])">{{ item5coding.split(':')[2] }}</th>
+                <th style="width: 17%" @click="Extensionline(item5.coding.split(':')[0])">{{ item5.stock }}</th>
+                <th style="width: 17%" @click="Extensionline(item5.coding.split(':')[0])">{{ item5.coding.split(':')[3] }}</th>
+                <th style="width: 1%"></th>
+                <!--        六层-->
+                <div class="detailorder" v-show="state.isshow?.[ item5.coding.split(':')[0] ]" v-for=" (item6, index6) in state.bomdetail?.[item5.coding.split(':')[0]]?.subs" :key="index6" style="margin-left: 6px">
+                  <th style="width: 14%"></th>
+                  <th style="width: 20%" @click="Extensionline(item6.coding.split(':')[0])">{{ item6.coding.split(':')[1] }}</th>
+                  <th style="width: 30%" @click="Extensionline(item6.coding.split(':')[0])">{{ item6.coding.split(':')[2] }}</th>
+                  <th style="width: 17%" @click="Extensionline(item6.coding.split(':')[0])">{{ item6.stock }}</th>
+                  <th style="width: 17%" @click="Extensionline(item6.coding.split(':')[0])">{{ item6.coding.split(':')[3] }}</th>
+                  <th style="width: 1%"></th>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
       </tr>
       </tbody>
     </table>
-
     </van-list>
   </van-pull-refresh>
 
@@ -51,7 +105,8 @@
 <script>
 import {onMounted, reactive} from 'vue';
 import {shortmoldDate} from 'network/shortmold'
-
+import {getbomdetail} from 'network/bom'
+import {Toast} from "vant";
 
 export default {
 
@@ -75,13 +130,16 @@ export default {
       amig: {page:0, list: []},
       apecs: {page:0, list: []},
 
+      // 是否扩展
+      isshow: {},
+      bomdetail: {}
+
     });
     const option1 = [
       { text: '本月缺料', value: 0 },
       { text: 'AMIG缺料', value: 1 },
       { text: 'APECS缺料', value: 2 },
     ];
-
     // 列表
     const onLoad = () => {
       setTimeout(() => {
@@ -100,7 +158,6 @@ export default {
         }
       }, 1000);
     };
-
     //数据
     onMounted(()=>{
       shortmoldDate({ordering: 'coding'}).then(res=>{
@@ -108,7 +165,6 @@ export default {
         // console.log(state.list);
       })
     })
-
     // 下拉刷新
     const onRefresh = () => {
       // 清空列表数据
@@ -119,8 +175,6 @@ export default {
       state.loading = true;
       onLoad();
     };
-
-
     // 根据数组中对象为数字情况进行排序
     // 升序
     const upsortList = (attr)=>{
@@ -130,7 +184,6 @@ export default {
         return val1 - val2;
       }
     }
-
     // 降序
     const downsortList = (attr)=>{
       return function(a,b){
@@ -139,8 +192,6 @@ export default {
         return val2 - val1;
       }
     }
-
-
     // 排序按钮
     const sorttable = (type) => {
       state.order_by = !state.order_by
@@ -164,6 +215,21 @@ export default {
         }
       }
     }
+    // 扩展行
+    const Extensionline = (skuid) => {
+      if (state.isshow?.[skuid]){
+        delete state.isshow?.[skuid]
+      } else (state.isshow.[skuid] = true)
+      // 获取订单详情信息
+      getbomdetail(skuid).then(res=>{
+        state.bomdetail.[skuid] = res[0]
+        if ( state.bomdetail.[skuid] === undefined || state.bomdetail.[skuid].subs.length === 0){
+          Toast('没有数据')
+        }
+      }).catch(err =>{console.log(err)})
+    }
+
+
 
 
     return {
@@ -176,12 +242,14 @@ export default {
       onRefresh,
       sorttable,
 
+      // 展开按钮
+      Extensionline,
+
     };
 
   },
 }
 </script>
-
 <style scoped lang="scss">
 table {
   border-collapse: collapse;
@@ -230,5 +298,14 @@ table {
 
 table tbody tr:nth-child(odd){ background : #f9faff;}
 
+.detailorder {
+  font-family: "微软雅黑", "仿宋", sans-serif;
+  font-weight: bold;  //bold：加粗；bloder：深度加粗；lighter：细体；
+  border-top: 1px dashed #d7d7d7
+}
 
+//th:first-child
+//{
+//  background-color:yellow;
+//}
 </style>
