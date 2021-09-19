@@ -205,7 +205,7 @@ export default {
     const Bomimport = (file)=>{
       const data = new FormData();
       data.append('files', file.file)
-      Toast.loading({message:'客户名录导入中...', forbidClick:true});
+      Toast.loading({message:'BOM导入中...', forbidClick:true});
       upBOM(data).then(res=>{
         Dialog.alert({
           message: res,

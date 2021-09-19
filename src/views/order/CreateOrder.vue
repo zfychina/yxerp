@@ -38,7 +38,7 @@
         <van-cell>
         <nobr class="sub-title"><nobr style="color:red;">*</nobr>客&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <el-autocomplete
-            input-style='{width:100%;border:none}'
+            input-style='width:100%;border:none'
             resize="horizontal "
             class="inline-input"
             v-model="customer"
@@ -212,6 +212,7 @@ export default {
       cellnum: 5,
       loading: false,
       finished: true,
+      refreshing:false,
       list: []
     })
     // 产品数据加载
