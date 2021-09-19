@@ -2,48 +2,55 @@
   <van-sticky>
     <van-nav-bar title="BOM" left-arrow fixed @click-left="onClickLeft">
     </van-nav-bar>
+    </van-sticky>
+
+  <van-sticky>
+    <div style="background-color:#ffffff;margin-top: 46px;text-align:center;width: 100%">
+      <img src="~assets/images/search.svg" style="height: 20px;width: 20px;margin: 0px 10px 0 0"/>
+      <el-autocomplete
+          input-style='width:100%'
+          :popper-append-to-body="false"
+          v-model="coding"
+          :fetch-suggestions="querySearchAsync"
+          placeholder="请输入需要查询的产品编号或名称"
+          @select="handleSelect"
+          clearable
+          value-key="coding"
+          debounce="0"
+          >
+          <template #default="{ item }">
+            <div class="name">{{ item.coding }} : {{ item.name }}</div>
+          </template>
+      </el-autocomplete>
+
+      <p/>
+
+      <div style='margin-top: 15px;text-align: center;font-weight: bold;margin-left: 30px;font-family: "微软雅黑", "仿宋", sans-serif;'>
+      {{codingname.coding}} {{codingname.name}}
+      </div>
+
+      <van-divider
+          :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 10px' }"
+      >
+        BOM展开
+      </van-divider>
+
+      <table class="table-order">
+        <thead>
+        <tr>
+          <th>序号</th>
+          <th>产品编号</th>
+          <th>产品名称</th>
+          <th>BOM</th>
+          <th>单位</th>
+        </tr>
+        </thead>
+      </table>
+
+    </div>
   </van-sticky>
 
-  <div style="margin-top: 50px;text-align:center;width: 100%">
-    <img src="~assets/images/search.svg" style="height: 20px;width: 20px;margin: 0px 10px 0 0"/>
-    <el-autocomplete
-        input-style='width:100%'
-        :popper-append-to-body="false"
-        v-model="coding"
-        :fetch-suggestions="querySearchAsync"
-        placeholder="请输入需要查询的产品编号或名称"
-        @select="handleSelect"
-        clearable
-        value-key="coding"
-        debounce="0"
-        >
-        <template #default="{ item }">
-          <div class="name">{{ item.coding }} : {{ item.name }}</div>
-        </template>
-    </el-autocomplete>
-    <p/>
-    <div style='margin-top: 15px;text-align: center;font-weight: bold;margin-left: 30px;font-family: "微软雅黑", "仿宋", sans-serif;'>
-    {{codingname.coding}} {{codingname.name}}
-    </div>
-  </div>
-
-  <van-divider
-      :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 10px' }"
-  >
-    BOM展开
-  </van-divider>
   <div>
-    <table class="table-order">
-      <thead>
-      <tr>
-        <th>序号</th>
-        <th>产品编号</th>
-        <th>产品名称</th>
-        <th>BOM</th>
-        <th>单位</th>
-      </tr>
-      </thead>
-    </table>
 
     <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
       <van-list
