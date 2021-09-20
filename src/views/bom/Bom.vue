@@ -77,6 +77,8 @@
                   clearable
                   value-key="coding"
                   debounce="0"
+                  type="textarea"
+                  :autosize="{ minRows: 1, maxRows: 2}"
               >
                 <template #default="{ item }">
 
