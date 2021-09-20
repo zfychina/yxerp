@@ -1,62 +1,65 @@
 <template>
   <van-sticky>
-    <van-nav-bar title="BOM" left-arrow fixed @click-left="onClickLeft">
-    </van-nav-bar>
-    </van-sticky>
+    <div>
+      <van-nav-bar title="BOM" left-arrow fixed @click-left="onClickLeft">
+      </van-nav-bar>
 
-  <van-sticky>
-    <div style="background-color:#ffffff;margin-top: 46px;text-align:center;width: 100%">
-      <img src="~assets/images/search.svg" style="height: 20px;width: 20px;margin: 0px 10px 0 0"/>
-      <el-autocomplete
-          input-style='width:100%'
-          :popper-append-to-body="false"
-          v-model="coding"
-          :fetch-suggestions="querySearchAsync"
-          placeholder="请输入需要查询的产品编号或名称"
-          @select="handleSelect"
-          clearable
-          value-key="coding"
-          debounce="0"
-          >
-          <template #default="{ item }">
-            <div class="name">{{ item.coding }} : {{ item.name }}</div>
-          </template>
-      </el-autocomplete>
+      <div>
+      <div style="background-color:#ffffff;margin-top: 46px;text-align:center;width: 100%">
+        <img src="~assets/images/search.svg" style="height: 20px;width: 20px;margin: 0px 10px 0 0"/>
+        <el-autocomplete
+            input-style='width:100%'
+            :popper-append-to-body="false"
+            v-model="coding"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入需要查询的产品编号或名称"
+            @select="handleSelect"
+            clearable
+            value-key="coding"
+            debounce="0"
+            :trigger-on-focus="false"
+            >
+            <template #default="{ item }">
+              <div class="name">{{ item.coding }} : {{ item.name }}</div>
+            </template>
+        </el-autocomplete>
 
-      <p/>
+        <p/>
 
-      <div style='margin-top: 15px;text-align: center;font-weight: bold;margin-left: 30px;font-family: "微软雅黑", "仿宋", sans-serif;'>
-      {{codingname.coding}} {{codingname.name}}
+        <div style='margin-top: 15px;text-align: center;font-weight: bold;margin-left: 30px;font-family: "微软雅黑", "仿宋", sans-serif;'>
+        {{codingname.coding}} {{codingname.name}}
+        </div>
+
+        <van-divider
+            :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 10px' }"
+        >
+          BOM展开
+        </van-divider>
+
+        <table class="table-order">
+          <thead>
+          <tr>
+            <th>序号</th>
+            <th>产品编号</th>
+            <th>产品名称</th>
+            <th>BOM</th>
+            <th>单位</th>
+          </tr>
+          </thead>
+        </table>
+
       </div>
-
-      <van-divider
-          :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 10px' }"
-      >
-        BOM展开
-      </van-divider>
-
-      <table class="table-order">
-        <thead>
-        <tr>
-          <th>序号</th>
-          <th>产品编号</th>
-          <th>产品名称</th>
-          <th>BOM</th>
-          <th>单位</th>
-        </tr>
-        </thead>
-      </table>
-
+    </div>
     </div>
   </van-sticky>
 
-  <div>
 
     <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
       <van-list
           v-model:loading="state.loading"
           :finished="state.finished"
-          @load="onLoad">
+          @load="onLoad"
+          offset="300">
         <van-swipe-cell v-for="index in state.cellnum" v-bind:key="index">
 
           <table cellpadding = 8px style="width: 100%">
@@ -96,17 +99,16 @@
           </template>
           <van-divider style="margin: 0 0 0 0"/>
         </van-swipe-cell>
+        <P></P>
         <P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 15px">+ 增加行 +</P>
       </van-list>
     </van-pull-refresh>
-
-  </div>
 
 </template>
 
 <script>
 import {useRouter} from "vue-router";
-import {onMounted, reactive, ref} from "vue";
+import { reactive, ref} from "vue";
 import {goodslist} from "network/good";
 import {Dialog, Toast} from "vant";
 import {getbomdetail} from "../../network/bom";
@@ -134,12 +136,10 @@ export default {
     }
 
     const handleSelect = (item) => {
-      console.log(item.id);
       codingname.value = item
 
       // 查询产品BOM 并赋值
       getbomdetail(codingname.value.id).then((res)=>{
-        console.log(res);
         if(res[0]) {
           state.cellnum = res[0].subs.length + 3
           goodcoding.value = []
@@ -147,11 +147,7 @@ export default {
           goodname.value = []
           goodunit.value = []
 
-          console.log(state.cellnum);
-          console.log(res[0].subs);
-
           for (let i in res[0].subs) {
-            console.log(i, res[0].subs[i].coding.split(':')[1]);
             goodcoding.value[Number(i)+1] = res[0].subs[i].coding.split(':')[1]
             bomnum.value[Number(i)+1] = res[0].subs[i].stock
             goodname.value[Number(i)+1] = res[0].subs[i].coding.split(':')[2]
@@ -159,26 +155,12 @@ export default {
 
 
           }
-          console.log(goodcoding.value);
+        } else {
+          Toast('没有数据')
         }
       })
     };
 
-    onMounted(() => {
-      restaurants.value = loadAll();
-      console.log(restaurants.value);
-    });
-    // 客户数据加载
-    const loadAll = () => {
-      let arr1=[]
-      goodslist().then(res=>{
-        // 将json对象转换成列表
-        for(let i in res){
-          arr1.push(res[i])
-        }
-      })
-      return arr1
-    };
 
     const onClickLeft = () => {
       router.go(-1)
@@ -190,12 +172,12 @@ export default {
       cellnum: 5,
       loading: false,
       finished: true,
-      refreshing:false,
+      refreshing: false,
       list: []
     })
     const onRefresh = () => {
       // 清空列表数据
-      state.finished = false;
+      state.finished = true;
 
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
@@ -215,7 +197,7 @@ export default {
         }
         state.loading = false;
 
-        if (state.list.length >= 10) {
+        if (state.list.length >= 20) {
           state.finished = true;
         }
       }, 1000);
@@ -302,16 +284,21 @@ export default {
   color: rgba(131,135,137,0.54);
 }
 
-.van-swipe-cell {
-  margin-top: 10px;
+.van-list {
+  margin-top: 5px;
   margin-left: 8px;
+  margin-bottom: 80px;
   width: 100%;
+  height: 100%;
 }
+
 .van-swipe-cell tbody {
   height: 40px;
   font-family: "微软雅黑", "仿宋", sans-serif;
 
 }
+
+
 
 /deep/ .el-autocomplete-suggestion{
   width: auto!important;

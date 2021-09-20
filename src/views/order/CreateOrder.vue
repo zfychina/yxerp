@@ -212,7 +212,7 @@ export default {
       cellnum: 5,
       loading: false,
       finished: true,
-      refreshing:false,
+      refreshing: false,
       list: []
     })
     // 产品数据加载
