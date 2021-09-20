@@ -10,3 +10,12 @@ export function getbomdetail(skuid) {
     }
   })
 }
+
+// 创建更新BOM
+export function bomcreate(data) {
+  return request({
+    url: '/bomcreate/',
+    method: 'post',
+    data
+  })
+}

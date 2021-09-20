@@ -1,7 +1,9 @@
 <template>
   <van-sticky>
     <div>
-      <van-nav-bar title="BOM" left-arrow fixed @click-left="onClickLeft">
+      <van-nav-bar title="BOM" left-arrow fixed @click-left="onClickLeft"
+                   right-text="保存" @click-right="onSubmit"
+>
       </van-nav-bar>
 
       <div>
@@ -113,7 +115,8 @@ import {useRouter} from "vue-router";
 import { reactive, ref} from "vue";
 import {goodslist} from "network/good";
 import {Dialog, Toast} from "vant";
-import {getbomdetail} from "../../network/bom";
+import {getbomdetail} from "network/bom";
+import {bomcreate} from "../../network/bom";
 
 export default {
   name: "Bom",
@@ -211,9 +214,6 @@ export default {
     const goodname = ref([])
     const goodunit = ref([])
 
-
-
-
     const handleSelectbom = (item) => {
       for (let i in goodcoding.value) {
         if (item.coding.indexOf(goodcoding.value[i])===0){
@@ -243,6 +243,39 @@ export default {
 
     };
 
+    // 提交保存
+    const onSubmit=()=> {
+      let data = {}
+      data.coding = coding.value
+      if (!data.coding) {
+        Toast({message: '请输入产品编号', duration: 1000})
+        return
+      }
+      data.sku = []
+      for (let i in goodcoding.value) {
+        if (!goodcoding.value[i] || !bomnum.value[i] || parseInt(bomnum.value[i]) === 0) {
+          console.log(goodcoding.value.length, bomnum.value.length, i, '空');
+          console.log(goodcoding.value[i], bomnum.value[i]);
+          continue
+        }
+        console.log(goodcoding.value.length, bomnum.value.length, i);
+        console.log(goodcoding.value[i], bomnum.value[i]);
+        data.sku.push({'coding': goodcoding.value[i], 'quantity': bomnum.value[i]})
+      }
+      if (data.sku.length === 0) {
+        Toast({message: '产品编号有误或未添加产品数量', duration: 1000})
+        return
+      }
+
+      console.log(data);
+      bomcreate(data).then(res => {
+        if (res === 'ok') {
+          Toast.success('BOM更新成功')
+        } else {
+          Toast("BOM查询页面确认更新成功")
+        }
+      })
+    }
     // 增加行
     const oncellnum = ()=>{
       state.cellnum += 1
@@ -263,6 +296,7 @@ export default {
       handleSelectbom,
       oncellnum,
       cleargood,
+      onSubmit,
     }
   }
 }
@@ -300,7 +334,15 @@ export default {
 
 }
 
-
+.submit-bar {
+  background-color: #f6f6f6;
+  display: flex;
+  position: relative;
+  z-index: 101;
+  left: 0;
+  right: 0;
+  margin-bottom: 1000px;
+}
 
 /deep/ .el-autocomplete-suggestion{
   width: auto!important;
