@@ -14,6 +14,7 @@
             animated
             offset-top=46px >
     <van-tab v-for="(item, index) in state.tabtitle" :title="item" :key="index">
+
        <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
 
 <!--表头-->
@@ -68,7 +69,7 @@
 
 <!--提交订单部分-->
   <van-submit-bar button-color=var(--color-high-text)
-                  :price="total*100" button-text="提交订单" decimal-length=1 @submit="onSubmit">
+                  :price="total*100" currency="" button-text="提交订单" decimal-length=1 @submit="onSubmit">
     <van-checkbox v-model="state.checkall[active]" @click="oncheckall">全选</van-checkbox>
 
   </van-submit-bar>

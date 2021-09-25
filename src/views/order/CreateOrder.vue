@@ -126,7 +126,7 @@
 
 
   <div class="submit-bar">
-    <van-submit-bar :price="total * 100" button-text="创建订单" button-color=var(--color-high-text) @submit="onSubmit" />
+    <van-submit-bar :price="total * 100" currency="" button-text="创建订单" button-color=var(--color-high-text) @submit="onSubmit" />
   </div>
 
 </template>

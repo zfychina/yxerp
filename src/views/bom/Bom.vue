@@ -69,18 +69,18 @@
             <tr>
               <td style="width: 7%;word-break:break-all">{{ index }}.</td>
 
-              <td style="width: 30%;word-break:break-all">
+              <td style="width: 35%;word-break:break-all">
                 <el-autocomplete
                   v-model="goodcoding[index]"
                   :fetch-suggestions="querySearchAsync"
                   placeholder="输入产品编号"
                   @select="handleSelectbom"
                   :trigger-on-focus="false"
-                  clearable
                   value-key="coding"
                   debounce="0"
                   type="textarea"
                   :autosize="{ minRows: 1, maxRows: 2}"
+                  clearable
               >
                 <template #default="{ item }">
 
@@ -322,7 +322,7 @@ export default {
 
 .van-list {
   margin-top: 5px;
-  margin-left: 8px;
+  margin-left: 5px;
   margin-bottom: 80px;
   width: 100%;
   height: 100%;
@@ -334,15 +334,6 @@ export default {
 
 }
 
-.submit-bar {
-  background-color: #f6f6f6;
-  display: flex;
-  position: relative;
-  z-index: 101;
-  left: 0;
-  right: 0;
-  margin-bottom: 1000px;
-}
 
 /deep/ .el-autocomplete-suggestion{
   width: auto!important;
