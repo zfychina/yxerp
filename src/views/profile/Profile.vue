@@ -1,9 +1,6 @@
 <template>
     <van-sticky>
-    <van-nav-bar :title="state.username" left-arrow  fixed="true">
-      <template #right>
-        <van-icon name="search" size="18" />
-      </template>
+    <van-nav-bar :title="state.username" left-arrow  right-text="登出" @click-right="tologout"  fixed="true">
     </van-nav-bar>
     </van-sticky>
 
@@ -11,8 +8,8 @@
       <van-image
         round
         fit="cover"
-        width="120px"
-        height="120px"
+        width="60px"
+        height="60px"
         :src="state.avatar_img"
     />
     </div>
@@ -73,13 +70,22 @@
         </van-uploader>
       </div>
 
+  <div class="uploader">
+    <van-uploader :after-read="RecordsiImport" name='files' :accept="accept" result-type="file">
+      <van-button icon="plus" type="primary">
+        点击存货往来导入（上传存货往来.xls）
+      </van-button>
+
+    </van-uploader>
+  </div>
 
 
 
-    <div class="reg" style="margin-top: 30px; font-size: 10px; color:var(--color-high-text)">
-      <span @click="tologout">退出登录</span>
-<!--      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>-->
-    </div>
+
+<!--    <div class="reg" style="margin-top: 30px; font-size: 10px; color:var(&#45;&#45;color-high-text)">-->
+<!--      <span @click="tologout">退出登录</span>-->
+<!--&lt;!&ndash;      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>&ndash;&gt;-->
+<!--    </div>-->
 
 </template>
 
@@ -87,8 +93,8 @@
 import {onMounted, reactive} from "vue";
 import { useRouter } from 'vue-router'
 import {Dialog, Toast} from "vant";
-import {upSkuimport, upShortmold, upSupplier, uporderimport, upCustomer, upSupplierdir, upBOM} from "network/upimport";
-import {getuserinfo} from "network/user";
+import {upSkuimport, upShortmold, upSupplier, uporderimport, upCustomer, upSupplierdir, upBOM, recordsimport} from "network/upimport";
+import { getuserinfo } from 'network/user'
 import { useStore } from 'vuex'
 
 
@@ -173,6 +179,20 @@ export default {
       })
     }
 
+    // 存货往来导入
+    const RecordsiImport = (file)=>{
+      const data = new FormData();
+      data.append('files', file.file)
+      Toast.loading({message:'存货往来导入中...', forbidClick:true});
+      recordsimport(data).then(res=>{
+        Dialog.alert({
+          message: res,
+        }).then(() => {
+          // on close
+        });
+      })
+    }
+
     // 供应商名录导入
     const Suppledirimport = (file)=>{
       const data = new FormData();
@@ -217,6 +237,8 @@ export default {
 
 
 
+
+
     // 跳转到注册页面
     const toRegister=()=>{
       router.push({path:'/login'})
@@ -249,6 +271,7 @@ export default {
       Suppledirimport,
       Customerimport,
       Bomimport,
+      RecordsiImport,
     }
   }
 }

@@ -65,3 +65,12 @@ export function upBOM(data) {
   })
 }
 
+// 上传存货往来数据
+export function recordsimport(data) {
+  return request({
+    url: '/recordsimport/',
+    method: 'post',
+    timeout: 100000,
+    data
+  })
+}

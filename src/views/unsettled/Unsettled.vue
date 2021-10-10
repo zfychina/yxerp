@@ -21,11 +21,13 @@
         <table style="width: 100%">
           <thead>
           <tr>
-            <th style="width: 12%"></th>
-            <th style="width: 20%" @click="sorttable('order_date', index)">下单日期</th>
-            <th style="width: 20%" @click="sorttable('delivery', index)">交货日期</th>
-            <th style="width: 18%" @click="sorttable('customer', index)">客户</th>
-            <th style="width: 30%" @click="sorttable('orderhao', index)">订单编号</th>
+            <th style="width: 5%"></th>
+            <th style="width: 10%" @click="sorttable('order', index)">日期</th>
+            <th style="width: 20%" @click="sorttable('sku', index)">物料编号</th>
+            <th style="width: 20%" @click="sorttable('sku', index)">物料名称</th>
+            <th style="width: 15%" @click="sorttable('quantity', index)">订单数</th>
+            <th style="width: 15%" @click="sorttable('quantity', index)">入(提)数</th>
+            <th style="width: 15%" @click="sorttable('order', index)">供应商</th>
           </tr>
           </thead>
         </table>
@@ -41,19 +43,14 @@
           <table style="width: 100%">
             <tbody>
             <tr v-for="(item,index1) in state.orderall[index].list" :key="index1" style="margin-left: 3px">
-              <th style="width: 8%"><van-checkbox @click="oncheckorder(item.orderhao)" v-model="state.checkorder[index].[item.orderhao]" icon-size="15px"></van-checkbox></th>
-              <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.order_date?.split(" ")[0]}}</th>
-              <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.delivery?.split(" ")[0]}}</th>
-              <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{ item.customer?.coding }}</th>
-              <th style="width: 30%" @click="Extensionline(item.orderhao, index)"><b>{{ item.orderhao }}</b></th>
-              <br>
-              <div class="detailorder" v-show="state.isshow[index]?.[item.orderhao]" v-for=" (orderitem, index2) in state.orderdetail?.[item.orderhao]" :key="index2" style="margin-left: 2px">
-                <th style="width: 5%"><van-checkbox @click="oncheckgood(item.orderhao, orderitem.id)" v-model="state.checkdetail[index].[item.orderhao + '&' + orderitem.id]" icon-size="13px"></van-checkbox></th>
-                <th style="width: 25%;word-break:break-all">{{orderitem.sku.coding}}</th>
-                <th style="width: 35%;word-break:break-all;margin-right:10px">{{orderitem.sku.name}}</th>
-                <th style="width: 15%">{{orderitem.quantity}}</th>
-                <th style="width: 10%">{{orderitem.unit}}</th>
-              </div>
+              <th style="width: 5%"><van-checkbox @click="oncheckorder(item.id)" v-model="state.checkorder[index].[item.id]" icon-size="15px"></van-checkbox></th>
+              <th style="width: 10%">{{item.order.order_date?.split(" ")[0]}}</th>
+              <th style="width: 18%">{{item.sku.sku ? item.sku.sku?.split(":")[1] : item.sku?.split(":")[1]}}</th>
+              <th style="width: 25%">{{item.sku.sku ? item.sku.sku?.split(":")[2] : item.sku?.split(":")[2]}}</th>
+<!--              <br>-->
+              <th style="width: 15%">{{ item.quantityed ? item.quantity : item.quantityed}}</th>
+              <th style="width: 15%">{{ item.quantityed ? item.quantityed : item.quantity }}</th>
+              <th style="width: 10%">{{item.order.supplier}}</th>
             </tr>
             </tbody>
           </table>
@@ -78,9 +75,9 @@
 
 <script>
 import {ref, reactive, onMounted, computed} from 'vue';
-import {Toast, Dialog} from "vant";
-import {getOrderinfo, getOrderdetail} from "network/order";
+import {Toast} from "vant";
 import {useRouter} from "vue-router";
+import {getorderCG, getorderCGRE} from "network/unsettled";
 
 export default {
   name: "Order",
@@ -97,12 +94,11 @@ export default {
       // 是否全选
       checkall:[false, false, false, false, false],
       checkorder: [{}, {}, {}, {}, {}],
-      checkdetail: [{}, {}, {}, {}, {}],
 
       // 是否扩展
       isshow: [{}, {}, {}, {}, {}],
 
-      ordering: ['delivery', 'delivery', 'delivery', 'delivery', 'delivery'],
+      ordering: ['order', 'order', 'order', 'order', 'order'],
       order_by: [true, true, true, true, true],
       orderstaus: [2 ,1 ,3 ,4 ],
       orderall: [
@@ -121,37 +117,64 @@ export default {
 
     // 获取默认数据
     onMounted(()=>{
-      // 未完成订单数据获取
-      getdate(state.orderstaus[0], state.ordering[0], 0)
+      // 生产订单数据获取
 
-      // 物料待生成数据获取
-      getdate(state.orderstaus[1], state.ordering[1], 1)
+      // 生产提料数据获取
 
-      // 生产中订单数据获取
-      getdate(state.orderstaus[2], state.ordering[2], 2)
+      // 生产入库数据获取
 
-      // 全部订单数据获取
-      getdate(state.orderstaus[3], state.ordering[3], 3)
+      // 采购订单数据获取
+      getordercg(state.ordering[3], 3)
+
+      // 采购入库数据获取
+      getordercgre(state.ordering[4], 4)
 
     })
-    // 获取订单数据
-    const getdate = (orderstatus, ordering, index)=> {
+    // 采购订单数据获取
+    const getordercg = (ordering, index)=> {
 
       const page = state.orderall[index].page += 1
 
-      getOrderinfo(orderstatus, page, state.ordering[index]).then(res => {
+      getorderCG(page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
+        console.log(state.orderall[index].list);
+        console.log(state.orderall[index].count);
+
       }).catch(err => err)
     }
 
+    // 采购入库数据获取
+    const getordercgre = (ordering, index)=> {
+
+      const page = state.orderall[index].page += 1
+
+      getorderCGRE(page, state.ordering[index]).then(res => {
+        state.orderall[index].list.push(...res.results)
+        state.orderall[index].count = res.count
+        console.log(state.orderall[index].list);
+        console.log(state.orderall[index].count);
+
+      }).catch(err => err)
+    }
+
+    // 生产订单数据获取
+
+    // 生产提料数据获取
+
+    // 生产入库数据获取
+
     const onLoad = (index) => {
       setTimeout(() => {
-        const orderstaus = state.orderstaus[index]
         const ordering = state.ordering[index]
 
         // 加载下一页数据
-        getdate(orderstaus, ordering, index)
+        if (index === 3) {
+          getordercg(ordering, active.value)
+        }
+        if (index === 4) {
+          getordercgre(ordering, active.value)
+        }
         state.loading = false;
         // 所有页获取完，设置true，没有更多了
         if ( (state.orderall[index].count !== 0) && state.orderall[index].list.length >= state.orderall[index].count) {
@@ -166,15 +189,18 @@ export default {
       state.refreshing = false;
       state.orderall[active.value] =  {count: 0, page: 0, list:[] },
 
-          // 重新加载数据
-          // 将 loading 设置为 true，表示处于加载状态
-          state.loading = true;
-
-      // 是否展开所有订单 复位
-      state.orderdialog[active.value] = true
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      state.loading = true;
 
       // 下拉刷新前清空数据
-      // getdate(state.orderstaus[active.value], state.ordering[active.value], [active.value])
+      if (active.value === 3) {
+        getordercg(state.ordering[active.value], active.value)
+      }
+      if (active.value === 4) {
+        getordercgre(state.ordering[active.value], active.value)
+      }
+
       onLoad([active.value]);
     };
     // 排序
@@ -182,144 +208,75 @@ export default {
 
       // 确定正序和倒序
       state.order_by[index] = !state.order_by[index]
+      state.ordering[index] = ordering
+
       if (state.order_by[index]){
-        state.ordering[index] = ordering
-        state.orderall[index] =  {count: 0, page: 0, list:[] },
-            getdate(state.orderstaus[index],  state.ordering[index], index)
+
+        state.orderall[index] =  {count: 0, page: 0, list:[] }
+        // 获取数据
+        if (active.value === 3) {
+          getordercg(state.ordering[index], active.value)
+        }
+        if (active.value === 4) {
+          getordercgre(state.ordering[index], active.value)
+        }
       } else {
         state.ordering[index] = '-'+ordering
-        state.orderall[index] =  {count: 0, page: 0, list:[] },
-            getdate(state.orderstaus[index],  state.ordering[index], index)
+        state.orderall[index] =  {count: 0, page: 0, list:[] }
+
+        if (active.value === 3) {
+          getordercg(state.ordering[index], active.value)
+        }
+        if (active.value === 4) {
+          getordercgre(state.ordering[index], active.value)
+        }
 
       }
     }
     // 提交订单按钮
     const onSubmit = () => Toast('点击按钮');
-    // 扩展行
-    const Extensionline = (orderhao, index) => {
-      if (state.isshow[index]?.[orderhao]){
-        delete state.isshow[index]?.[orderhao]
-      } else (state.isshow[index].[orderhao] = true)
-      // console.log(state.isshow);
-      // 获取订单详情信息
-      getOrderdetail(orderhao).then(res=>{
-        state.orderdetail.[orderhao] = res.results
-      }).catch(err =>{console.log(err)})
-    }
     // 选择-全选
     const oncheckall = () =>{
-
-      if (state.orderdialog[active.value] && state.checkall[active.value] && (Object.keys(state.isshow[active.value]).length !== state.orderall[active.value].list.length)){
-
-        Dialog.confirm({
-          // title: `是否展开所有订单内的产品？`,
-          message: `是否展开所有订单内的产品？`,
-          // theme: 'round-button',
-        })
-            .then(() => {
-              state.orderdialog[active.value] = false
-              const orderobj = Object.keys(state.checkorder[active.value]);
-              Toast.loading({message:'订单展开中...', forbidClick:true, duration: 4000});
-              orderobj.forEach(item=>Extensionline(item,active.value))
-              // on confirm
-            })
-            .catch(() => {
-              state.orderdialog[active.value] = false
-              // on cancel
-            });
-
-      }
       if(state.checkall[active.value]){
-        // 清空数组里数据-订单号
+        // 清空数组里数据-ID
         state.checkorder[active.value] = {}
-        state.checkdetail[active.value] = {}
-        //将已加载的数据-订单号，添加到数组里
+        //将已加载的数据-ID，添加到数组里
         let x
         for (x in state.orderall[active.value].list) {
-          const order_hao = state.orderall[active.value].list[x].orderhao
-          state.checkorder[active.value].[order_hao] = true
-
-          // 如果这个订单没有获取订单详情 则跳过
-          const orderdetail = state.orderdetail[order_hao]
-          if(orderdetail){
-            let y
-            for( y in orderdetail){
-              const orderhao_detail = order_hao + '&' + orderdetail[y].id
-              state.checkdetail[active.value].[orderhao_detail] = true
-            }}
+          const order_id = state.orderall[active.value].list[x].id
+          state.checkorder[active.value].[order_id] = true
         }
       }else {
-        // 清空数组里数据-订单号
+        // 清空数组里数据-ID
         state.checkorder[active.value] = {}
-        state.checkdetail[active.value] = {}
       }
     }
-    // 选择-订单全选
-    const oncheckorder = (orderhao) =>{
+    // 选择-订单单选
+    const oncheckorder = (orderid) =>{
 
       // 检查未选中的删除掉
-      if (state.checkorder[active.value]?.[orderhao] ===false){
-        delete state.checkorder[active.value]?.[orderhao]
+
+      if (state.checkorder[active.value]?.[orderid] ===false){
+        delete state.checkorder[active.value]?.[orderid]
         state.checkall[active.value] = false
-
-        // 删除订单详情里选中的
-        if (state.isshow[active.value]?.[orderhao]){
-
-          const orderdetail = state.orderdetail[orderhao]
-          if(orderdetail){
-            let y
-            for( y in orderdetail){
-              const orderhao_detail = orderhao + '&' + orderdetail[y].id
-              state.checkdetail[active.value].[orderhao_detail] = false
-              delete state.checkdetail[active.value]?.[orderhao_detail]
-            }}}
-
       }
 
-      // 检查选中的，是否展开订单详情，
-      if (state.checkorder[active.value]?.[orderhao]){
-        if (state.isshow[active.value]?.[orderhao]){
-
-          const orderdetail = state.orderdetail[orderhao]
-          if(orderdetail){
-            let y
-            for( y in orderdetail){
-              const orderhao_detail = orderhao + '&' + orderdetail[y].id
-              state.checkdetail[active.value].[orderhao_detail] = true
-            }}
-        }}
-
-
+      // 提取state.checkorder[active.value]里的KEY值
       if(Object.keys(state.checkorder[active.value]).length === state.orderall[active.value].list.length){
         state.checkall[active.value] = true
       } else {state.checkall[active.value] = false}
-
     }
-    // 选择-商品选择
-    const oncheckgood = (orderhao, orderdetail) =>{
-      // 不勾选的商品，为false，需要删除
-      const orderhao_detail = orderhao + '&' + orderdetail
-      if (state.checkdetail[active.value]?.[orderhao_detail] ===false){
-        delete state.checkdetail[active.value]?.[orderhao_detail]
-        state.checkall[active.value] = false
-      }
 
-      if(Object.keys(state.checkdetail[active.value]).length === Object.keys(state.orderdetail?.[orderhao]).length){
-        state.checkorder[active.value].[orderhao] = true
-      } else {state.checkorder[active.value].[orderhao] = false}
-
-    }
-    // 通过计算属性 计算选中产品数量
+     // 通过计算属性 计算选中产品数量
     const total = computed(()=> {
       let sum = 0;
-      const data = Object.keys(state.checkdetail[active.value])
+      const data = Object.keys(state.checkorder[active.value])
+      const list = state.orderall[active.value].list
       let x
-      for (x in data){
-        const totalorder = data[x].split('&')[0]
-        const totalgoodid = data[x].split('&')[1]
-        state.orderdetail?.[totalorder].forEach(item=>{
-          if (item.id ===  parseInt(totalgoodid)){
-            sum +=  parseInt(item.quantity)
+      for (x in list) {
+        data.forEach(item => {
+          if (list[x].id === parseInt(item)) {
+            sum += parseInt(list[x].quantity)
           }
         })
       }
@@ -340,15 +297,15 @@ export default {
       state,
       onLoad,
       onRefresh,
-      getdate,
-      Extensionline,
       oncheckall,
       oncheckorder,
-      oncheckgood,
       active,
       total,
       onClickLeft,
       onClickRight,
+
+      getordercg,
+      getordercgre,
     };
   },
 
