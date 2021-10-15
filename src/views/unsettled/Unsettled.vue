@@ -77,7 +77,7 @@
 import {ref, reactive, onMounted, computed} from 'vue';
 import {Toast} from "vant";
 import {useRouter} from "vue-router";
-import {getorderCG, getorderCGRE} from "network/unsettled";
+import {getorderCG, getorderCGRE, getorderSC} from "network/unsettled";
 
 export default {
   name: "Order",
@@ -118,7 +118,7 @@ export default {
     // 获取默认数据
     onMounted(()=>{
       // 生产订单数据获取
-
+      getordersc(state.ordering[0], 0)
       // 生产提料数据获取
 
       // 生产入库数据获取
@@ -159,6 +159,18 @@ export default {
     }
 
     // 生产订单数据获取
+    const getordersc = (ordering, index)=> {
+
+      const page = state.orderall[index].page += 1
+
+      getorderSC(page, state.ordering[index]).then(res => {
+        state.orderall[index].list.push(...res.results)
+        state.orderall[index].count = res.count
+        console.log(state.orderall[index].list);
+        console.log(state.orderall[index].count);
+
+      }).catch(err => err)
+    }
 
     // 生产提料数据获取
 
@@ -169,6 +181,9 @@ export default {
         const ordering = state.ordering[index]
 
         // 加载下一页数据
+        if (index === 0) {
+          getordersc(ordering, active.value)
+        }
         if (index === 3) {
           getordercg(ordering, active.value)
         }
@@ -194,6 +209,9 @@ export default {
       state.loading = true;
 
       // 下拉刷新前清空数据
+      if (active.value === 0) {
+        getordersc(state.ordering[active.value], active.value)
+      }
       if (active.value === 3) {
         getordercg(state.ordering[active.value], active.value)
       }
@@ -214,6 +232,9 @@ export default {
 
         state.orderall[index] =  {count: 0, page: 0, list:[] }
         // 获取数据
+        if (active.value === 0) {
+          getordersc(state.ordering[index], active.value)
+        }
         if (active.value === 3) {
           getordercg(state.ordering[index], active.value)
         }
@@ -224,6 +245,9 @@ export default {
         state.ordering[index] = '-'+ordering
         state.orderall[index] =  {count: 0, page: 0, list:[] }
 
+        if (active.value === 0) {
+          getordersc(state.ordering[index], active.value)
+        }
         if (active.value === 3) {
           getordercg(state.ordering[index], active.value)
         }
@@ -306,6 +330,7 @@ export default {
 
       getordercg,
       getordercgre,
+      getordersc,
     };
   },
 

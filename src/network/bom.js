@@ -19,3 +19,13 @@ export function bomcreate(data) {
     data
   })
 }
+
+
+//删除BOM
+export function bomdelete(data) {
+  return request({
+    url: "/bomcreate/",
+    method: 'delete',
+    data
+  })
+}

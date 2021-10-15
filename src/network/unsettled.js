@@ -1,7 +1,15 @@
 import {request} from "./request";
 
 //获取生产订单详情信息
+export function getorderSC(page, ordering) {
+  return request({
+    url: "/orders/ordersc/?page=" + page + "&ordering=" + ordering,
+    method: 'get',
+    params: {
 
+    }
+  })
+}
 
 // 获取生产提料详情信息
 

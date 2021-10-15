@@ -44,7 +44,7 @@
               <th style="width: 8%"><van-checkbox @click="oncheckorder(item.orderhao)" v-model="state.checkorder[index].[item.orderhao]" icon-size="15px"></van-checkbox></th>
               <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.order_date?.split(" ")[0]}}</th>
               <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{item.delivery?.split(" ")[0]}}</th>
-              <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{ item.customer?.coding }}</th>
+              <th style="width: 20%" @click="Extensionline(item.orderhao, index)">{{ item.customer }}</th>
               <th style="width: 30%" @click="Extensionline(item.orderhao, index)"><b>{{ item.orderhao }}</b></th>
               <br>
               <div class="detailorder" v-show="state.isshow[index]?.[item.orderhao]" v-for=" (orderitem, index2) in state.orderdetail?.[item.orderhao]" :key="index2" style="margin-left: 2px">
@@ -141,6 +141,7 @@ export default {
       getOrderinfo(orderstatus, page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
+        console.log(state.orderall[index].list);
       }).catch(err => err)
     }
 
