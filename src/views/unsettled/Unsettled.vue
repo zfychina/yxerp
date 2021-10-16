@@ -122,7 +122,7 @@ export default {
       // 生产提料数据获取
 
       // 生产入库数据获取
-
+      getorderscre(state.ordering[2], 2)
       // 采购订单数据获取
       getordercg(state.ordering[3], 3)
 
