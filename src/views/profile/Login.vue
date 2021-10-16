@@ -115,7 +115,8 @@ export default {
           state.image_code_id = ""
 
           setTimeout(() => {
-            router.go(-1);
+            // router.go(-1);
+            router.push({path:'/profile'});
           }, 500)
         }
       })

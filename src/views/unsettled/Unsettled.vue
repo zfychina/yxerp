@@ -50,7 +50,7 @@
 <!--              <br>-->
               <th style="width: 15%">{{ item.quantityed ? item.quantity : item.quantityed}}</th>
               <th style="width: 15%">{{ item.quantityed ? item.quantityed : item.quantity }}</th>
-              <th style="width: 10%">{{item.order.supplier}}</th>
+              <th style="width: 10%">{{item.order.supplier ? item.order.supplier : item.sku.order.supplier}}</th>
             </tr>
             </tbody>
           </table>
@@ -77,7 +77,7 @@
 import {ref, reactive, onMounted, computed} from 'vue';
 import {Toast} from "vant";
 import {useRouter} from "vue-router";
-import {getorderCG, getorderCGRE, getorderSC} from "network/unsettled";
+import {getorderCG, getorderCGRE, getorderSC, getorderSCRE} from "network/unsettled";
 
 export default {
   name: "Order",
@@ -138,8 +138,6 @@ export default {
       getorderCG(page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-        console.log(state.orderall[index].list);
-        console.log(state.orderall[index].count);
 
       }).catch(err => err)
     }
@@ -152,8 +150,6 @@ export default {
       getorderCGRE(page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-        console.log(state.orderall[index].list);
-        console.log(state.orderall[index].count);
 
       }).catch(err => err)
     }
@@ -166,8 +162,6 @@ export default {
       getorderSC(page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-        console.log(state.orderall[index].list);
-        console.log(state.orderall[index].count);
 
       }).catch(err => err)
     }
@@ -175,6 +169,18 @@ export default {
     // 生产提料数据获取
 
     // 生产入库数据获取
+    const getorderscre = (ordering, index)=> {
+
+      const page = state.orderall[index].page += 1
+
+      getorderSCRE(page, state.ordering[index]).then(res => {
+        state.orderall[index].list.push(...res.results)
+        state.orderall[index].count = res.count
+        console.log(state.orderall[index].list);
+        console.log(state.orderall[index].count);
+
+      }).catch(err => err)
+    }
 
     const onLoad = (index) => {
       setTimeout(() => {
@@ -183,6 +189,9 @@ export default {
         // 加载下一页数据
         if (index === 0) {
           getordersc(ordering, active.value)
+        }
+        if (index === 2) {
+          getorderscre(ordering, active.value)
         }
         if (index === 3) {
           getordercg(ordering, active.value)
@@ -212,6 +221,9 @@ export default {
       if (active.value === 0) {
         getordersc(state.ordering[active.value], active.value)
       }
+      if (active.value === 2) {
+        getorderscre(state.ordering[active.value], active.value)
+      }
       if (active.value === 3) {
         getordercg(state.ordering[active.value], active.value)
       }
@@ -235,6 +247,9 @@ export default {
         if (active.value === 0) {
           getordersc(state.ordering[index], active.value)
         }
+        if (active.value === 2) {
+          getorderscre(state.ordering[index], active.value)
+        }
         if (active.value === 3) {
           getordercg(state.ordering[index], active.value)
         }
@@ -247,6 +262,9 @@ export default {
 
         if (active.value === 0) {
           getordersc(state.ordering[index], active.value)
+        }
+        if (active.value === 2) {
+          getorderscre(state.ordering[index], active.value)
         }
         if (active.value === 3) {
           getordercg(state.ordering[index], active.value)
@@ -331,6 +349,7 @@ export default {
       getordercg,
       getordercgre,
       getordersc,
+      getorderscre,
     };
   },
 

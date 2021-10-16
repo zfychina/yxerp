@@ -141,7 +141,6 @@ export default {
       getOrderinfo(orderstatus, page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-        console.log(state.orderall[index].list);
       }).catch(err => err)
     }
 

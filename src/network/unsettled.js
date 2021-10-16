@@ -15,7 +15,15 @@ export function getorderSC(page, ordering) {
 
 
 // 获取生产入库详情信息
+export function getorderSCRE(page, ordering) {
+  return request({
+    url: "/orders/orderscre/?page=" + page + "&ordering=" + ordering,
+    method: 'get',
+    params: {
 
+    }
+  })
+}
 
 // 获取采购订单详情信息
 export function getorderCG(page, ordering) {
