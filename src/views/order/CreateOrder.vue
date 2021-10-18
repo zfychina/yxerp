@@ -338,6 +338,11 @@ export default {
                 // on confirm
                 getOrderdetail(val).then(res=>{
                   if (res.count===0){
+                    //先清空前面的遗留数据
+                    goodcoding.value = []
+                    goodname.value = []
+                    goodunit.value = []
+                    goodnum.value = []
                     Toast('此订单无产品详情')
                   }else {
                     state.cellnum = res.count + 3
