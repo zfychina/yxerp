@@ -52,13 +52,13 @@ export function updateorder(data) {
   })
 }
 
-// 获取订单
-export function getorder(orderhao) {
+// 删除订单
+export function deleteorder(data) {
   return request({
-    url: '/orders/get/' + orderhao + "/",
-    method: 'get',
-    params: {
-
-    }
+    url: '/orders/delete/',
+    method: 'delete',
+    data
   })
 }
+
+

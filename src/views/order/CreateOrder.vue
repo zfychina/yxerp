@@ -1,6 +1,6 @@
 <template>
   <van-sticky>
-    <van-nav-bar title="销售订单" left-arrow fixed @click-left="onClickLeft">
+    <van-nav-bar title="销售订单" left-arrow fixed @click-left="onClickLeft" right-text="删除" @click-right="deleteSubmit">
     </van-nav-bar>
   </van-sticky>
     <van-form style="margin-top: 50px" @submit="onSubmit">
@@ -30,7 +30,7 @@
         name="orderhao"
         label="订单编号"
         placeholder="请输入订单编号"
-        :rules="[{ validator, message: '订单编号已存在' }]"
+        :rules="[{ validator, message: '已读取此订单号内容' }]"
 
       />
     <!--客户编号-->
@@ -138,7 +138,8 @@ import {countOrderhao} from "network/order";
 import {customerslist} from "network/customer";
 import {goodslist} from "network/good";
 import {Toast, Dialog} from "vant";
-import {createorder, updateorder} from "network/order";
+import {createorder, updateorder, getOrderdetail} from "network/order";
+import {deleteorder} from "../../network/order";
 
 export default {
   name: "CreateOrder",
@@ -233,6 +234,7 @@ export default {
     // 提交创建
     const onSubmit=()=>{
       let data = {}
+      console.log(orderhao.value, goodcoding.value);
       data.delivery = delivery.value
       if (!data.delivery){
         Toast({message:'请输入订单交货期', duration: 1000 })
@@ -325,13 +327,63 @@ export default {
       }, 1000);
     };
 
-    // 检查订单号是否存在，如果存在，是否打开已存在的订单
+    // 校验  检查订单号是否存在，如果存在，是否打开已存在的订单
     // const validator = (val) => /1\d{10}/.test(val);
-    const validator = (val) =>
-      countOrderhao(val).then(res=> {
+    const validator = (val) => countOrderhao(val).then(res => {
+        if(res.count >= 1) {
+          Dialog.confirm({
+            message: '是否打开已存在的订单？',
+          })
+              .then(() => {
+                // on confirm
+                getOrderdetail(val).then(res=>{
+                  if (res.count===0){
+                    Toast('此订单无产品详情')
+                  }else {
+                    state.cellnum = res.count + 3
+                    delivery.value = res.results[0].order.delivery.split(" ")[0]
+                    customer.value = res.results[0].order.customer
+                    remarks.value = res.results[0].order.remarks
+
+                    //先清空前面的遗留数据
+                    goodcoding.value = []
+                    goodname.value = []
+                    goodunit.value = []
+                    goodnum.value = []
+                    for(let i in res.results){
+                      goodcoding.value[parseInt(i)+1] = res.results[i].sku.coding
+                      goodname.value[parseInt(i)+1] = res.results[i].sku.name
+                      goodunit.value[parseInt(i)+1] = res.results[i].sku.unit
+                      goodnum.value[parseInt(i)+1] = res.results[i].quantity
+                    }
+                  }
+                })
+              })
+              .catch(() => {
+                // on cancel
+              });
+        }
         return res.count < 1
       })
 
+    // 删除按钮
+    const deleteSubmit = ()=>{
+      if(orderhao.value){
+        Dialog.confirm({
+          message: `删除订单，请点击"确认"`,
+        })
+            .then(() => {
+              // 删除订单
+              deleteorder({'orderhao':orderhao.value}).then(res=>{
+                Toast(res)
+              })
+            })
+            .catch(() => {
+              // on cancel
+            });
+
+    }else {Toast('请输入订单编号')}
+    }
 
     // 通过计算属性 计算数量列的和
     const total = computed(()=> {
@@ -385,6 +437,7 @@ export default {
       customer,
       validator,
       cleargood,
+      deleteSubmit,
 
     };
   },
