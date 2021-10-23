@@ -1,146 +1,144 @@
 <template>
   <van-sticky>
-    <van-nav-bar title="销售订单" left-arrow fixed @click-left="onClickLeft" right-text="删除" @click-right="deleteSubmit">
-    </van-nav-bar>
-  </van-sticky>
-    <van-form style="margin-top: 50px" @submit="onSubmit">
+    <van-nav-bar title="生产入库" left-arrow fixed @click-left="onClickLeft" right-text="删除" @click-right="deleteSubmit">
+  </van-nav-bar>
+</van-sticky>
+<van-form style="margin-top: 50px" @submit="onSubmit">
 <!--  日历选择器-->
-        <van-sticky :offset-top="45">
-        <van-field
-          required
-          colon
-          v-model="delivery"
-          is-link
-          readonly
-          name="calendar"
-          label="订单交期"
-          placeholder="点击选择日期"
+<van-sticky :offset-top="45">
+<van-field
+    required
+    colon
+    v-model="delivery"
+    is-link
+    readonly
+    name="calendar"
+    label="入库日期"
+    placeholder="点击选择日期"
           @click="showCalendar = true"
-        />
-        <van-calendar v-model:show="showCalendar" @confirm="onConfirm" color="#1989fa"/>
+/>
+<van-calendar v-model:show="showCalendar" @confirm="onConfirm" color="#1989fa"/>
 <!--订单编号-->
-        <van-field
-        scroll-to-error
-        autofocus
-        clickable
-        clearable
-        required
-        colon
-        v-model.trim="orderhao"
-        name="orderhao"
-        label="订单编号"
-        placeholder="请输入订单编号"
-        :rules="[{ validator, message: '已读取此订单号内容' }]"
+<van-field
+    scroll-to-error
+    autofocus
+    clickable
+    clearable
+    required
+    colon
+    v-model.trim="order"
+    name="order"
+    label="采购订单"
+    placeholder="请输入采购订单编号"
+          :rules="[{ validator, message: '已读取此订单号内容' }]"
 
-      />
-    <!--客户编号-->
-    <!--ELEMENT-->
-        <van-cell>
-        <nobr class="sub-title"><nobr style="color:red;">*</nobr>客&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <el-autocomplete
-            input-style='width:100%;border:none'
-            resize="horizontal "
-            class="inline-input"
-            v-model="customer"
-            :fetch-suggestions="querySearch"
-            placeholder="请输入客户编号"
-            @select="handleSelect"
-            clearable
-            name="customer"
-            value-key="coding"
-          />
-        </nobr>
-      </van-cell>
+/>
+<!--客户编号-->
+<!--ELEMENT-->
+<van-cell>
+  <nobr class="sub-title"><nobr style="color:red;">*</nobr>供&nbsp;应&nbsp;商:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <el-autocomplete
+        input-style='width:100%;border:none'
+        resize="horizontal "
+        class="inline-input"
+        v-model="productline"
+    :fetch-suggestions="querySearch"
+        placeholder="请输入供应商"
+    @select="handleSelect"
+        clearable
+        name="productline"
+        value-key="shortname"
+  />
+</nobr>
+</van-cell>
 <!--技术要求-->
-        <van-field
-            v-model="remarks"
-            rows="1"
-            autosize
-            label="技术要求:"
-            type="textarea"
-            placeholder="请输入技术要求"
-            border
-        />
+<van-field
+    v-model="remarks"
+    rows="1"
+    autosize
+    label="技术要求:"
+    type="textarea"
+    placeholder="请输入技术要求"
+    border
+/>
 
 
 <!--    订单商品-->
-        <table class="table-order">
-        <thead>
-          <tr>
-            <th>序号</th>
-            <th>产品编号</th>
-            <th>产品名称</th>
-            <th>数量</th>
-            <th>单位</th>
-          </tr>
-        </thead>
-      </table>
-      </van-sticky>
-      <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
-      <van-list
-          v-model:loading="state.loading"
-          :finished="state.finished"
-          @load="onLoad">
-        <van-swipe-cell v-for="index in state.cellnum" v-bind:key="index">
+<table class="table-order">
+  <thead>
+  <tr>
+    <th>序号</th>
+    <th>产品编号</th>
+    <th>产品名称</th>
+    <th>数量</th>
+    <th>单位</th>
+  </tr>
+  </thead>
+</table>
+</van-sticky>
 
-        <table cellpadding = 8px style="width: 100%">
-          <tbody>
-            <tr>
-              <td style="width: 7%;word-break:break-all">{{ index }}.</td>
+<van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
+<van-list
+v-model:loading="state.loading"
+:finished="state.finished"
+@load="onLoad">
+<van-swipe-cell v-for="index in state.cellnum" v-bind:key="index">
 
-              <td style="width: 30%;word-break:break-all"><el-autocomplete
-                  v-model="goodcoding[index]"
-                  :fetch-suggestions="querySearchAsync"
-                  placeholder="输入产品编号"
-                  @select="handleSelect"
-                  :trigger-on-focus="false"
-                  clearable
-                  value-key="coding"
-                  debounce="0"
-              >
-                <template #default="{ item }">
+<table cellpadding = 8px style="width: 100%">
+<tbody>
+<tr>
+<td style="width: 7%;word-break:break-all">{{ index }}.</td>
 
-                  <div class="name">{{ item.coding }}</div>
-                  <p class="addr">&{{ item.name }}</p>
-                </template>
-              </el-autocomplete></td>
+<td style="width: 30%;word-break:break-all"><el-autocomplete
+v-model="goodcoding[index]"
+:fetch-suggestions="querySearchAsync"
+placeholder="输入产品编号"
+@select="handleSelect"
+:trigger-on-focus="false"
+clearable
+value-key="coding"
+debounce="0"
+>
+<template #default="{ item }">
 
-              <td style="width: 20%;word-break:break-all;font-size: 12PX;" >{{ goodname[index] }}</td>
-              <td style="width: 20%;word-break:break-all"> <input v-model="goodnum[index]" style="height:30px;width: 70%; border: 0;background-color: #eeeeee"/></td>
-              <td style="width: 10%;word-break:break-all;font-size: 12PX;">{{ goodunit[index] }}</td>
-              <td style="width: 3%"></td>
-            </tr>
-        </tbody>
-        </table>
+<div class="name">{{ item.coding }}</div>
+<p class="addr">&{{ item.name }}</p>
+</template>
+</el-autocomplete></td>
 
-        <template #right>
-          <van-button square type="danger" text="清除" @click="cleargood(index)"/>
-        </template>
-          <van-divider style="margin: 0 0 0 0"/>
-      </van-swipe-cell>
-        <P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 15px">+ 增加行 +</P>
-      </van-list>
-      </van-pull-refresh>
-    </van-form>
+<td style="width: 20%;word-break:break-all;font-size: 12PX;" >{{ goodname[index] }}</td>
+<td style="width: 20%;word-break:break-all"> <input v-model="goodnum[index]" style="height:30px;width: 70%; border: 0;background-color: #eeeeee"/></td>
+<td style="width: 10%;word-break:break-all;font-size: 12PX;">{{ goodunit[index] }}</td>
+<td style="width: 3%"></td>
+</tr>
+</tbody>
+</table>
+
+<template #right>
+<van-button square type="danger" text="清除" @click="cleargood(index)"/>
+</template>
+<van-divider style="margin: 0 0 0 0"/>
+</van-swipe-cell>
+<P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 15px">+ 增加行 +</P>
+</van-list>
+</van-pull-refresh>
+
+</van-form>
 
 
-
-  <div class="submit-bar">
-    <van-submit-bar :price="total * 100" currency="" button-text="创建订单" button-color=var(--color-high-text) @submit="onSubmit" />
-  </div>
-
+<div class="submit-bar">
+<van-submit-bar :price="total * 100" currency="" button-text="创建订单" button-color=var(--color-high-text) @submit="onSubmit" />
+</div>
 </template>
 
 <script>
 import {ref, onMounted, reactive, computed} from 'vue';
 import {useRouter} from "vue-router";
-import {customerslist} from "network/customer";
+import {supplierlist, countOrderCG, getOrderCGdetail, createorderCG, updateorderCG, deleteorderCG} from "network/unsettled";
 import {goodslist} from "network/good";
 import {Toast, Dialog} from "vant";
-import {countOrderhao, createorder, updateorder, getOrderdetail, deleteorder} from "network/order";
-
 export default {
-  name: "CreateOrder",
+  name: "createorderSCRK",
   setup() {
     const router = useRouter()
     // 带建议输入用
@@ -154,8 +152,8 @@ export default {
     };
 
     const delivery = ref('');
-    const orderhao = ref('');
-    const customer = ref('');
+    const order = ref('');
+    const productline = ref('');
     const remarks = ref('');
 
     // 带建议输入
@@ -169,7 +167,8 @@ export default {
     const createFilter = (queryString) => {
       return (restaurant) => {
         return (
-            restaurant.coding.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+            // 这里设置搜索的字段
+            restaurant.shortname.toLowerCase().indexOf(queryString.toLowerCase()) === 0
         );
       };
     };
@@ -184,10 +183,10 @@ export default {
     onMounted(() => {
       restaurants.value = loadAll();
     });
-    // 客户数据加载
+    // 生产线数据加载
     const loadAll = () => {
       let arr1=[]
-      customerslist().then(res=>{
+      supplierlist().then(res=>{
         // 将json对象转换成列表
         for(let i in res){
           arr1.push(res[i])
@@ -232,19 +231,19 @@ export default {
     // 提交创建
     const onSubmit=()=>{
       let data = {}
-      console.log(orderhao.value, goodcoding.value);
+      console.log(order.value, goodcoding.value);
       data.delivery = delivery.value
       if (!data.delivery){
         Toast({message:'请输入订单交货期', duration: 1000 })
         return
       }
-      data.orderhao = orderhao.value
-      if (!data.orderhao){
+      data.order = order.value
+      if (!data.order){
         Toast({message:'请输入订单编号', duration: 1000 })
         return
       }
-      data.customer = customer.value
-      if (!data.customer){
+      data.productline = productline.value
+      if (!data.productline){
         Toast({message:'请输入选择客户编号', duration: 1000 })
         return
       }
@@ -263,7 +262,8 @@ export default {
       }
 
       // 校验订单编号是否重复
-      countOrderhao(data.orderhao).then(res=> {
+      console.log(data);
+      countOrderCG(data.order).then(res=> {
         if (res.count >= 1) {
           // 订单已存在，弹出对话框选择是覆盖 还是取消
           console.log(data);
@@ -272,7 +272,7 @@ export default {
           })
               .then(() => {
                 // 覆盖原订单
-                updateorder(data).then(res=>{
+                updateorderCG(data).then(res=>{
                   if(res === 'ok'){
                     Toast.success('订单更新成功')
                   } else {
@@ -285,11 +285,11 @@ export default {
               });
         } else {
           // 订单不存在，创建订单执行下面的代码
-          createorder(data).then(res=>{
+          createorderCG(data).then(res=>{
             if(res === 'ok'){
               Toast.success('订单创建成功')
             } else {
-              Toast("在订单列表页面打开，查看是否创建成功")
+              Toast("重新打开订单，查看是否创建成功")
             }
           })
         }
@@ -327,58 +327,58 @@ export default {
 
     // 校验  检查订单号是否存在，如果存在，是否打开已存在的订单
     // const validator = (val) => /1\d{10}/.test(val);
-    const validator = (val) => countOrderhao(val).then(res => {
-        if(res.count >= 1) {
-          Dialog.confirm({
-            message: '是否打开已存在的订单？',
-          })
-              .then(() => {
-                // on confirm
-                getOrderdetail(val).then(res=>{
-                  if (res.count===0){
-                    //先清空前面的遗留数据
+    const validator = (val) => countOrderCG(val).then(res => {
+      if(res.count >= 1) {
+        Dialog.confirm({
+          message: '是否打开已存在的订单？',
+        })
+            .then(() => {
+              // on confirm
+              getOrderCGdetail(val).then(res=>{
+                if (res.count===0){
+                  //先清空前面的遗留数据
 
-                    goodcoding.value = []
-                    goodname.value = []
-                    goodunit.value = []
-                    goodnum.value = []
-                    Toast('此订单无产品详情')
-                  }else {
-                    state.cellnum = res.count + 3
-                    delivery.value = res.results[0].order.delivery.split(" ")[0]
-                    customer.value = res.results[0].order.customer
-                    remarks.value = res.results[0].order.remarks
+                  goodcoding.value = []
+                  goodname.value = []
+                  goodunit.value = []
+                  goodnum.value = []
+                  Toast('此订单无产品详情')
+                }else {
+                  state.cellnum = res.count + 3
+                  delivery.value = res.results[0].order.delivery.split(" ")[0]
+                  productline.value = res.results[0].order.supplier
+                  remarks.value = res.results[0].order.remarks
 
-                    //先清空前面的遗留数据
-                    goodcoding.value = []
-                    goodname.value = []
-                    goodunit.value = []
-                    goodnum.value = []
-                    for(let i in res.results){
-                      goodcoding.value[parseInt(i)+1] = res.results[i].sku.coding
-                      goodname.value[parseInt(i)+1] = res.results[i].sku.name
-                      goodunit.value[parseInt(i)+1] = res.results[i].sku.unit
-                      goodnum.value[parseInt(i)+1] = res.results[i].quantity
-                    }
+                  //先清空前面的遗留数据
+                  goodcoding.value = []
+                  goodname.value = []
+                  goodunit.value = []
+                  goodnum.value = []
+                  for(let i in res.results){
+                    goodcoding.value[parseInt(i)+1] = res.results[i].sku.split(":")[1]
+                    goodname.value[parseInt(i)+1] = res.results[i].sku.split(":")[2]
+                    goodunit.value[parseInt(i)+1] = res.results[i].sku.split(":")[4]
+                    goodnum.value[parseInt(i)+1] = res.results[i].quantity
                   }
-                })
+                }
               })
-              .catch(() => {
-                // on cancel
-              });
-        }
-        return res.count < 1
-      })
+            })
+            .catch(() => {
+              // on cancel
+            });
+      }
+      return res.count < 1
+    })
 
     // 删除按钮
     const deleteSubmit = ()=>{
-      if(orderhao.value){
+      if(order.value){
         Dialog.confirm({
           message: `删除订单，请点击"确认"`,
         })
             .then(() => {
               // 删除订单
-              deleteorder({'orderhao':orderhao.value}).then(res=>{
+              deleteorderCG({'order':order.value}).then(res=>{
                 Toast(res)
               })
             })
@@ -386,14 +386,14 @@ export default {
               // on cancel
             });
 
-    }else {Toast('请输入订单编号')}
+      }else {Toast('请输入订单编号')}
     }
 
     // 通过计算属性 计算数量列的和
     const total = computed(()=> {
       let sum = 0;
       for (let i in goodnum.value){
-            sum +=  parseInt(goodnum.value[i])
+        sum +=  parseInt(goodnum.value[i])
       }
       return sum;
     })
@@ -436,20 +436,19 @@ export default {
       onSubmit,
       onConfirm,
       showCalendar,
-      orderhao,
+      order,
       delivery,
-      customer,
+      productline,
       validator,
       cleargood,
       deleteSubmit,
 
     };
   },
-
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .table-order {
   background-color: #ffffff;
   border-collapse: separate;
@@ -464,9 +463,6 @@ export default {
   background-color: #ffffff;
   font-size: 12PX;
   color: rgba(131,135,137,0.54);
-    .tr {
-
-  }
 }
 .van-swipe-cell {
   margin-top: 10px;

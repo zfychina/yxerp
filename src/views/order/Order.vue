@@ -102,7 +102,7 @@ export default {
       // 是否扩展
       isshow: [{}, {}, {}, {},],
 
-      ordering: ['delivery', 'delivery', 'delivery', 'delivery'],
+      ordering: ['-delivery', '-delivery', '-delivery', '-delivery'],
       order_by: [true, true, true, true],
       orderstaus: [2 ,1 ,3 ,4 ],
       orderall: [

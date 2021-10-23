@@ -4,7 +4,13 @@ const Bom = () => import('@/views/bom/Bom')
 const Order = () => import('@/views/order/Order')
 const CreateOrder = () => import('@/views/order/CreateOrder')
 const search = () => import('@/views/search/search')
+
 const Unsettled = () => import('@/views/unsettled/Unsettled')
+const createorderSC = () => import('@/views/unsettled/ChildComps/createorderSC')
+const createorderSCRK = () => import('@/views/unsettled/ChildComps/createorderSCRK')
+const createorderCG = () => import('@/views/unsettled/ChildComps/createorderCG')
+const createorderCGRK = () => import('@/views/unsettled/ChildComps/createorderCGRK')
+
 const Profile = () => import('@/views/profile/Profile')
 const Register = () => import('@/views/profile/Register')
 const Login = () => import('@/views/profile/Login')
@@ -75,7 +81,7 @@ const routes = [
     name: 'createorder',
     component: CreateOrder,
     meta: {
-      title: '创建订单',
+      title: '创建销售订单',
       isAuthRequired: true,
     }
   },
@@ -103,6 +109,43 @@ const routes = [
     component: Login,
     meta: {
       title: '用户登录',
+    }
+  },
+// 创建生产订单
+  {
+    path: '/createordersc',
+    name: 'createordersc',
+    component: createorderSC,
+    meta: {
+      title: '创建生产订单',
+      isAuthRequired: true,
+    }
+  },
+  {
+    path: '/createorderscrk',
+    name: 'createorderscrk',
+    component: createorderSCRK,
+    meta: {
+      title: '创建生产入库单',
+      isAuthRequired: true,
+    }
+  },
+  {
+    path: '/createordercg',
+    name: 'createordercg',
+    component: createorderCG,
+    meta: {
+      title: '创建采购订单',
+      isAuthRequired: true,
+    }
+  },
+  {
+    path: '/createordercgrk',
+    name: 'createordercgrk',
+    component: createorderCGRK,
+    meta: {
+      title: '创建采购入库订单',
+      isAuthRequired: true,
     }
   },
 

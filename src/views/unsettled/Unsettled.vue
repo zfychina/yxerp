@@ -5,7 +5,19 @@
         <van-icon name="search" size="18" />
       </template>
     </van-nav-bar>
+    <van-popup v-model:show="showPopup" closeable position="top" :style="{ height: '50%'}">
+      <div style="margin-top:60px;font-size: 22px;color: var(--color-high-text)">
+        <van-cell title="新建生产订单" @click="createsc" is-link/>
+        <van-cell title="新建生产入库单" @click="createscrk" is-link/>
+        <van-cell title="新建采购订单" @click="createcg" is-link/>
+        <van-cell title="新建采购入库单" @click="createcgrk" is-link/>
+        <van-cell title="新建生产提料单(暂无此入口)" @click="createsctl" is-link/>
+
+      </div>
+    </van-popup>
   </van-sticky>
+
+
   <!--滑动切换-->
   <van-tabs title-active-color=var(--color-high-text) color=var(--color-high-text) line-width=20%
             v-model:active="active"
@@ -85,8 +97,8 @@ export default {
     const router = useRouter()
     // Tab当前位置
     const active = ref(0);
-
-
+    // 左侧弹出是否显示
+    const showPopup = ref(false);
     // list组件
     const state = reactive({
       // 控制第一次全选，提示是否展开所有订单内的商品信息
@@ -327,13 +339,38 @@ export default {
 
     // click-left 导航栏左点击，增加订单按钮
     const onClickLeft = ()=>{
-      router.push({path:'/createorder'})
+      showPopup.value = true;
     }
     // click-right 导航栏右点击，搜索按钮
     const onClickRight = ()=>{
       router.push({path:'/search'})
     }
+
+    // 新建生产订单入口
+    const createsc = ()=>{
+      router.push({path:'/createordersc'})
+    }
+    // 新建生产提料单入口
+    const createsctl = ()=>{
+      console.log("新建生产提料单入口");
+    }
+    // 新建生产入库单入口
+    const createscrk = ()=>{
+      router.push({path:'/createorderscrk'})
+    }
+    // 新建采购订单入口
+    const createcg = ()=>{
+      router.push({path:'/createordercg'})
+    }
+    // 新建采购入库单入口
+    const createcgrk = ()=>{
+      router.push({path:'/createordercgrk'})
+    }
+
+
+
     return {
+      showPopup,
       sorttable,
       onSubmit,
       state,
@@ -350,6 +387,12 @@ export default {
       getordercgre,
       getordersc,
       getorderscre,
+
+      createsc,
+      createsctl,
+      createscrk,
+      createcg,
+      createcgrk,
     };
   },
 
