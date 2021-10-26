@@ -70,10 +70,32 @@ export function countOrderSC(order) {
   })
 }
 
+// 校验销售订单是否读取完
+export function countOrderhaook(orderhao) {
+  return request({
+    url: "/orders/" + orderhao + '/countok/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
 //获取生产订单详情信息
 export function getOrderSCdetail(orderhao) {
   return request({
     url: "/orderssc/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+//获取获取未完成的销售订单详情信息
+export function getxsOrderokdetail(orderhao) {
+  return request({
+    url: "/xsordersok/" + orderhao,
     method: 'get',
     params: {
 

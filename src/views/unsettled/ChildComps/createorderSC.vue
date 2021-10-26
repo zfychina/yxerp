@@ -51,15 +51,33 @@
           />
         </nobr>
       </van-cell>
-      <!--技术要求-->
-      <van-field
-          v-model="remarks"
-          rows="1"
-          autosize
-          label="技术要求:"
-          type="textarea"
-          placeholder="请输入技术要求"
-          border
+      <!--源销售订单-->
+      <van-field v-show="!state.readonly"
+                 scroll-to-error
+                 autofocus
+                 clickable
+                 clearable
+                 colon
+                 v-model.trim="xs_order"
+                 name="xs_order"
+                 label="源销售订单"
+                 placeholder="请输入销售订单编号"
+                 :rules="[{ validator: asyncValidator, message: '该销售订单已完成，请重新输入' }]"
+
+      />
+      <van-field v-show="state.readonly"
+          scroll-to-error
+          autofocus
+          clickable
+          clearable
+          colon
+          disabled
+          v-model.trim="xs_order"
+          name="xs_order"
+          label="源销售订单"
+          placeholder="请输入销售订单编号"
+          :rules="[{ xsvalidator, message: '源销售订单不存在，请核实' }]"
+
       />
 
 
@@ -134,9 +152,10 @@
 <script>
 import {ref, onMounted, reactive, computed} from 'vue';
 import {useRouter} from "vue-router";
-import {productlinelist, countOrderSC, getOrderSCdetail, createorderSC, updateorderSC, deleteorderSC} from "network/unsettled";
+import {productlinelist, countOrderSC, getOrderSCdetail, createorderSC, updateorderSC, deleteorderSC, countOrderhaook} from "network/unsettled";
 import {goodslist} from "network/good";
 import {Toast, Dialog} from "vant";
+import {getxsOrderokdetail} from "../../../network/unsettled";
 
 export default {
   name: "createorderSC",
@@ -156,6 +175,7 @@ export default {
     const order = ref('');
     const productline = ref('');
     const remarks = ref('');
+    const xs_order = ref('');
 
     // 带建议输入
     const querySearch = (queryString, cb) => {
@@ -208,6 +228,7 @@ export default {
     const goodname = ref([])
     const goodunit = ref([])
     const state = reactive({
+      readonly: false,
       cellnum: 5,
       loading: false,
       finished: true,
@@ -249,6 +270,7 @@ export default {
         return
       }
       data.remarks = remarks.value
+      data.xs_order = xs_order.value
       data.sku = []
       for (let i in goodcoding.value){
         if(!goodname.value[i] || !goodnum.value[i] || parseInt(goodnum.value[i]) === 0){
@@ -329,13 +351,16 @@ export default {
     // 校验  检查订单号是否存在，如果存在，是否打开已存在的订单
     // const validator = (val) => /1\d{10}/.test(val);
     const validator = (val) => countOrderSC(val).then(res => {
+      state.readonly=false
       if(res.count >= 1) {
+        state.readonly=true
         Dialog.confirm({
           message: '是否打开已存在的订单？',
         })
             .then(() => {
               // on confirm
               getOrderSCdetail(val).then(res=>{
+                console.log(res);
                 if (res.count===0){
                   //先清空前面的遗留数据
 
@@ -348,7 +373,7 @@ export default {
                   state.cellnum = res.count + 3
                   delivery.value = res.results[0].order.delivery.split(" ")[0]
                   productline.value = res.results[0].order.supplier
-                  remarks.value = res.results[0].order.remarks
+                  xs_order.value = res.results[0].xs_order
 
                   //先清空前面的遗留数据
                   goodcoding.value = []
@@ -369,6 +394,48 @@ export default {
             });
       }
       return res.count < 1
+    })
+    // 源销售订单校验
+    const asyncValidator = (val) => countOrderhaook(val).then(res => {
+      console.log(res);
+      if(res.count >= 1) {
+        Dialog.confirm({
+          message: '是否打开未完成的销售订单？',
+        })
+            .then(() => {
+              // on confirm
+              getxsOrderokdetail(val).then(res=>{
+                console.log(res);
+                if (res.count===0){
+                  //先清空前面的遗留数据
+
+                  goodcoding.value = []
+                  goodname.value = []
+                  goodunit.value = []
+                  goodnum.value = []
+                  Toast('此订单无产品详情')
+                }else {
+                  state.cellnum = res.count + 3
+
+                  //先清空前面的遗留数据
+                  goodcoding.value = []
+                  goodname.value = []
+                  goodunit.value = []
+                  goodnum.value = []
+                  for(let i in res.results){
+                    goodcoding.value[parseInt(i)+1] = res.results[i].sku.coding
+                    goodname.value[parseInt(i)+1] = res.results[i].sku.name
+                    goodunit.value[parseInt(i)+1] = res.results[i].sku.unit
+                    goodnum.value[parseInt(i)+1] = res.results[i].quantity-res.results[i].to_quantity
+                  }
+                }
+              })
+            })
+            .catch(() => {
+              // on cancel
+            });
+      }
+      return res.count > 0
     })
 
     // 删除按钮
@@ -420,6 +487,7 @@ export default {
     };
 
     return {
+      xs_order,
       remarks,
       total,
       onRefresh,
@@ -441,6 +509,7 @@ export default {
       delivery,
       productline,
       validator,
+      asyncValidator,
       cleargood,
       deleteSubmit,
 
