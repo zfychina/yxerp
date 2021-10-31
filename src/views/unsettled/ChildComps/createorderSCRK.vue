@@ -312,7 +312,7 @@ export default {
       // 校验订单编号是否重复
       console.log(data);
       countOrderSCRK(data.order).then(res=> {
-        if (res.count >= 11) {
+        if (res.count >= 1) {
           // 订单已存在，弹出对话框选择是覆盖 还是取消
           console.log(data);
           Dialog.confirm({
