@@ -81,7 +81,7 @@ export function countOrderhaook(orderhao) {
   })
 }
 
-//获取生产订单详情信息
+// 获取生产订单详情信息
 export function getOrderSCdetail(orderhao) {
   return request({
     url: "/orderssc/" + orderhao,
@@ -92,7 +92,7 @@ export function getOrderSCdetail(orderhao) {
   })
 }
 
-//获取获取未完成的销售订单详情信息
+// 获取未完成的销售订单详情信息
 export function getxsOrderokdetail(orderhao) {
   return request({
     url: "/xsordersok/" + orderhao,
@@ -132,7 +132,7 @@ export function deleteorderSC(data) {
 
 
 
-//获取供应商信息
+// 获取供应商信息
 export function supplierlist() {
   return request({
     url: '/supplier/',
@@ -154,7 +154,7 @@ export function countOrderCG(order) {
   })
 }
 
-//获取采购订单详情信息
+// 获取采购订单详情信息
 export function getOrderCGdetail(orderhao) {
   return request({
     url: "/orderscg/" + orderhao,
@@ -187,6 +187,80 @@ export function updateorderCG(data) {
 export function deleteorderCG(data) {
   return request({
     url: '/orderscg/action/',
+    method: 'delete',
+    data
+  })
+}
+
+
+
+
+// 校验生产入库单号是否重复
+export function countOrderSCRK(order) {
+  return request({
+    url: "/ordersscrk/" + order + '/count/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取生产入库单详情信息
+export function getOrderSCRKdetail(orderhao) {
+  return request({
+    url: "/ordersscrk/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 校验生产订单是否读取完
+export function countOrderSCok(orderhao) {
+  return request({
+    url: "/orderssc/" + orderhao + '/countok/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取未完成的生产订单详情信息
+export function getOrderSCokdetail(orderhao) {
+  return request({
+    url: "/ordersscok/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 创建生产订单
+export function createorderSCRK(data) {
+  return request({
+    url: '/ordersscrk/action/',
+    method: 'post',
+    data
+  })
+}
+
+// 更新生产订单
+export function updateorderSCRK(data) {
+  return request({
+    url: '/ordersscrk/action/',
+    method: 'put',
+    data
+  })
+}
+
+// 删除生产订单
+export function deleteorderSCRK(data) {
+  return request({
+    url: '/ordersscrk/action/',
     method: 'delete',
     data
   })

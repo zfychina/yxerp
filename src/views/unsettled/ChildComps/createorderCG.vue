@@ -182,7 +182,21 @@ export default {
     };
     onMounted(() => {
       restaurants.value = loadAll();
+      delivery.value = addDate()
     });
+
+    // 获取系统当前日期
+    const addDate = () =>{
+      const nowDate = new Date();
+      const date = {
+        year: nowDate.getFullYear(),
+        month: nowDate.getMonth() + 1,
+        date: nowDate.getDate(),
+      }
+      const newmonth = date.month>9?date.month:'0'+date.month
+      const day = date.date>9?date.date:'0'+date.date
+      return date.year + '-' + newmonth + '-' + day
+    };
     // 生产线数据加载
     const loadAll = () => {
       let arr1=[]

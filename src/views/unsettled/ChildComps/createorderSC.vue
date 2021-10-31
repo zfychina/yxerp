@@ -76,7 +76,7 @@
           name="xs_order"
           label="源销售订单"
           placeholder="请输入销售订单编号"
-          :rules="[{ xsvalidator, message: '源销售订单不存在，请核实' }]"
+          :rules="[{ validator, message: '源销售订单不存在，请核实' }]"
 
       />
 
@@ -152,10 +152,9 @@
 <script>
 import {ref, onMounted, reactive, computed} from 'vue';
 import {useRouter} from "vue-router";
-import {productlinelist, countOrderSC, getOrderSCdetail, createorderSC, updateorderSC, deleteorderSC, countOrderhaook} from "network/unsettled";
+import {productlinelist, countOrderSC, getOrderSCdetail, createorderSC, updateorderSC, deleteorderSC, countOrderhaook, getxsOrderokdetail} from "network/unsettled";
 import {goodslist} from "network/good";
 import {Toast, Dialog} from "vant";
-import {getxsOrderokdetail} from "../../../network/unsettled";
 
 export default {
   name: "createorderSC",
@@ -203,7 +202,22 @@ export default {
     };
     onMounted(() => {
       restaurants.value = loadAll();
+      delivery.value = addDate()
     });
+
+    // 获取系统当前日期
+    const addDate = () =>{
+      const nowDate = new Date();
+      const date = {
+        year: nowDate.getFullYear(),
+        month: nowDate.getMonth() + 1,
+        date: nowDate.getDate(),
+      }
+      const newmonth = date.month>9?date.month:'0'+date.month
+      const day = date.date>9?date.date:'0'+date.date
+      return date.year + '-' + newmonth + '-' + day
+    };
+
     // 生产线数据加载
     const loadAll = () => {
       let arr1=[]
