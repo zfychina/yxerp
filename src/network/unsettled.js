@@ -267,3 +267,86 @@ export function deleteorderSCRK(data) {
 }
 
 
+
+
+// 校验采购入库单号是否重复
+export function countOrderCGRK(order) {
+  return request({
+    url: "/orderscgrk/" + order + '/count/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取采购入库单详情信息
+export function getOrderCGRKdetail(orderhao) {
+  return request({
+    url: "/orderscgrk/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取采购入库无订单详情信息
+export function getOrderCGRKNOTdetail(orderhao) {
+  return request({
+    url: "/orderscgrknot/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 校验采购订单是否读取完
+export function countOrderCGok(orderhao) {
+  return request({
+    url: "/orderscg/" + orderhao + '/countok/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取未完成的采购订单详情信息
+export function getOrderCGokdetail(orderhao) {
+  return request({
+    url: "/orderscgok/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 创建采购订单
+export function createorderCGRK(data) {
+  return request({
+    url: '/orderscgrk/action/',
+    method: 'post',
+    data
+  })
+}
+
+// 更新采购订单
+export function updateorderCGRK(data) {
+  return request({
+    url: '/orderscgrk/action/',
+    method: 'put',
+    data
+  })
+}
+
+// 删除采购订单
+export function deleteorderCGRK(data) {
+  return request({
+    url: '/orderscgrk/action/',
+    method: 'delete',
+    data
+  })
+}
