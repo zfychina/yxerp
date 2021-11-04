@@ -342,6 +342,15 @@ export default {
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       state.loading = true;
+
+      order.value = []
+      delivery.value = []
+      productline.value = []
+      xs_order.value = []
+      goodcoding.value = []
+      goodname.value = []
+      goodunit.value = []
+      goodnum.value = []
       onLoad();
     };
     // 列表
