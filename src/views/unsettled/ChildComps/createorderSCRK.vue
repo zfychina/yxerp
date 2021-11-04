@@ -165,7 +165,7 @@
 <script>
 
 import {ref, onMounted, reactive, computed} from 'vue';
-import {useRouter} from "vue-router";
+import {useRouter, useRoute} from "vue-router";
 import {productlinelist, countOrderSCRK, getOrderSCRKdetail, createorderSCRK, updateorderSCRK, deleteorderSCRK, countOrderSCok, getOrderSCokdetail} from "network/unsettled";
 import {goodslist} from "network/good";
 import {Toast, Dialog} from "vant";
@@ -173,7 +173,10 @@ import {Toast, Dialog} from "vant";
 export default {
   name: "createorderSCRK",
   setup() {
+    // 发送数据
     const router = useRouter()
+    // 接收数据
+    const route =useRoute();
     // 带建议输入用
     const restaurants = ref([])
 
@@ -217,6 +220,7 @@ export default {
     onMounted(() => {
       restaurants.value = loadAll();
       delivery.value = addDate()
+      validator(route.query.order)
     });
 
     // 获取系统当前日期
@@ -396,6 +400,7 @@ export default {
                   goodnum.value = []
                   Toast('此订单无产品详情')
                 }else {
+                  order.value = val
                   state.cellnum = res.count + 3
                   delivery.value = res.results[0].order.order_date.split(" ")[0]
                   productline.value = res.results[0].sku.order.supplier

@@ -56,13 +56,13 @@
             <tbody>
             <tr v-for="(item,index1) in state.orderall[index].list" :key="index1" style="margin-left: 3px">
               <th style="width: 5%"><van-checkbox @click="oncheckorder(item.id)" v-model="state.checkorder[index].[item.id]" icon-size="15px"></van-checkbox></th>
-              <th style="width: 10%">{{item.order.order_date?.split(" ")[0]}}</th>
-              <th style="width: 18%">{{item.sku.sku ? item.sku.sku?.split(":")[1] : item.sku?.split(":")[1]}}</th>
-              <th style="width: 25%">{{item.sku.sku ? item.sku.sku?.split(":")[2] : item.sku?.split(":")[2]}}</th>
+              <th style="width: 10%" @click="newdetail(item.order.order)">{{item.order.order_date?.split(" ")[0]}}</th>
+              <th style="width: 18%" @click="newdetail(item.order.order)">{{item.sku.sku ? item.sku.sku?.split(":")[1] : item.sku?.split(":")[1]}}</th>
+              <th style="width: 25%" @click="newdetail(item.order.order)">{{item.sku.sku ? item.sku.sku?.split(":")[2] : item.sku?.split(":")[2]}}</th>
 <!--              <br>-->
-              <th style="width: 15%">{{ item.quantityed ? item.quantity : item.quantityed}}</th>
-              <th style="width: 15%">{{ item.quantityed ? item.quantityed : item.quantity }}</th>
-              <th style="width: 10%">{{item.order.supplier ? item.order.supplier : item.sku.order.supplier}}</th>
+              <th style="width: 15%" @click="newdetail(item.order.order)">{{ item.quantityed ? item.quantity : item.quantityed}}</th>
+              <th style="width: 15%" @click="newdetail(item.order.order)">{{ item.quantityed ? item.quantityed : item.quantity }}</th>
+              <th style="width: 10%" @click="newdetail(item.order.order)">{{item.order.supplier ? item.order.supplier : item.sku.order.supplier}}</th>
             </tr>
             </tbody>
           </table>
@@ -150,7 +150,7 @@ export default {
       getorderCG(page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-
+        console.log(res);
       }).catch(err => err)
     }
 
@@ -162,7 +162,7 @@ export default {
       getorderCGRE(page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-
+        console.log(res);
       }).catch(err => err)
     }
 
@@ -174,6 +174,7 @@ export default {
       getorderSC(page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
+        console.log(res);
 
       }).catch(err => err)
     }
@@ -188,9 +189,7 @@ export default {
       getorderSCRE(page, state.ordering[index]).then(res => {
         state.orderall[index].list.push(...res.results)
         state.orderall[index].count = res.count
-        console.log(state.orderall[index].list);
-        console.log(state.orderall[index].count);
-
+        console.log(res);
       }).catch(err => err)
     }
 
@@ -367,7 +366,26 @@ export default {
       router.push({path:'/createordercgrk'})
     }
 
+    // 跳转详情
+    const newdetail = (order)=>{
+      console.log(order);
+      if (active.value === 0) {
+        router.push({path:'/createordersc', query:{order:order}})
+      }
 
+      if (active.value === 2) {
+        router.push({path:'/createorderscrk', query:{order:order}})
+      }
+
+      if (active.value === 3) {
+        router.push({path:'/createordercg', query:{order:order}})
+      }
+
+      if (active.value === 4) {
+        router.push({path:'/createordercgrk', query:{order:order}})
+      }
+
+    }
 
     return {
       showPopup,
@@ -393,6 +411,8 @@ export default {
       createscrk,
       createcg,
       createcgrk,
+      // 跳转详情
+      newdetail,
     };
   },
 
