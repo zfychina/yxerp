@@ -160,7 +160,7 @@ export default {
     };
     //数据
     onMounted(()=>{
-      shortmoldDate({ordering: 'coding'}).then(res=>{
+      shortmoldDate({ordering:'coding'}).then(res=>{
         state.list = res
         // console.log(state.list);
       })

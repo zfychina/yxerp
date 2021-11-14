@@ -1,6 +1,6 @@
 <template>
     <van-sticky>
-    <van-nav-bar :title="state.username" left-arrow  right-text="登出" @click-right="tologout"  fixed="true">
+    <van-nav-bar :title="state.username" left-text="报表"  right-text="登出" @click-left="onClickLeft" @click-right="tologout"  fixed="true">
     </van-nav-bar>
     </van-sticky>
 
@@ -259,6 +259,11 @@ export default {
       },500)
     }
 
+    // 报表页面
+    const  onClickLeft = ()=>{
+      router.push({path:'/statement'})
+    }
+
     return{
       ...props,
       state,
@@ -272,6 +277,7 @@ export default {
       Customerimport,
       Bomimport,
       RecordsiImport,
+      onClickLeft,
     }
   }
 }

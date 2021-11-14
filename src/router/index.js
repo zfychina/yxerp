@@ -14,6 +14,7 @@ const createorderCGRK = () => import('@/views/unsettled/ChildComps/createorderCG
 const Profile = () => import('@/views/profile/Profile')
 const Register = () => import('@/views/profile/Register')
 const Login = () => import('@/views/profile/Login')
+const Statement = () => import('@/views/profile/Statement')
 
 
 const routes = [
@@ -149,6 +150,14 @@ const routes = [
     }
   },
 
+  {
+    path: '/statement',
+    name: 'Statement',
+    component: Statement,
+    meta: {
+      title: '报表',
+    }
+  },
 ]
 
 const router = createRouter({

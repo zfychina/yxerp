@@ -251,7 +251,7 @@ export default {
       data.remarks = remarks.value
       data.sku = []
       for (let i in goodcoding.value){
-        if(!goodname.value[i] || !goodnum.value[i] || parseInt(goodnum.value[i]) === 0){
+        if(!goodname.value[i] || !goodnum.value[i] || parseFloat(goodnum.value[i]) === 0){
           continue
         }
 
