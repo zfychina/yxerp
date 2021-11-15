@@ -11,3 +11,14 @@ export function getReportsku(year) {
     }
   })
 }
+
+// 获取订单交货期年份
+export function getYearList() {
+  return request({
+    url: "/orders/yearlist/",
+    method: 'get',
+    params: {
+
+    }
+  })
+}

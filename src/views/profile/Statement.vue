@@ -1,12 +1,17 @@
 <template>
   <van-sticky>
-    <van-nav-bar title="报表统计" left-arrow fixed @click-left="onClickLeft"  @click-right="onClickRight">
-      <template #right>
-        <van-icon name="search" size="18" />
-      </template>
+    <van-nav-bar :title="currentDate+'报表统计'" left-arrow right-text="年份选择" fixed @click-left="onClickLeft"  @click-right="onClickright">
     </van-nav-bar>
-  </van-sticky>
+      <van-popup v-model:show="showPicker" round position="bottom">
+        <van-picker
+            :columns="state.columns"
+            @cancel="showPicker = false"
+            @confirm="onConfirm"
+        />
+      </van-popup>
 
+
+  </van-sticky>
   <!--滑动切换-->
   <van-tabs title-active-color=var(--color-high-text) color=var(--color-high-text) line-width=20%
             v-model:active="active"
@@ -48,6 +53,7 @@ import {Toast} from "vant";
 import { useRouter } from 'vue-router'
 import {onMounted, reactive, ref} from "vue";
 import {getReportsku} from "network/statement";
+import {getYearList} from "../../network/statement";
 
 export default {
   name: "Statement",
@@ -55,6 +61,8 @@ export default {
     const router = useRouter()
     // Tab当前位置
     const active = ref(0);
+    // 年份
+    const currentDate = ref();
 
     const state = reactive({
       tabtitle: ['锁体', '锁芯', '保护器', '面板', '配件'],
@@ -84,26 +92,57 @@ export default {
           [],
           [],
         ],
-      ]
+      ],
+      columns: []
     });
-
 
     onMounted(() => {
-      getreport()
+      currentDate.value = Date().split(' ')[3]
+      getyearlist()
+      getreport(currentDate.value)
+
     });
+    // 获取年份列表
+    const getyearlist = () => {
+      getYearList().then(res=>{
+        state.columns = res
+      }).catch(err=>{console.log(err);})
+    }
     // 获取数据
-    const getreport = () => {
+    const getreport = (year) => {
       Toast.loading({duration: 0, forbidClick: true, message: '加载中'})
-      getReportsku(2021).then(res=>{
+      getReportsku(year).then(res=>{
         Toast.clear()
         Toast.success("加载完成")
-        for (const i in state.tabtitle) {
-          console.log(i, res[0], res[0]?.[state.tabtitle[i]]);
+        console.log(res);
+        state.tableData = [
+          [
+            [],
+            [],
+            [],
+            [],
+            [],
+          ],
+          [
+            [],
+            [],
+            [],
+            [],
+            [],
+          ],
+          [
+            [],
+            [],
+            [],
+            [],
+            [],
+          ],
+        ]
+        for (let i in state.tabtitle) {
           state.tableData[0][i].push(res[0]?.[state.tabtitle[i]])
           state.tableData[1][i].push(res[1]?.[state.tabtitle[i]])
           state.tableData[2][i].push(res[2]?.[state.tabtitle[i]])
         }
-        console.log(state.tableData);
       }).catch(err =>{console.log(err)})
     }
 
@@ -134,12 +173,33 @@ export default {
       router.go(-1)
     }
 
+    // 年份选择
+    const showPicker = ref(false);
+    const onConfirm = (value) => {
+      if(value === currentDate.value){
+        showPicker.value = false;
+      } else {
+      getreport(value)
+      currentDate.value = value;
+      showPicker.value = false;
+      }
+    };
+    const onClickright = () => {
+      showPicker.value = true
+    }
+
+
 
     return{
       state,
       active,
+      currentDate,
+
+      onConfirm,
+      showPicker,
 
       onClickLeft,
+      onClickright,
 
       onRefresh,
 
