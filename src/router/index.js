@@ -14,7 +14,10 @@ const createorderCGRK = () => import('@/views/unsettled/ChildComps/createorderCG
 const Profile = () => import('@/views/profile/Profile')
 const Register = () => import('@/views/profile/Register')
 const Login = () => import('@/views/profile/Login')
-const Statement = () => import('@/views/profile/Statement')
+const Statement = () => import('@/views/profile/ChildComps/Statement')
+const customerStatement = () => import('@/views/profile/ChildComps/customerStatement')
+const yearStatement = () => import('@/views/profile/ChildComps/yearStatement')
+const yearcustomerStatement = () => import('@/views/profile/ChildComps/yearcustomerStatement')
 
 
 const routes = [
@@ -155,7 +158,32 @@ const routes = [
     name: 'Statement',
     component: Statement,
     meta: {
-      title: '报表',
+      title: '产品报表',
+    }
+  },
+  {
+    path: '/customerStatement',
+    name: 'customerStatement',
+    component: customerStatement,
+    meta: {
+      title: '客户报表',
+    }
+  },
+
+  {
+    path: '/yearstatement',
+    name: 'yearStatement',
+    component: yearStatement,
+    meta: {
+      title: '产品报表',
+    }
+  },
+  {
+    path: '/yearcustomerStatement',
+    name: 'yearcustomerStatement',
+    component: yearcustomerStatement,
+    meta: {
+      title: '客户报表',
     }
   },
 ]

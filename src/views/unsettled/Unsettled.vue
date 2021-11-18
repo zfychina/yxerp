@@ -12,7 +12,6 @@
         <van-cell title="新建采购订单" @click="createcg" is-link/>
         <van-cell title="新建采购入库单" @click="createcgrk" is-link/>
         <van-cell title="新建生产提料单(暂无此入口)" @click="createsctl" is-link/>
-
       </div>
     </van-popup>
   </van-sticky>
