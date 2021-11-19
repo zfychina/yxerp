@@ -105,7 +105,7 @@ export default {
     }
     // 获取数据
     const getreport = (year) => {
-      Toast.loading({duration: 0, forbidClick: true, message: '加载中'})
+      Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
       getReportsku(year, 'yeargood').then(res=>{
         Toast.clear()
         Toast.success("加载完成")

@@ -18,6 +18,7 @@ const Statement = () => import('@/views/profile/ChildComps/Statement')
 const customerStatement = () => import('@/views/profile/ChildComps/customerStatement')
 const yearStatement = () => import('@/views/profile/ChildComps/yearStatement')
 const yearcustomerStatement = () => import('@/views/profile/ChildComps/yearcustomerStatement')
+const capacityStatement = () => import('@/views/profile/ChildComps/capacityStatement')
 
 
 const routes = [
@@ -184,6 +185,14 @@ const routes = [
     component: yearcustomerStatement,
     meta: {
       title: '客户报表',
+    }
+  },
+  {
+    path: '/capacitystatement',
+    name: 'capacityStatement',
+    component: capacityStatement,
+    meta: {
+      title: '产能报表',
     }
   },
 ]

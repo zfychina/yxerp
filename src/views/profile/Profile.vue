@@ -7,7 +7,7 @@
         <div style="margin-top:60px;font-size: 22px;color: var(--color-high-text)">
           <van-cell title="产品报表统计" @click="goodsstatement" is-link/>
           <van-cell title="客户报表统计" @click="customerStatement" is-link/>
-          <van-cell title="产能报表统计（暂无此报表）" @click="createcg" is-link/>
+          <van-cell title="产能报表统计" @click="capacityStatement" is-link/>
           <van-cell title="产品年度对比报表" @click="yeargoodsstatement" is-link/>
           <van-cell title="客户年度对比报表" @click="yearcustomerStatement" is-link/>
         </div>
@@ -304,6 +304,10 @@ export default {
     const yearcustomerStatement = ()=>{
       router.push({path:'/yearcustomerStatement'})
     }
+    // 产能报表统计
+    const capacityStatement = ()=>{
+      router.push({path:'/capacityStatement'})
+    }
 
     return{
       ...props,
@@ -325,6 +329,7 @@ export default {
       customerStatement,
       yeargoodsstatement,
       yearcustomerStatement,
+      capacityStatement,
 
     }
   }

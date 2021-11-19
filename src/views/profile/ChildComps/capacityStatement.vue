@@ -1,6 +1,6 @@
 <template>
   <van-sticky>
-    <van-nav-bar :title="currentDate+'客户报表统计'" left-arrow right-text="年份选择" fixed @click-left="onClickLeft"  @click-right="onClickright">
+    <van-nav-bar :title="currentDate+'产能报表统计'" left-arrow right-text="年份选择" fixed @click-left="onClickLeft"  @click-right="onClickright">
     </van-nav-bar>
       <van-popup v-model:show="showPicker" round position="bottom">
         <van-picker
@@ -26,19 +26,19 @@
           <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }">{{ item_div }}</van-divider>
           <el-table sum-text="合计:" highlight-current-row size="small" :data="state.tableData[index_div][index][0]" stripe border show-summary style="width: 100%">
           <el-table-column fixed prop="name" label="分类" width="70" />
-          <el-table-column prop="Jan" sortable label="1月" width="65" />
-          <el-table-column prop="Feb" sortable label="2月" width="65" />
-          <el-table-column prop="Mar" sortable label="3月" width="65" />
-          <el-table-column prop="Apr" sortable label="4月" width="65" />
-          <el-table-column prop="May" sortable label="5月" width="65" />
-          <el-table-column prop="Jun" sortable label="6月" width="65" />
-          <el-table-column prop="Jul" sortable label="7月" width="65" />
-          <el-table-column prop="Aug" sortable label="8月" width="65" />
-          <el-table-column prop="Sep" sortable label="9月" width="65" />
-          <el-table-column prop="Oct" sortable label="10月" width="75" />
-          <el-table-column prop="Nov" sortable label="11月" width="75" />
-          <el-table-column prop="Dec" sortable label="12月" width="75" />
-          <el-table-column prop="total" sortable label="合计" width="75" />
+          <el-table-column prop="Jan" sortable label="1月" width="85" />
+          <el-table-column prop="Feb" sortable label="2月" width="85" />
+          <el-table-column prop="Mar" sortable label="3月" width="85" />
+          <el-table-column prop="Apr" sortable label="4月" width="85" />
+          <el-table-column prop="May" sortable label="5月" width="85" />
+          <el-table-column prop="Jun" sortable label="6月" width="85" />
+          <el-table-column prop="Jul" sortable label="7月" width="85" />
+          <el-table-column prop="Aug" sortable label="8月" width="85" />
+          <el-table-column prop="Sep" sortable label="9月" width="85" />
+          <el-table-column prop="Oct" sortable label="10月" width="85" />
+          <el-table-column prop="Nov" sortable label="11月" width="85" />
+          <el-table-column prop="Dec" sortable label="12月" width="85" />
+          <el-table-column prop="total" sortable label="合计" width="85" />
         </el-table>
 
         </div>
@@ -56,7 +56,7 @@ import {getReportsku} from "network/statement";
 import {getYearList} from "../../../network/statement";
 
 export default {
-  name: "customerStatement",
+  name: "capacityStatement",
   setup() {
     const router = useRouter()
     // Tab当前位置
@@ -66,7 +66,7 @@ export default {
 
     const state = reactive({
       tabtitle: ['锁体', '锁芯', '保护器', '面板', '配件'],
-      divider: ['客户数据统计',],
+      divider: ['产能报表统计',],
       refreshing: false,
       loading: false,
       finished: [false, false, false, false, false],
@@ -111,7 +111,7 @@ export default {
     // 获取数据
     const getreport = (year) => {
       Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
-      getReportsku(year, 'customer').then(res=>{
+      getReportsku(year, 'capacity').then(res=>{
         Toast.clear()
         Toast.success("加载完成")
         console.log(res);
@@ -139,9 +139,9 @@ export default {
           ],
         ]
         for (let i in state.tabtitle) {
-          state.tableData[0][i].push(res[3]?.[state.tabtitle[i]])
-          // state.tableData[1][i].push(res[1]?.[state.tabtitle[i]])
-          // state.tableData[2][i].push(res[2]?.[state.tabtitle[i]])
+          state.tableData[0][i].push(res[0]?.[state.tabtitle[i]])
+          state.tableData[1][i].push(res[1]?.[state.tabtitle[i]])
+          state.tableData[2][i].push(res[2]?.[state.tabtitle[i]])
         }
       }).catch(err =>{console.log(err)})
     }

@@ -61,7 +61,7 @@ export default {
 
     const state = reactive({
       tabtitle: ['锁体', '锁芯', '保护器', '面板', '配件'],
-      divider: ['客户数据统计',],
+      divider: ['客户年度数据统计',],
       refreshing: false,
       loading: false,
       finished: [false, false, false, false, false],
@@ -105,11 +105,10 @@ export default {
     }
     // 获取数据
     const getreport = (year) => {
-      Toast.loading({duration: 0, forbidClick: true, message: '加载中'})
+      Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
       getReportsku(year, 'yearcustomer').then(res=>{
         Toast.clear()
         Toast.success("加载完成")
-        console.log(res);
         state.tableData = [
           [
             [],
@@ -137,7 +136,6 @@ export default {
           state.tableData[0][i].push(res[0]?.[state.tabtitle[i]])
           // state.tableData[1][i].push(res[1]?.[state.tabtitle[i]])
           // state.tableData[2][i].push(res[2]?.[state.tabtitle[i]])
-        console.log(state.tableData);
         }
       }).catch(err =>{console.log(err)})
     }
