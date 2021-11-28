@@ -133,15 +133,56 @@
           </table>
 
           <template #right>
-            <van-button square type="danger" text="清除" @click="cleargood(index)"/>
+            <van-button square type="danger" text="预料" @click="anticipate(index)"/>
           </template>
           <van-divider style="margin: 0 0 0 0"/>
+
         </van-swipe-cell>
         <P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 15px">+ 增加行 +</P>
+
+
+
       </van-list>
     </van-pull-refresh>
 
   </van-form>
+  <van-popup v-model:show="showPopup" close-icon-position="top-left" closeable round  position="bottom" :style="{ height: '80%'}">
+    <div style="font-size:22px;font-family:'微软雅黑';margin-top: 10px">请确认预料内容</div>
+<!--    <van-button color=var(&#45;&#45;color-high-text) style="margin-top: 5px;" type="info">确认</van-button>-->
+    <van-swipe-cell v-for="index in state.cellnum" v-bind:key="index">
+
+      <table cellpadding = 8px style="width: 100%">
+        <tbody>
+        <tr>
+          <td style="width: 7%;word-break:break-all">{{ index }}.</td>
+
+          <td style="width: 30%;word-break:break-all"><el-autocomplete
+              v-model="goodcoding[index]"
+              :fetch-suggestions="querySearchAsync"
+              placeholder="输入产品编号"
+              @select="handleSelect"
+              :trigger-on-focus="false"
+              clearable
+              value-key="coding"
+              debounce="0"
+          >
+            <template #default="{ item }">
+
+              <div class="name">{{ item.coding }}</div>
+              <p class="addr">&{{ item.name }}</p>
+            </template>
+          </el-autocomplete></td>
+
+          <td style="width: 20%;word-break:break-all;font-size: 12PX;" >{{ goodname[index] }}</td>
+          <td style="width: 20%;word-break:break-all"> <input v-model="goodnum[index]" style="height:30px;width: 70%; border: 0;background-color: #eeeeee"/></td>
+          <td style="width: 10%;word-break:break-all;font-size: 12PX;">{{ goodunit[index] }}</td>
+          <td style="width: 3%"></td>
+        </tr>
+        </tbody>
+      </table>
+    </van-swipe-cell>
+    <P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 15px">+ 增加行 +</P>
+  </van-popup>
 
 
   <div class="submit-bar">
@@ -159,6 +200,8 @@ import {Toast, Dialog} from "vant";
 export default {
   name: "createorderSC",
   setup() {
+    // 左侧弹出是否显示
+    const showPopup = ref(false);
     // 发送数据
     const router = useRouter()
     // 接收数据
@@ -496,22 +539,9 @@ export default {
     })
 
     // 侧滑 清除 内容
-    const cleargood = (index) => {
-      Dialog.confirm({
-        message: '确认清除吗？',
-      })
-          .then(() => {
-            // on confirm
-            delete goodcoding.value?.[index]
-            delete goodnum.value?.[index]
-            delete goodname.value?.[index]
-            delete goodunit.value?.[index]
-            Toast('清除成功')
-
-          })
-          .catch(() => {
-            // on cancel
-          });
+    const anticipate = (index) => {
+      showPopup.value = true
+      console.log(index);
 
     };
 
@@ -539,8 +569,10 @@ export default {
       productline,
       validator,
       asyncValidator,
-      cleargood,
+      anticipate,
       deleteSubmit,
+
+      showPopup,
 
     };
   },
