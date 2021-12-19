@@ -1,5 +1,50 @@
 import {request} from "./request";
 
+// 获取当月订单信息
+export function getMonthOrderinfo(ordering) {
+  return request({
+    url: "/orders/month/?ordering=" + ordering,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取当月未完成订单数量
+export function getMonthfinishinfo() {
+  return request({
+    url: "/orders/monthfinish/",
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+//获取分类订单信息
+export function getOrdergoodsinfo(category='',page=1, ordering="", orderby="") {
+  return request({
+    url: "/orders/all/?category="+category+"&page=" + page + "&orderby=" + orderby + "&ordering=" + ordering,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 //获取订单信息
 export function getOrderinfo(orderstatus, page, ordering) {
   return request({

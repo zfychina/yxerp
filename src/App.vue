@@ -1,12 +1,12 @@
 <template>
-  <router-view/>
-<!--  <router-view v-slot="{ Component, route }">-->
-<!--    <transition>-->
-<!--      <keep-alive >-->
-<!--        <component :is="Component" v-bind="route.params" />-->
-<!--      </keep-alive>-->
-<!--    </transition>-->
-<!--  </router-view>-->
+<!--  <router-view/>-->
+  <router-view v-slot="{ Component, route }">
+    <transition>
+      <keep-alive >
+        <component :is="Component" v-bind="route.params" />
+      </keep-alive>
+    </transition>
+  </router-view>
 
   <div v-show="$route.meta.showNav" id="nav">
     <router-link class="tab-bar-item" to="/">
@@ -30,12 +30,7 @@
     </router-link>
 
     <router-link class="tab-bar-item" to="/profile">
-      <div class="icon">
-        <van-badge :content="50" max="20">
-          <div class="child" />
-          <i class="iconfont icon-icon_pc"></i>
-        </van-badge>
-      </div>
+      <div class="icon"><i class="iconfont icon-icon_pc"></i></div>
       <div>我的</div>
     </router-link>
   </div>
@@ -59,7 +54,7 @@
 }
 
 #nav {
-  background-color: #f6f6f6;
+  background-color: #fff;
   display: flex;
   position: fixed;
   z-index: 100;
@@ -67,7 +62,7 @@
   right: 0;
   bottom: 0;
   //设置阴影
-  box-shadow: 0 -3px 1px rgba(100,100,100,0.1);
+  box-shadow: 0 -0.1px 0px rgb(25, 137, 250);
   a {
 
     color: var(--color-text);

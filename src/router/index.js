@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 const Shortmold = () => import('@/views/shortmold/Shortmold')
+const Shortmold_backup = () => import('@/views/shortmold/Shortmold_backup')
 const Bom = () => import('@/views/bom/Bom')
 const Order = () => import('@/views/order/Order')
 const CreateOrder = () => import('@/views/order/CreateOrder')
@@ -26,6 +27,16 @@ const routes = [
     path: '/',
     name: 'Default',
     component: Shortmold,
+    meta: {
+      title: '缺料',
+      showNav: true,
+    }
+  },
+  {
+    path: '/Shortmoldbackup',
+    name: 'Shortmoldbackup',
+    component: Shortmold_backup,
+    props: true,
     meta: {
       title: '缺料',
       showNav: true,

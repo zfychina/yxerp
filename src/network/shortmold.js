@@ -7,3 +7,11 @@ export function shortmoldDate(params) {
 
   })
 }
+
+// export function shortmoldDate(params) {
+//   return request({
+//     url: '/shortmold/',
+//     params,
+//
+//   })
+// }

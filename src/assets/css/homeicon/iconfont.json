@@ -1,0 +1,65 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1225249",
+      "name": "销售订单",
+      "font_class": "xiaoshoudingdan",
+      "unicode": "e690",
+      "unicode_decimal": 59024
+    },
+    {
+      "icon_id": "3878085",
+      "name": "人员管理",
+      "font_class": "renyuanguanli",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "6941966",
+      "name": "采购订单",
+      "font_class": "caigoudingdan-",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "9995182",
+      "name": "生产订单",
+      "font_class": "shengchandingdan",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "10237465",
+      "name": "库存查询",
+      "font_class": "kucunchaxun",
+      "unicode": "e501",
+      "unicode_decimal": 58625
+    },
+    {
+      "icon_id": "11871954",
+      "name": "报表统计",
+      "font_class": "baobiaotongji",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
+      "icon_id": "25151878",
+      "name": "基础资料",
+      "font_class": "jichu-",
+      "unicode": "e502",
+      "unicode_decimal": 58626
+    },
+    {
+      "icon_id": "25782834",
+      "name": "物料计划",
+      "font_class": "wuliaojihua",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    }
+  ]
+}
