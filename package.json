@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@nutui/nutui": "^3.1.12",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.55",
     "element-ui": "^2.15.3",
@@ -30,7 +30,7 @@
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "eslint": "^5.16.0",
     "eslint-plugin-vue": "^7.0.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2"
@@ -47,7 +47,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-console": "off"
+    }
   },
   "browserslist": [
     "> 1%",

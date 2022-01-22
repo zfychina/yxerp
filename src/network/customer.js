@@ -1,9 +1,9 @@
 import {request} from "./request";
 
 //获取客户信息
-export function customerslist() {
+export function customerslist(query='') {
   return request({
-    url: '/customers/',
+    url: '/customers/?query=' + query,
     method: 'get',
     params: {
 

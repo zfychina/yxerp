@@ -11,6 +11,7 @@ const createorderSC = () => import('@/views/unsettled/ChildComps/createorderSC')
 const createorderSCRK = () => import('@/views/unsettled/ChildComps/createorderSCRK')
 const createorderCG = () => import('@/views/unsettled/ChildComps/createorderCG')
 const createorderCGRK = () => import('@/views/unsettled/ChildComps/createorderCGRK')
+const createorderSCTL = () => import('@/views/order/createsctl')
 
 const Profile = () => import('@/views/profile/Profile')
 const Register = () => import('@/views/profile/Register')
@@ -159,6 +160,16 @@ const routes = [
     path: '/createordercgrk',
     name: 'createordercgrk',
     component: createorderCGRK,
+    meta: {
+      title: '创建采购入库订单',
+      isAuthRequired: true,
+    }
+  },
+
+  {
+    path: '/createordersctl',
+    name: 'createordersctl',
+    component: createorderSCTL,
     meta: {
       title: '创建采购入库订单',
       isAuthRequired: true,

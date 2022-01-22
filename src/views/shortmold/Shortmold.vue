@@ -47,6 +47,7 @@
       <van-row justify="center">
         <van-col span="23">
           <div class="textcss">-本月需完成的销售订单：{{ state.order_num - state.order_num_unfinish }}/{{ state.order_num }}（完成率：{{ ((state.order_num - state.order_num_unfinish) / state.order_num * 100).toFixed(1) }}%）</div>
+
         </van-col>
       </van-row>
     </van-sticky>
@@ -144,7 +145,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../../assets/css/homeicon/iconfont.css";
+@import "~assets/css/homeicon/iconfont.css";
 
   .van-grid {
     border: 1px solid;

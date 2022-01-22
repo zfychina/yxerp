@@ -33,7 +33,7 @@
               >
               <table-title :title="title" @titleActive="receiveactive"></table-title>
               <div  class="orderitem">
-                <order-goods-col v-for="(data, index) in state.tabledata[active].list" :data="data" :key="index" ></order-goods-col>
+                <order-goods-col v-for="(data, index) in state.tabledata[active].list" :data="data" :button_show="state.button_show.indexOf(data.id) > -1" :key="index" @spreadorder="spreadorder">{{state.button_show=data.id}}</order-goods-col>
               </div>
               </van-list>
               <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
@@ -65,6 +65,8 @@ export default {
     const title_ordering = ['order__order_date', 'sku__coding', 'order__delivery', 'order__customer', 'order__user']
 
     const state = reactive({
+      // 展开显示-只展开一个
+      button_show: [],
       // 控制排序正倒序
       title_by: [true, true, true, true, true],
       tabtitle: ['锁体', '锁芯', '保护器', '面板', '配件'],
@@ -147,6 +149,19 @@ export default {
 
     }
 
+    // 订单展开数据接收
+    const spreadorder = (id, order, coding) => {
+      console.log('订单展开数据接收-spreadorder', id, order, coding);
+      // 按钮展示
+      if (state.button_show.indexOf(id) > -1 ){
+        state.button_show = []
+      } else {
+        state.button_show = []
+        state.button_show.push(id)
+        console.log(state.button_show);
+      }
+    }
+
 
     // VAN组件CSS样式
     const themeVars = {
@@ -160,6 +175,7 @@ export default {
     // 返回按钮和搜索按钮
     const onClickLeft = () => history.back();
     const onClickRight = () => Toast('按钮');
+
     return {
       onClickLeft,
       onClickRight,
@@ -172,6 +188,7 @@ export default {
       title_ordering,
       title,
       receiveactive,
+      spreadorder,
     };
   },
 

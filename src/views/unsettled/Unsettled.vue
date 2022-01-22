@@ -351,6 +351,7 @@ export default {
     // 新建生产提料单入口
     const createsctl = ()=>{
       console.log("新建生产提料单入口");
+      router.push({path:'/createordersctl'})
     }
     // 新建生产入库单入口
     const createscrk = ()=>{
@@ -364,6 +365,7 @@ export default {
     const createcgrk = ()=>{
       router.push({path:'/createordercgrk'})
     }
+
 
     // 跳转详情
     const newdetail = (order)=>{

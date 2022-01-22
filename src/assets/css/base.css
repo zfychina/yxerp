@@ -10,6 +10,8 @@
     --line-height: 1.5;
     --color-border: rgba(2,81,158,0.55);
     --color-red: rgba(255, 0, 0, 0.4);
+
+    --van-gray-6: rgba(150, 151, 153, 0.3);
 }
 
 *,

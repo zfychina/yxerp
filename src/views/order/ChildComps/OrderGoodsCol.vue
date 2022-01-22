@@ -25,12 +25,17 @@
       </span>
     </van-col>
     <van-col span="2" style="text-align: left;vertical-align: middle;">
-      <van-icon name="arrow" size="20" color="var(--color-high-text)"  v-show="parseFloat(data.quantity) > parseFloat(data.quantityed)" span="1"  @click="spread(data.order.orderhao, data.sku.coding)"/>
+      <van-icon name="arrow" size="20" color="var(--color-high-text)"  v-show="parseFloat(data.quantity) > parseFloat(data.quantityed)" span="1"  @click="spread(data.id, data.order.orderhao, data.sku.coding)"/>
       <van-icon v-show="parseFloat(data.quantity) <= parseFloat(data.quantityed)"  name="http://s.zfychina.cn/iconfinshed.svg" color="var(--color-high-text)" size="20"/>
     </van-col>
-
-
   </van-row>
+
+  <van-row  justify="space-around" v-show="button_show">
+    <van-col v-for="(name, index) in vanbutton" :key='index' span="11" style="text-align: center;vertical-align: middle;line-height: 4;">
+      <van-button :to="vanbutton_url[index]" type="primary" plain hairline   color="var(--color-border)">{{ name }}</van-button>
+    </van-col>
+  </van-row>
+
 
   <!--分割线-->
   <van-config-provider :theme-vars="themeVars">
@@ -44,6 +49,10 @@ import { ref } from 'vue';
 export default {
   name: "OrderGoodsCol",
   props: {
+    button_show: {
+      type: Boolean,
+      default: false
+    },
     data: {
       type: Array,
       default() {
@@ -52,11 +61,17 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const checked = ref(false);
+    const button_show = ref(false);
 
-    const spread = (order, coding) => {
-      console.log('tableorder', order, coding);
-            emit('spreadorder', order, coding)
+    const vanbutton = ['创建销售订单', '创建生产订单', '编辑销售订单', '编辑生产订单']
+    const vanbutton_url = ['/createorder', '创建生产订单', '编辑销售订单', '编辑生产订单']
+
+    const spread = (id, order, coding) => {
+      // 是否显示扩展
+      button_show.value = !button_show.value
+      console.log('spreadorder', id, order, coding);
+      console.log(props.data);
+      emit('spreadorder', id, order, coding)
     }
 
     // VAN分割样式修改
@@ -74,7 +89,9 @@ export default {
     return {
       themeVars,
       spread,
-      checked,
+
+      vanbutton,
+      vanbutton_url,
     };
   },
 

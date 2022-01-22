@@ -313,6 +313,8 @@ export default {
     const oncellnum = ()=>{
       state.cellnum += 1
     }
+
+
     return{
       restaurantsgoods,
       goodcoding,
@@ -331,6 +333,7 @@ export default {
       cleargood,
       onSubmit,
       onClickdel,
+
     }
   }
 }
