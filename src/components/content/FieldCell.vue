@@ -112,7 +112,7 @@ export default {
         clearicon.value = false
       }, 10);
      console.log('失焦');
-
+      emit('onblur', true)
     }
 
     const cleardata = () => {
@@ -125,6 +125,7 @@ export default {
       console.log(value);
       emit('inputvalue', value)
       showPopover.value = !showPopover.value
+      onblur()
     }
 
     const onRefresh = () => {

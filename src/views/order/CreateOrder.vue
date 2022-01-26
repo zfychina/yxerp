@@ -22,8 +22,8 @@
 <!--            <van-field v-model="orderhao" name="orderhao" label="订单编号" placeholder="请输入订单交货编号" clearable required colon clickable is-link arrow-direction="down"/>-->
 <!--            <van-field  v-model="customer" name="customer" label="客户名称" placeholder="请输入货主名称" clearable required colon clickable is-link arrow-direction="down"/>-->
 
-            <field-cell title="订单编号" required colon placeholder="   请输入订单交货编号" name="orderhao" :autodata="state.orderhaodata" :data="orderhao" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus"></field-cell>
-            <field-cell title="客户名称" required colon placeholder="   请输入货主名称" name="customer" :autodata="state.customerdata" :data="customer" @inputvalue="receivecustomervalue" @onfocus="customeronfocus"></field-cell>
+            <field-cell title="订单编号" required colon placeholder="   请输入订单交货编号" name="orderhao" :autodata="state.orderhaodata" :data="orderhao" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
+            <field-cell title="客户名称" required colon placeholder="   请输入货主名称" name="customer" :autodata="state.customerdata" :data="customer" @inputvalue="receivecustomervalue" @onfocus="customeronfocus" @onblur="customeronblur"></field-cell>
             <van-field  style="background-color: #fafafa" v-model="message" name="message" rows="1" autosize label="信息备注" type="textarea" colon clickable />
 
             <field-cell-list :skulist="state.skulist" @inputvalue="receiveskulistvalue"></field-cell-list>
@@ -51,11 +51,13 @@
 
 <script>
 import {onMounted, reactive, ref} from "vue"
-import {Toast } from "vant";
+import {Dialog, Toast} from "vant";
 import FieldCell from "components/content/FieldCell";
 import {customerslist} from "network/customer";
-import {orderhaolist} from "network/order";
+import {orderhaolist, countOrderhao, getOrderdetail, createorder, updateorder, deleteorder} from "network/order";
 import FieldCellList from "components/content/FieldCellList";
+import {customerscount} from "network/customer";
+import {useRoute} from "vue-router";
 
 export default {
   name: "CreateOrder",
@@ -93,7 +95,10 @@ export default {
         {},
         {},
         {},
-      ]
+      ],
+
+      // 客户是否存在
+      customerscount: false
     })
 
     // skulist数据列表
@@ -107,9 +112,12 @@ export default {
         state.skulist.push({},{})
       }
     }
-
+    // 接收数据
+    const route =useRoute();
     onMounted(() => {
       delivery.value = addDate()
+      orderhao.value = route.query.order
+      orderhaoonblur()
     });
     // 获取系统当前日期
     const addDate = () =>{
@@ -127,7 +135,6 @@ export default {
     // 获取客户列表
     const getcustomerlist = (query) => {
       customerslist(query).then(res => {
-        console.log(res);
         state.customerdata = res
       })
     }
@@ -137,8 +144,84 @@ export default {
       customer.value = value
       getcustomerlist(customer.value)
     }
+    // 聚焦
     const customeronfocus = () => {
       getcustomerlist()
+    }
+
+    // 失焦 校验订单名称是否存在
+    const orderhaoonblur = () => {
+      // 校验客户名称是否存在，如果不存在，重新选择或者跳转新建
+      if (orderhao.value) {
+        countOrderhao(orderhao.value).then(res=>{
+          if (res.count > 0) {
+            Dialog.confirm({
+              message: '是否打开已存在的订单？',
+            })
+              .then(() => {
+                // on confirm
+                getOrderdetail(orderhao.value).then(res=>{
+                  delivery.value = res[0].order.delivery.split(' ')[0]
+                  orderhao.value = res[0].order.orderhao
+                  customer.value = res[0].order.customer
+                  message.value = res[0].order.remarks
+                  state.skulist = []
+                  for (let i in res){
+                    console.log(res[i]);
+                    state.skulist.push({
+                      coding:res[i].sku.coding,
+                      quantity:res[i].quantity,
+                      name:res[i].sku.name,
+                      unit:res[i].sku.unit,
+                    })
+                  }
+                  state.skulist.push({},{})
+                  console.log(state.skulist);
+                  // if (res.count===0){
+                  //   //先清空前面的遗留数据
+                  //
+                  //   goodcoding.value = []
+                  //   goodname.value = []
+                  //   goodunit.value = []
+                  //   goodnum.value = []
+                  //   Toast('此订单无产品详情')
+                  // }else {
+                  //   state.cellnum = res.count + 3
+                  //   delivery.value = res.results[0].order.delivery.split(" ")[0]
+                  //   customer.value = res.results[0].order.customer
+                  //   remarks.value = res.results[0].order.remarks
+                  //
+                  //   //先清空前面的遗留数据
+                  //   goodcoding.value = []
+                  //   goodname.value = []
+                  //   goodunit.value = []
+                  //   goodnum.value = []
+                  //   for(let i in res.results){
+                  //     goodcoding.value[parseInt(i)+1] = res.results[i].sku.coding
+                  //     goodname.value[parseInt(i)+1] = res.results[i].sku.name
+                  //     goodunit.value[parseInt(i)+1] = res.results[i].sku.unit
+                  //     goodnum.value[parseInt(i)+1] = res.results[i].quantity
+                  //   }
+                  // }
+                })
+              })
+              .catch(() => {
+                // on cancel
+              });
+          }
+        })}
+    }
+
+    // 失焦 校验客户名称是否存在
+    const customeronblur = () => {
+      // 校验客户名称是否存在，如果不存在，重新选择或者跳转新建
+      if (customer.value) {
+      customerscount(customer.value).then(res=>{
+        if (res.count === 0) {
+          state.customerscount = false
+          Toast({message: '客户名称不存在，请重新选择', duration: 2000})
+        } else {state.customerscount = true}
+      })}
     }
 
     // 获取销售订单列表
@@ -159,10 +242,7 @@ export default {
       getorderhaolist()
     }
 
-    const onSubmit = (value) => {
-      console.log('submit', value);
-      Toast.success('保存成功');
-    }
+
 
     // themeVars 内的值会被转换成对应 CSS 变量
     const themeVars = {
@@ -181,11 +261,95 @@ export default {
 
     // 返回按钮和搜索按钮
     const onClickLeft = () => history.back();
-    const onClickRight = () => Toast('删除成功');
-
-    // 保存按钮
 
     // 删除按钮
+    const onClickRight = () => {
+      if(orderhao.value){
+        Dialog.confirm({
+          message: `删除订单，请点击"确认"`,
+        })
+            .then(() => {
+              // 删除订单
+              deleteorder({orderhao:orderhao.value}).then(res=>{
+                Toast(res)
+              })
+            })
+            .catch(() => {
+              // on cancel
+            });
+
+      }else {Toast('请输入订单编号')}
+    }
+
+    // 保存/更新按钮
+    const onSubmit = () => {
+      const data = {}
+
+      // 检查销售订单是否输入
+      if (!orderhao.value) {
+        Toast({message: '请输入销售订单编号', duration: 1000})
+        return
+      }
+      // 检查客户名称是否输入
+      if (!customer.value || !state.customerscount){
+        Toast({message:'客户未选择或者选择错误', duration: 1000 })
+        return
+      }
+
+      data.delivery = delivery.value
+      data.orderhao = orderhao.value
+      data.customer = customer.value
+
+      data.remarks = message.value
+      data.sku = []
+
+      for (let i in state.skulist){
+        if(state.skulist[i]?.coding && state.skulist[i]?.quantity) {
+          data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, quantity:state.skulist[i]?.quantity})
+        }
+      }
+
+      if (data.sku.length === 0) {
+        Toast({message:'产品编号有误或未添加产品数量', duration: 1000 })
+        return
+      }
+
+      state.skulist = data.sku
+      state.skulist.push({},{})
+
+      // 校验订单编号是否重复----->如果重复，提示是否复盖，不重复直接创建
+      countOrderhao(data.orderhao).then(res=>{
+        if (res.count >= 1) {
+          // 订单已存在，弹出对话框选择是覆盖 还是取消
+          console.log('订单已存在，弹出对话框选择是覆盖 还是取消');
+            Dialog.confirm({
+              message: `订单编号已存在，需要更新原订单，请点击"确认"`,
+            }).then(() => {
+              // 覆盖原订单
+              updateorder(data).then(res=>{
+                if(res === 'ok'){
+                  Toast.success('订单更新成功')
+                } else {
+                  Toast("在订单列表页面打开，查看是否更新成功")
+                }
+              })
+            })
+            .catch(() => {
+              // on cancel
+            });
+        } else {
+          // 订单不存在，创建订单执行下面的代码
+          createorder(data).then(res=>{
+            if(res === 'ok'){
+              Toast.success('订单创建成功')
+            } else {
+              Toast("在订单列表页面打开，查看是否创建成功")
+            }
+          })
+        }
+      })
+    }
+
 
     return {
       state,
@@ -198,7 +362,9 @@ export default {
       receiveorderhaovalue,
       receiveskulistvalue,
       orderhaoonfocus,
+      orderhaoonblur,
       customeronfocus,
+      customeronblur,
 
       showCalendar,
       onConfirm,

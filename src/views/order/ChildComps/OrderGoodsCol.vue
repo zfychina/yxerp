@@ -64,7 +64,8 @@ export default {
     const button_show = ref(false);
 
     const vanbutton = ['创建销售订单', '创建生产订单', '编辑销售订单', '编辑生产订单']
-    const vanbutton_url = ['/createorder', '创建生产订单', '编辑销售订单', '编辑生产订单']
+    const vanbutton_url = [{ path: 'createorder', query: { order: props.data.order.orderhao}}, '创建生产订单', '编辑销售订单', '编辑生产订单']
+    // "{ path: 'createorder', query: { order: order.value }}"
 
     const spread = (id, order, coding) => {
       // 是否显示扩展

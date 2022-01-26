@@ -10,3 +10,15 @@ export function customerslist(query='') {
     }
   })
 }
+
+
+
+export function customerscount(customer) {
+  return request({
+    url: "/customers/" + customer + '/count/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}

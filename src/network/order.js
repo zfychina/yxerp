@@ -45,15 +45,16 @@ export function orderhaolist(query='') {
   })
 }
 
+// 校验订单编号是否重复
+export function countOrderhao(orderhao) {
+  return request({
+    url: "/orders/" + orderhao + '/count/',
+    method: 'get',
+    params: {
 
-
-
-
-
-
-
-
-
+    }
+  })
+}
 
 
 //获取订单信息
@@ -79,16 +80,7 @@ export function getOrderdetail(orderhao) {
 }
 
 
-// 校验订单编号是否重复
-export function countOrderhao(orderhao) {
-  return request({
-    url: "/orders/" + orderhao + '/count/',
-    method: 'get',
-    params: {
 
-    }
-  })
-}
 
 // 创建订单
 export function createorder(data) {

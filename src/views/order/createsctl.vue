@@ -287,6 +287,7 @@ export default {
           // 订单不存在，创建订单执行下面的代码
           createorder(data).then(res=>{
             if(res === 'ok'){
+              console.log(data);
               Toast.success('订单创建成功')
             } else {
               Toast("在订单列表页面打开，查看是否创建成功")

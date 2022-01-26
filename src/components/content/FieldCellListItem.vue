@@ -27,7 +27,7 @@
     </van-col>
 
     <van-col span="6">
-      <input class="input" type="number" name="quantity" :value="data.quantity" @input="quantityoninput" placeholder="请输入数量" autocomplete="off" style="text-align: center;width: 100%"/>
+      <input class="input" type="number" step="0.001" name="quantity" :value="data.quantity" @input="quantityoninput" placeholder="请输入数量" autocomplete="off" style="text-align: center;width: 100%"/>
     </van-col>
 
     <van-col span="2" style="text-align: center;">
