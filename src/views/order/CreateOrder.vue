@@ -282,7 +282,7 @@ export default {
 
       for (let i in state.skulist){
         if(state.skulist[i]?.coding && state.skulist[i]?.quantity) {
-          data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, quantity:state.skulist[i]?.quantity})
+          data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, unit:state.skulist[i]?.unit, quantity:state.skulist[i]?.quantity})
         }
       }
 
