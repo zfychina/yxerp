@@ -118,6 +118,7 @@ export default {
       delivery.value = addDate()
       orderhao.value = route.query.order
       orderhaoonblur()
+
     });
     // 获取系统当前日期
     const addDate = () =>{
@@ -176,33 +177,9 @@ export default {
                     })
                   }
                   state.skulist.push({},{})
-                  console.log(state.skulist);
-                  // if (res.count===0){
-                  //   //先清空前面的遗留数据
-                  //
-                  //   goodcoding.value = []
-                  //   goodname.value = []
-                  //   goodunit.value = []
-                  //   goodnum.value = []
-                  //   Toast('此订单无产品详情')
-                  // }else {
-                  //   state.cellnum = res.count + 3
-                  //   delivery.value = res.results[0].order.delivery.split(" ")[0]
-                  //   customer.value = res.results[0].order.customer
-                  //   remarks.value = res.results[0].order.remarks
-                  //
-                  //   //先清空前面的遗留数据
-                  //   goodcoding.value = []
-                  //   goodname.value = []
-                  //   goodunit.value = []
-                  //   goodnum.value = []
-                  //   for(let i in res.results){
-                  //     goodcoding.value[parseInt(i)+1] = res.results[i].sku.coding
-                  //     goodname.value[parseInt(i)+1] = res.results[i].sku.name
-                  //     goodunit.value[parseInt(i)+1] = res.results[i].sku.unit
-                  //     goodnum.value[parseInt(i)+1] = res.results[i].quantity
-                  //   }
-                  // }
+
+                  // 检查客户名称属性
+                  state.customerscount = true
                 })
               })
               .catch(() => {
