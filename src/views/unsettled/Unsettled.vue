@@ -106,7 +106,7 @@ export default {
 
     onMounted(()=>{
       for (let i in state.tabtitle){
-        getordergoods(i)
+        getordergoods(Number(i))
       }
     })
 
@@ -161,7 +161,7 @@ export default {
     }
 
     const getordergoods = (index)=>{
-
+      console.log(index, typeof (index));
       if (index === 0){
         getorderSC(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
           console.log(res);

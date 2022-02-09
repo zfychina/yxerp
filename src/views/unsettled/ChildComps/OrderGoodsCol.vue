@@ -19,7 +19,7 @@
       </span>
     </van-col>
     <van-col span="4">
-      <span style="line-height: 3; font-size: 12px; text-align: left;"><p>{{data.quantity + " "}}{{data.sku.sku ? data.sku.sku.unit : data.sku.unit}}</p></span>
+      <span style="line-height: 3; font-size: 10px; text-align: left;"><p>{{data.quantity + " "}}{{data.sku.sku ? data.sku.sku.unit : data.sku.unit}}</p></span>
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: left;">
         <p>{{data.sku.order ? data.sku.order.supplier : data.order.supplier}}</p>
         <span style="color: var(--color-red);font-size: 8px;">{{data.sku.order ? data.sku.order.order : ''}}</span>

@@ -94,7 +94,7 @@ export default {
 
     onMounted(()=>{
       for (let i in state.tabtitle){
-        getordergoods(i)
+        getordergoods(Number(i))
       }
     })
 
