@@ -3,9 +3,11 @@
   <van-sticky>
     <van-row>
       <van-col span="24">
-        <van-nav-bar left-arrow title="销售订单" :border='false' @click-left="onClickLeft" @click-right="onClickRight">
+        <van-nav-bar left-arrow title="销售订单" :border='false' @click-left="onClickLeft">
           <template #right>
-            <van-icon name="search" size="18" />
+            <van-uploader :after-read="Orderimport" name='files' :accept="accept" result-type="file" style="color: #1989fa">
+              导入
+            </van-uploader>
           </template>
         </van-nav-bar>
       </van-col>
@@ -47,11 +49,13 @@
 </template>
 
 <script>
-import { Toast } from 'vant';
+import {Dialog, Toast} from 'vant';
 import {onMounted, reactive, ref} from "vue";
 import TableTitle from "components/common/TableTitle";
 import OrderGoodsCol from "./ChildComps/OrderGoodsCol";
 import {getOrdergoodsinfo} from "network/order";
+import {uporderimport} from "network/upimport";
+
 
 export default {
   name: "Order",
@@ -59,6 +63,10 @@ export default {
   setup() {
     // Tab当前位置
     const active = ref(0);
+
+    const props =reactive( {
+      accept: '.xls, .xlsx',
+    })
 
     // 表头及排序点击
     const title = ['下单日期', '物料编号', '交货日期', '客户', '制单人']
@@ -176,11 +184,31 @@ export default {
     };
     // 返回按钮和搜索按钮
     const onClickLeft = () => history.back();
-    const onClickRight = () => Toast('按钮');
+    // const onClickRight = () => Toast('按钮');
+
+    // 订单信息导入
+    const Orderimport = (file)=>{
+      const data = new FormData();
+      data.append('files', file.file)
+      Toast.loading({duration: 0,message:'订单导入中...', forbidClick:true});
+      uporderimport(data).then(res=>{
+        Toast.clear()
+        Dialog.alert({
+          message: res,
+        }).then(() => {
+          // on close
+        });
+      }).catch(err=>{
+        Toast.clear()
+        Toast.fail({duration: 1000,message:"失败，请检查！！！"})
+        console.log(err);
+      })
+    }
 
     return {
+      ...props,
       onClickLeft,
-      onClickRight,
+      Orderimport,
       themeVars,
       state,
       active,
