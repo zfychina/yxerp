@@ -213,14 +213,23 @@ export default {
         Toast({message: '产品编号有误或未添加产品数量', duration: 1000})
         return
       }
-
-      bomdelete(data).then(res => {
-        if (res === 'ok') {
-          Toast.success('BOM删除成功')
-        } else {
-          Toast("BOM查询页面确认是否删除成功")
-        }
+      Dialog.confirm({
+        message: '确认删除？',
       })
+          .then(() => {
+            // on confirm
+            bomdelete(data).then(res => {
+              if (res === 'ok') {
+                Toast.success('BOM删除成功')
+              } else {
+                Toast("BOM查询页面确认是否删除成功")
+              }
+            })
+          })
+          .catch(() => {
+            // on cancel
+          });
+
     }
     return {
       onClickLeft,
