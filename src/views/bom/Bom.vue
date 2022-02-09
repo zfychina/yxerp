@@ -1,378 +1,244 @@
 <template>
   <van-sticky>
-    <div>
-      <van-nav-bar title="BOM" left-text="删除" fixed @click-left="onClickdel"
-                   right-text="保存" @click-right="onSubmit"
->
-      </van-nav-bar>
-
-      <div>
-      <div style="background-color:#ffffff;margin-top: 46px;text-align:center;width: 100%">
-        <img src="~assets/images/search.svg" style="height: 20px;width: 20px;margin: 0px 10px 0 0"/>
-        <el-autocomplete
-            input-style='width:100%'
-            :popper-append-to-body="false"
-            v-model="coding"
-            :fetch-suggestions="querySearchAsync"
-            placeholder="请输入需要查询的产品编号或名称"
-            @select="handleSelect"
-            clearable
-            value-key="coding"
-            debounce="0"
-            :trigger-on-focus="false"
-            >
-            <template #default="{ item }">
-              <div class="name">{{ item.coding }} : {{ item.name }}</div>
-            </template>
-        </el-autocomplete>
-
-        <p/>
-
-        <div style='margin-top: 15px;text-align: center;font-weight: bold;margin-left: 30px;font-family: "微软雅黑", "仿宋", sans-serif;'>
-        {{codingname.coding}} {{codingname.name}}
-        </div>
-
-        <van-divider
-            :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 10px' }"
-        >
-          BOM展开
-        </van-divider>
-
-        <table class="table-order">
-          <thead>
-          <tr>
-            <th>序号</th>
-            <th>产品编号</th>
-            <th>产品名称</th>
-            <th>BOM</th>
-            <th>单位</th>
-          </tr>
-          </thead>
-        </table>
-
-      </div>
-    </div>
-    </div>
+    <van-row>
+      <van-col span="24">
+        <van-nav-bar left-arrow title="BOM" :border='false' @click-left="onClickLeft">
+          <template #right>
+            <van-uploader :after-read="Bomimport" name='files' :accept="accept" result-type="file" style="color: #1989fa">
+              导入
+            </van-uploader>
+          </template>
+        </van-nav-bar>
+      </van-col>
+    </van-row>
   </van-sticky>
 
+  <van-row justify="center" style="background-color: white">
+    <van-col span="23">
+      <zfy-search name="search" :data="state.searchvalue" @inputvalue="inputvalue" @search="onsearch"></zfy-search>
+    </van-col>
+  </van-row>
 
-    <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
-      <van-list
-          v-model:loading="state.loading"
-          :finished="state.finished"
-          @load="onLoad"
-          offset="300">
-        <van-swipe-cell v-for="index in state.cellnum" v-bind:key="index">
+  <van-row justify="center">
+    <van-col span="23">
+      <good-img :data="state.searchvalue"></good-img>
+    </van-col>
+  </van-row>
 
-          <table cellpadding = 8px style="width: 100%">
-            <tbody>
-            <tr>
-              <td style="width: 7%;word-break:break-all">{{ index }}.</td>
+  <van-row justify="center">
+    <van-col span="23">
+      <field-cell-list :skulist="state.skulist" @inputvalue="receiveskulistvalue"></field-cell-list>
+    </van-col>
+  </van-row>
 
-              <td style="width: 35%;word-break:break-all">
-                <el-autocomplete
-                  v-model="goodcoding[index]"
-                  :fetch-suggestions="querySearchAsync"
-                  placeholder="输入产品编号"
-                  @select="handleSelectbom"
-                  :trigger-on-focus="false"
-                  value-key="coding"
-                  debounce="0"
-                  type="textarea"
-                  :autosize="{ minRows: 1, maxRows: 2}"
-                  clearable
-              >
-                <template #default="{ item }">
+    <van-row justify="center">
+      <van-col span="23" style="margin: 16px;">
+        <van-button type="primary" block @click="submit" >保存</van-button>
+      </van-col>
+    </van-row>
 
-                  <div class="name">{{ item.coding }}</div>
-                  <p class="addr">&{{ item.name }}</p>
-                </template>
-              </el-autocomplete>
-              </td>
+  <van-row justify="center" style="margin-bottom: 70px">
+    <van-col span="23">
+      <van-button type="danger" block  @click="delsubmit">删除</van-button>
+    </van-col>
+  </van-row>
 
-              <td style="width: 20%;word-break:break-all;font-size: 12PX;" >{{ goodname[index] }}</td>
-              <td style="width: 20%;word-break:break-all"> <input v-model="bomnum[index]" style="height:30px;width: 70%; border: 0;background-color: #eeeeee"/></td>
-              <td style="width: 10%;word-break:break-all;font-size: 12PX;">{{ goodunit[index] }}</td>
-              <td style="width: 3%"></td>
-            </tr>
-            </tbody>
-          </table>
-
-          <template #right>
-            <van-button square type="danger" text="清除" @click="cleargood(index)"/>
-          </template>
-          <van-divider style="margin: 0 0 0 0"/>
-        </van-swipe-cell>
-        <P></P>
-        <P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 15px">+ 增加行 +</P>
-      </van-list>
-    </van-pull-refresh>
 
 </template>
 
 <script>
-import {useRouter} from "vue-router";
-import { reactive, ref} from "vue";
-import {goodslist} from "network/good";
 import {Dialog, Toast} from "vant";
-import {getbomdetail, bomcreate, bomdelete} from "network/bom";
+import ZfySearch from "components/ZfySearch";
+import {reactive} from "vue";
+import GoodImg from "components/GoodImg";
+import FieldCellList from "components/content/FieldCellList";
+import {getbomdetail, bomcreate, bomdelete, bomquery} from "network/bom";
+import {upBOM} from "network/upimport";
+
 
 export default {
   name: "Bom",
+  components: {GoodImg, ZfySearch, FieldCellList},
   setup() {
-    const router = useRouter()
-    // 带建议输入用
-    const restaurants = ref([])
-    const coding = ref('');
-    const codingname = ref('')
-
-    // 带搜索输入,物料编码查询
-    let timeout;
-    const querySearchAsync = (queryString, cb)=> {
-      goodslist(queryString).then(res=>{
-        restaurants.value =res
-        // console.log(res);
-      })
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        cb(restaurants.value);
-      }, 300);
-    }
-
-    const handleSelect = (item) => {
-      codingname.value = item
-
-      // 查询产品BOM 并赋值
-      getbomdetail(codingname.value.id).then((res)=>{
-        if(res[0]) {
-          state.cellnum = res[0].subs.length + 3
-          goodcoding.value = []
-          bomnum.value = []
-          goodname.value = []
-          goodunit.value = []
-
-          for (let i in res[0].subs) {
-            goodcoding.value[Number(i)+1] = res[0].subs[i].coding.split(':')[1]
-            bomnum.value[Number(i)+1] = res[0].subs[i].stock
-            goodname.value[Number(i)+1] = res[0].subs[i].coding.split(':')[2]
-            goodunit.value[Number(i)+1] = res[0].subs[i].coding.split(':')[4]
-
-
-          }
-        } else {
-          Toast('没有数据')
-        }
-      })
-    };
-
-
-    const onClickLeft = () => {
-      router.go(-1)
-    }
-
-
-    // 下拉刷新
-    const state = reactive({
-      cellnum: 5,
-      loading: false,
-      finished: true,
-      refreshing: false,
-      list: []
+    const props =reactive( {
+      accept: '.xls, .xlsx',
     })
-    const onRefresh = () => {
-      // 清空列表数据
-      state.finished = true;
+    const state = reactive({
+      searchvalue: {},
+      autodata: [],
+      skulist: [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+      ],
+    })
 
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
-      state.loading = true;
-      onLoad();
-    };
-    // 列表
-    const onLoad = () => {
-      setTimeout(() => {
-        if (state.refreshing) {
-          //state.list = [];
-          state.refreshing = false;
-        }
 
-        for (let i = 0; i < 2; i++) {
-          state.list.push(state.list.length + 1);
-        }
-        state.loading = false;
+    // skulist数据列表
+    const receiveskulistvalue = (value) => {
+      console.log(value);
+      // splice(‘要插入的位置’, '要删除的项数', '需要插入的项', '需要插入的项', ‘……’)
+      state.skulist.splice(value.serial,1, value)
 
-        if (state.list.length >= 20) {
-          state.finished = true;
-        }
-      }, 1000);
-    };
-    // BOM列表
-    const restaurantsgoods = ref([])
-    const goodcoding = ref([])
-    const bomnum = ref([])
-    const goodname = ref([])
-    const goodunit = ref([])
-
-    const handleSelectbom = (item) => {
-      for (let i in goodcoding.value) {
-        if (item.coding.indexOf(goodcoding.value[i])===0){
-          goodname.value[i]=item.name
-          goodunit.value[i]= item.unit
-        }
+      // skulist最后一行是否为空，不为空则增加两行空值
+      if ( JSON.stringify(state.skulist[state.skulist.length - 1]) !== '{}'){
+        state.skulist.push({},{})
       }
-    };
+    }
 
-    // 侧滑 清除 内容
-    const cleargood = (index) => {
-      Dialog.confirm({
-        message: '确认清除吗？',
+    const inputvalue = (value) => {
+      console.log(value);
+      state.searchvalue = value
+
+      // 查询用途
+      bomquery(value.coding).then(res=>{
+        state.searchvalue.usebom = res
       })
-          .then(() => {
-            // on confirm
-            delete goodcoding.value?.[index]
-            delete bomnum.value?.[index]
-            delete goodname.value?.[index]
-            delete goodunit.value?.[index]
-            Toast('清除成功')
 
-          })
-          .catch(() => {
-            // on cancel
-          });
-
-    };
-
-    // 提交保存
-    const onSubmit=()=> {
-      let data = {}
-      data.coding = coding.value
-      if (!data.coding) {
-        Toast({message: '请输入产品编号', duration: 1000})
-        return
+      console.log(state.searchvalue);
+      if (state.searchvalue){
+        GETbomdetail()
+      } else {
+        state.skulist = [{},{},{},{},{},{},]
       }
+
+    }
+
+    const GETbomdetail = () =>{
+      getbomdetail(state.searchvalue.id).then(res=>{
+        if (res.length === 0){
+          state.skulist = [{},{},{},{},{},{},]
+          Toast('没有数据')
+        } else {
+          console.log(res[0]);
+          const subs = res[0].subs
+          state.skulist = []
+          for (let i in subs) {
+            state.skulist.push({coding:subs[i].coding.coding,name:subs[i].coding.name,quantity:subs[i].stock,unit:subs[i].coding.unit,})
+          }
+          state.skulist.push({},{})
+        }
+      })
+    }
+    const onsearch = () =>{
+      console.log('搜索按钮');
+    }
+
+
+    // 产品BOM表导入
+    const Bomimport = (file)=>{
+      const data = new FormData();
+      data.append('files', file.file)
+      Toast.loading({message:'BOM导入中...', forbidClick:true});
+      upBOM(data).then(res=>{
+        Dialog.alert({
+          message: res,
+        }).then(() => {
+          // on close
+        });
+      })
+    }
+
+    // 返回按钮和搜索按钮
+    const onClickLeft = () => history.back();
+    // const onClickRight = () => Toast('按钮');
+
+    // 保存按钮
+    const submit = ()=> {
+      console.log('保存');
+      let data = {}
+      data.coding = state.searchvalue.coding
       data.sku = []
-      for (let i in goodcoding.value) {
-        if (!goodcoding.value[i] || !bomnum.value[i] || parseInt(bomnum.value[i]) === 0) {
-          console.log(goodcoding.value.length, bomnum.value.length, i, '空');
-          console.log(goodcoding.value[i], bomnum.value[i]);
+
+      for (let i in state.skulist) {
+        if (!state.skulist[i].coding || !state.skulist[i].quantity || state.skulist[i].quantity === 0) {
           continue
         }
-        console.log(goodcoding.value.length, bomnum.value.length, i);
-        console.log(goodcoding.value[i], bomnum.value[i]);
-        data.sku.push({'coding': goodcoding.value[i], 'quantity': bomnum.value[i]})
+        data.sku.push({coding: state.skulist[i].coding, quantity: state.skulist[i].quantity})
       }
+
       if (data.sku.length === 0) {
         Toast({message: '产品编号有误或未添加产品数量', duration: 1000})
         return
       }
+      if (data.coding) {
+        console.log(data);
+        bomcreate(data).then(res => {
+          if (res === 'ok') {
+            Toast.success('BOM更新成功')
+          } else {
+            Toast("BOM查询页面确认更新成功")
+          }
+        })
 
-      console.log(data);
-      bomcreate(data).then(res => {
-        if (res === 'ok') {
-          Toast.success('BOM更新成功')
-        } else {
-          Toast("BOM查询页面确认更新成功")
-        }
-      })
-    }
-
-    // 提交删除
-    const onClickdel=()=>{
-      let data = {}
-      data.coding = coding.value
-      if (!data.coding) {
-      Toast({message: '请输入产品编号', duration: 1000})
-      return
-    }
-    data.sku = []
-    for (let i in goodcoding.value) {
-      if (!goodcoding.value[i] || !bomnum.value[i] || parseInt(bomnum.value[i]) === 0) {
-        console.log(goodcoding.value.length, bomnum.value.length, i, '空');
-        console.log(goodcoding.value[i], bomnum.value[i]);
-        continue
+      } else {
+        Dialog.confirm({
+          message: '没有主BOM产品编号，是否只创建子BOM产品编号？',
+        })
+            .then(() => {
+              // on confirm
+              bomcreate(data).then(res => {
+                if (res === 'ok') {
+                  Toast.success('BOM更新成功')
+                } else {
+                  Toast("BOM查询页面确认更新成功")
+                }
+              })
+            })
+            .catch(() => {
+              // on cancel
+            });
       }
-      console.log(goodcoding.value.length, bomnum.value.length, i);
-      console.log(goodcoding.value[i], bomnum.value[i]);
-      data.sku.push({'coding': goodcoding.value[i], 'quantity': bomnum.value[i]})
+
     }
-    if (data.sku.length === 0) {
-      Toast({message: '产品编号有误或未添加产品数量', duration: 1000})
-      return
-    }
-      console.log(data);
+
+    // 删除按钮
+    const delsubmit = ()=>{
+      console.log('删除');
+      let data = {}
+      data.coding = state.searchvalue.coding
+      data.sku = []
+
+      for (let i in state.skulist) {
+        if (!state.skulist[i].coding || !state.skulist[i].quantity || state.skulist[i].quantity === 0) {
+          continue
+        }
+        data.sku.push({coding: state.skulist[i].coding, quantity: state.skulist[i].quantity})
+      }
+
+      if (!data.coding && data.sku.length === 0) {
+        Toast({message: '产品编号有误或未添加产品数量', duration: 1000})
+        return
+      }
+
       bomdelete(data).then(res => {
         if (res === 'ok') {
-          Toast.success('BOM更新成功')
+          Toast.success('BOM删除成功')
         } else {
-          Toast("后端未设置删除功能")
+          Toast("BOM查询页面确认是否删除成功")
         }
       })
     }
-
-    // 增加行
-    const oncellnum = ()=>{
-      state.cellnum += 1
-    }
-
-
-    return{
-      restaurantsgoods,
-      goodcoding,
-      bomnum,
-      goodname,
-      goodunit,
-      state,
-      onRefresh,
-      coding,
-      codingname,
+    return {
       onClickLeft,
-      querySearchAsync,
-      handleSelect,
-      handleSelectbom,
-      oncellnum,
-      cleargood,
-      onSubmit,
-      onClickdel,
+      Bomimport,
 
+      ...props,
+      state,
+      receiveskulistvalue,
+      inputvalue,
+      onsearch,
+
+      submit,
+      delsubmit,
     }
   }
 }
 </script>
 
 <style scoped>
-.table-order {
-  background-color: #ffffff;
-  border-collapse: separate;
-  border-spacing: 10px 0px;
-  width: 100%;
-  height: 40px;
-  margin-left: 8px;
-}
 
-.table-order thead {
-  margin-left: 0;
-  text-align: left;
-  background-color: #ffffff;
-  font-size: 12PX;
-  color: rgba(131,135,137,0.54);
-}
-
-.van-list {
-  margin-top: 5px;
-  margin-left: 5px;
-  margin-bottom: 80px;
-  width: 100%;
-  height: 100%;
-}
-
-.van-swipe-cell tbody {
-  height: 40px;
-  font-family: "微软雅黑", "仿宋", sans-serif;
-
-}
-
-
-/deep/ .el-autocomplete-suggestion{
-  width: auto!important;
-}
 </style>

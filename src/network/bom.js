@@ -20,12 +20,22 @@ export function bomcreate(data) {
   })
 }
 
-
 //删除BOM
 export function bomdelete(data) {
   return request({
     url: "/bomcreate/",
     method: 'delete',
     data
+  })
+}
+
+// 获取物料用途
+export function bomquery(coding) {
+  return request({
+    url: "/bomquery/" + coding,
+    method: 'get',
+    params: {
+
+    }
   })
 }

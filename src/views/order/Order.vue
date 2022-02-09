@@ -95,6 +95,7 @@ export default {
       getOrdergoodsinfo(state.tabtitle[index], state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
         state.tabledata[index].list.push(...res.results)
         state.tabledata[index].count = res.count
+
       }).catch(err => err)
     }
 
@@ -111,6 +112,7 @@ export default {
         }
         // 加载下一页数据
         getordergoods(active.value)
+
         state.loading = false;
         // 所有页获取完，设置true，没有更多了
         if ( (state.tabledata[active.value].count !== 0) && state.tabledata[active.value].list.length >= state.tabledata[active.value].count) {
