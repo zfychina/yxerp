@@ -155,8 +155,6 @@ export default {
       state.tabledata[active.value] = {count: 0, page: 0, list:[] }
       getordergoods(active.value)
 
-
-
     }
 
     // 订单展开数据接收

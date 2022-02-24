@@ -27,7 +27,10 @@
     </van-col>
 
     <van-col span="6">
-      <input class="input" type="number" step="0.001" name="quantity" :value="data.quantity" @input="quantityoninput" placeholder="请输入数量" autocomplete="off" style="text-align: center;width: 100%"/>
+        <input class="input" type="number" step="0.001" name="quantity" :value="data.quantity" @input="quantityoninput" placeholder="请输入数量" autocomplete="off" style="text-align: center;width: 100%"/>
+      <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: center;">
+        <p>{{data.quantityed >0 ? '完成 ' + data.quantityed : ''}}</p>
+      </span>
     </van-col>
 
     <van-col span="2" style="text-align: center;">
@@ -164,12 +167,15 @@ export default {
     }
 
     const selecdata =(value) => {
-      autocompleteshow.value = !autocompleteshow.value
-      value.serial = props.serial
-      console.log(props.quantity);
-      value.quantity = props.data.quantity
-      console.log(value);
-      emit('inputvalue', value)
+      console.log(value, props.serial);
+      if(value){
+        autocompleteshow.value = !autocompleteshow.value
+        value.serial = props.serial
+        console.log(props.quantity);
+        value.quantity = props.data.quantity
+        console.log(value);
+        emit('inputvalue', value)
+      }
       showPopover.value = !showPopover.value
     }
 

@@ -35,9 +35,9 @@ export function getOrdergoodsinfo(category='',page=1, ordering="", orderby="") {
 
 
 //获取订单编号列表信息
-export function orderhaolist(query='') {
+export function orderhaolist(query='', su_query='') {
   return request({
-    url: "/orders/?query=" + query,
+    url: "/orders/?query=" + query + "&su_query=" + su_query,
     method: 'get',
     params: {
 

@@ -21,12 +21,12 @@
     <van-col span="4">
       <span style="line-height: 3; font-size: 10px; text-align: left;"><p>{{data.quantity + " "}}{{data.sku.sku ? data.sku.sku.unit : data.sku.unit}}</p></span>
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: left;">
-        <p>{{data.sku.order ? data.sku.order.supplier : data.order.supplier}}</p>
+        <p>{{data.sku.order ? data.sku.order.supplier : data.order.supplier}}{{data.order.customer?.shortname}}</p>
         <span style="color: var(--color-red);font-size: 8px;">{{data.sku.order ? data.sku.order.order : ''}}</span>
       </span>
     </van-col>
     <van-col span="2" style="text-align: left;vertical-align: middle;">
-      <van-icon name="arrow" size="20" color="var(--color-high-text)"  v-show="parseFloat(data.quantity) > parseFloat(data.quantityed ? data.quantityed : 0)" span="1"  @click="spread(data.id, data.order.orderhao, data.sku.coding)"/>
+      <van-icon name="arrow" size="20" color="var(--color-high-text)"  v-show="parseFloat(data.quantity) > parseFloat(data.quantityed ? data.quantityed : 0)" span="1"  @click="spread(data.id, data.order.order, data.sku.sku ? data.sku.sku.coding : data.sku.coding)"/>
       <van-icon v-show="parseFloat(data.quantity) <= parseFloat(data.quantityed ? data.quantityed : 0)"  name="http://s.zfychina.cn/iconfinshed.svg" color="var(--color-high-text)" size="20"/>
     </van-col>
   </van-row>

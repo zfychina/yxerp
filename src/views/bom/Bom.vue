@@ -95,6 +95,7 @@ export default {
 
       // 查询用途
       bomquery(value.coding).then(res=>{
+        console.log(res);
         state.searchvalue.usebom = res
       })
 

@@ -25,6 +25,17 @@ export function getorderSCRE(page, ordering) {
   })
 }
 
+// 获取生产退料详情信息
+export function getorderSCRETURN(page, ordering) {
+  return request({
+    url: "/orders/orderscreturn/?page=" + page + "&ordering=" + ordering,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
 // 获取采购订单详情信息
 export function getorderCG(page, ordering) {
   return request({
@@ -46,12 +57,75 @@ export function getorderCGRE(page, ordering) {
     }
   })
 }
+// 获取采购无订单入库详情信息
+export function getorderNOTCGRE(page, ordering) {
+  return request({
+    url: "/orders/ordercgrenot/?page=" + page + "&ordering=" + ordering,
+    method: 'get',
+    params: {
 
+    }
+  })
+}
+
+// 获取采购退货详情信息
+export function getorderCGRETURN(page, ordering) {
+  return request({
+    url: "/orders/ordercgreturn/?page=" + page + "&ordering=" + ordering,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取销售出库详情信息
+export function getorderXS(page, ordering) {
+  return request({
+    url: "/orders/orderxs/?page=" + page + "&ordering=" + ordering,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取无订单销售出库详情信息
+export function getorderNOTXS(page, ordering) {
+  return request({
+    url: "/orders/orderxsnot/?page=" + page + "&ordering=" + ordering,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
 
 //获取生产线信息
-export function productlinelist() {
+export function productlinelist(query='') {
   return request({
-    url: '/productline/',
+    url: '/productline/?query=' + query,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+export function productlinecount(customer) {
+  return request({
+    url: "/productline/" + customer + '/count/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+//获取生产订单编号列表信息
+export function orderSClist(query='',su_query="") {
+  return request({
+    url: "/ordersc/?query=" + query+ "&su_query=" + su_query,
     method: 'get',
     params: {
 
@@ -133,9 +207,30 @@ export function deleteorderSC(data) {
 
 
 // 获取供应商信息
-export function supplierlist() {
+export function supplierlist(query='') {
   return request({
-    url: '/supplier/',
+    url: '/supplier/?query=' + query,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+export function supplierount(supplier) {
+  return request({
+    url: "/supplier/" + supplier + '/count/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+//获取采购订单编号列表信息
+export function orderCGlist(query='',su_query="") {
+  return request({
+    url: "/orderscg/?query=" + query+ "&su_query=" + su_query,
     method: 'get',
     params: {
 

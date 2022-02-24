@@ -1,11 +1,11 @@
 <template>
   <van-row style="color: #666;height: 12px;font-size: 12px" @click="selecdata(data)">
     <van-col span="11" style="text-align: right;vertical-align: middle;">
-      {{ data.coding ? data.coding : data.orderhao}}
+      {{ data.coding ? data.coding : data.orderhao}}{{data.order}}
     </van-col>
     <van-col span="2"></van-col>
     <van-col span="11" style="text-align: left;vertical-align: middle">
-      {{data.shortname ? data.shortname : data.customer}}
+      {{data.shortname ? data.shortname : data.customer}} {{data.supplier?.shortname}}
     </van-col>
     </van-row>
     <van-row>
@@ -31,7 +31,8 @@ export default {
   },
   setup(props, { emit }){
     const selecdata = (value) => {
-      emit('selecdata', value.shortname ? value.shortname:value.orderhao )
+      const order = value.orderhao ? value.orderhao : value.order
+      emit('selecdata', value.shortname ? value.shortname:order )
     }
 
     return {

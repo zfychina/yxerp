@@ -172,6 +172,7 @@ export default {
                     state.skulist.push({
                       coding:res[i].sku.coding,
                       quantity:res[i].quantity,
+                      quantityed:res[i].quantityed,
                       name:res[i].sku.name,
                       unit:res[i].sku.unit,
                     })
@@ -192,6 +193,7 @@ export default {
     // 失焦 校验客户名称是否存在
     const customeronblur = () => {
       // 校验客户名称是否存在，如果不存在，重新选择或者跳转新建
+      setTimeout(() => {}, 10);
       if (customer.value) {
       customerscount(customer.value).then(res=>{
         if (res.count === 0) {
@@ -203,7 +205,7 @@ export default {
 
     // 获取销售订单列表
     const getorderhaolist = (query) => {
-      orderhaolist( query).then(res => {
+      orderhaolist( query, customer.value).then(res => {
         console.log(res);
         state.orderhaodata = res
       })
@@ -216,7 +218,7 @@ export default {
     }
     const orderhaoonfocus = () => {
       // state.orderhaodata = []
-      getorderhaolist()
+      getorderhaolist(orderhao.value)
     }
 
 
@@ -281,7 +283,7 @@ export default {
       data.sku = []
 
       for (let i in state.skulist){
-        if(state.skulist[i]?.coding && state.skulist[i]?.quantity) {
+        if(state.skulist[i]?.coding && state.skulist[i]?.quantity && Number(state.skulist[i]?.quantity) !== 0) {
           data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, unit:state.skulist[i]?.unit, quantity:state.skulist[i]?.quantity})
         }
       }

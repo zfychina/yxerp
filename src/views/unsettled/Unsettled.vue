@@ -66,7 +66,8 @@ import {recordsimport} from "network/upimport";
 import {Dialog, Toast} from "vant";
 import TableTitle from "components/common/TableTitle";
 import OrderGoodsCol from "./ChildComps/OrderGoodsCol";
-import {getorderCG, getorderCGRE, getorderSC, getorderSCRE} from "network/unsettled";
+import {getorderCG, getorderCGRE, getorderSC, getorderSCRE, getorderNOTCGRE, getorderCGRETURN, getorderSCRETURN, getorderXS, getorderNOTXS} from "network/unsettled";
+import {useRouter} from "vue-router";
 
 
 export default {
@@ -81,21 +82,26 @@ export default {
     })
 
     // 表头及排序点击
-    const title = ['下单日期', '物料编号', '交货日期', '制单人']
-    const title_ordering = ['order__order_date', 'sku__coding', 'order__delivery', 'order__user']
+    const title = ['下单日期', '物料', '订单', '制单人', '供应商', '客户']
+    const title_ordering = ['order__order_date', 'sku__coding', 'order__order', 'order__user', 'order__supplier', 'order__customer__shortname']
 
     const state = reactive({
       // 展开显示-只展开一个
       button_show: [],
       // 控制排序正倒序
-      title_by: [true, true, true, true, true],
-      tabtitle: ['生产订单', '生产领料', '生产入库', '采购订单', '采购入库'],
+      title_by: [true, true, true, true, true, true, true, true, true, true],
+      tabtitle: ['生产订单', '生产领料', '生产入库', '采购订单', '采购入库', '无订单采购入库', '采购退货', '生产退料', '销售出库', '无订单销售出库'],
       ordering: ['-order__order_date', ''],
 
       refreshing: false,
       loading: false,
-      finished: [false, false, false, false, false],
+      finished: [false, false, false, false, false, false, false, false, false, false],
       tabledata: [
+        {count: 0, page: 0, list:[] },
+        {count: 0, page: 0, list:[] },
+        {count: 0, page: 0, list:[] },
+        {count: 0, page: 0, list:[] },
+        {count: 0, page: 0, list:[] },
         {count: 0, page: 0, list:[] },
         {count: 0, page: 0, list:[] },
         {count: 0, page: 0, list:[] },
@@ -161,10 +167,10 @@ export default {
     }
 
     const getordergoods = (index)=>{
-      console.log(index, typeof (index));
+      // console.log(index, typeof (index));
       if (index === 0){
         getorderSC(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
-          console.log(res);
+          // console.log(res);
           state.tabledata[index].list.push(...res.results)
           state.tabledata[index].count = res.count
         }).catch(err => err)
@@ -176,7 +182,7 @@ export default {
 
       if (index === 2){
         getorderSCRE(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
-          console.log(res);
+          // console.log(res);
           state.tabledata[index].list.push(...res.results)
           state.tabledata[index].count = res.count
         }).catch(err => err)
@@ -184,7 +190,7 @@ export default {
 
       if (index === 3){
         getorderCG(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
-          console.log(res);
+          // console.log(res);
           state.tabledata[index].list.push(...res.results)
           state.tabledata[index].count = res.count
         }).catch(err => err)
@@ -192,7 +198,47 @@ export default {
 
       if (index === 4){
         getorderCGRE(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
-          console.log(res);
+          // console.log(res);
+          state.tabledata[index].list.push(...res.results)
+          state.tabledata[index].count = res.count
+        }).catch(err => err)
+      }
+
+      if (index === 5){
+        getorderNOTCGRE(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
+          // console.log(res);
+          state.tabledata[index].list.push(...res.results)
+          state.tabledata[index].count = res.count
+        }).catch(err => err)
+      }
+
+      if (index === 6){
+        getorderCGRETURN(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
+          // console.log(res);
+          state.tabledata[index].list.push(...res.results)
+          state.tabledata[index].count = res.count
+        }).catch(err => err)
+      }
+
+      if (index === 7){
+        getorderSCRETURN(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
+          // console.log(res);
+          state.tabledata[index].list.push(...res.results)
+          state.tabledata[index].count = res.count
+        }).catch(err => err)
+      }
+
+      if (index === 8){
+        getorderXS(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
+          // console.log(res);
+          state.tabledata[index].list.push(...res.results)
+          state.tabledata[index].count = res.count
+        }).catch(err => err)
+      }
+
+      if (index === 9){
+        getorderNOTXS(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
+          // console.log(res);
           state.tabledata[index].list.push(...res.results)
           state.tabledata[index].count = res.count
         }).catch(err => err)
@@ -221,7 +267,7 @@ export default {
     // grid使用
     const gridvalue = ['生产订单', '生产领料', '生产入库', '生产退料', '销售出库', '采购订单', '采购退货', '采购入库']
     const gridicon = ['icon_scdd.svg', 'icon_scll.svg', 'icon_scrk.svg', 'icon_sctl.svg', 'icon_xsck.svg', 'icon_cgdd.svg', 'icon_cgtl.svg', 'icon_cgrk.svg']
-    const torouter = ['/order', '/unsettled', '/unsettled', '/statement', '/Shortmoldbackup', '/order', '/profile', '/profile']
+    const torouter = ['/createordersc', '/createordersctl', '/createorderscrk', '/statement', '/createordercg', '/createordercg', '/createordercg', '/createordercgrk']
 
     // VAN组件CSS样式
     const themeVars = {
@@ -232,6 +278,53 @@ export default {
       gridItemTextFontSize: "10px",
       noticeBarHeight: "50px"
     };
+
+    // 未完成跳转编辑页面
+    const router = useRouter()
+    const spreadorder = (id, order, coding)=> {
+      console.log(active.value, id, order, coding);
+      if (active.value === 0) {
+        // 打开生产订单
+        console.log(active.value, order);
+        router.push({path:'/createordersc', query: { order: order}})
+      }
+      if (active.value === 1) {
+        // 打开生产领料
+        console.log(active.value, order);
+      }
+      if (active.value === 2) {
+        // 打开生产入库
+        console.log(active.value, order);
+      }
+      if (active.value === 3) {
+        // 打开采购订单
+        console.log(active.value, order);
+      }
+      if (active.value === 4) {
+        // 打开采购入库
+        console.log(active.value, order);
+      }
+      if (active.value === 5) {
+        // 打开无订单采购入库
+        console.log(active.value, order);
+      }
+      if (active.value === 6) {
+        // 打开采购退货
+        console.log(active.value, order);
+      }
+      if (active.value === 7) {
+        // 打开生产退料
+        console.log(active.value, order);
+      }
+      if (active.value === 8) {
+        // 打开销售出库
+        console.log(active.value, order);
+      }
+      if (active.value === 9) {
+        // 打开无订单销售出库
+        console.log(active.value, order);
+      }
+    }
     return {
       ...props,
       RecordsiImport,
@@ -247,6 +340,7 @@ export default {
       receiveactive,
       onRefresh,
       onLoad,
+      spreadorder,
     };
   },
 
