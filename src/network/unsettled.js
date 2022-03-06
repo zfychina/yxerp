@@ -520,3 +520,64 @@ export function orderSCRKlist(query='',su_query="") {
     }
   })
 }
+
+// 生产退料
+//获取生产退料订单编号列表信息
+export function orderSCRElist(query='',su_query="") {
+  return request({
+    url: "/ordersscre/?query=" + query+ "&su_query=" + su_query,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 校验生产退料单号是否重复
+export function countOrderSCRE(order='') {
+  return request({
+    url: "/ordersscrecount/?query=" + order,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取生产退料单详情信息
+export function getOrderSCREdetail(orderhao) {
+  return request({
+    url: "/ordersscre/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 创建生产退料单
+export function createorderSCRE(data) {
+  return request({
+    url: '/ordersscre/action/',
+    method: 'post',
+    data
+  })
+}
+
+// 更新生产退料单
+export function updateorderSCRE(data) {
+  return request({
+    url: '/ordersscre/action/',
+    method: 'put',
+    data
+  })
+}
+
+// 删除生产退料单
+export function deleteorderSCRE(data) {
+  return request({
+    url: '/ordersscre/action/',
+    method: 'delete',
+    data
+  })
+}
