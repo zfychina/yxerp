@@ -228,9 +228,9 @@ export default {
     onMounted(() => {
       delivery.value = addDate()
       orderhao.value = route.query.order
-      // if(orderhao.value){
-      //   orderhaoonblur(orderhao.value)
-      // }
+      if(orderhao.value){
+        orderhaoonblur(orderhao.value)
+      }
     });
 
     // 返回按钮和搜索按钮

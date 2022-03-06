@@ -1,213 +1,63 @@
 <template>
   <van-sticky>
-    <van-nav-bar title="采购入库" left-arrow fixed @click-left="onClickLeft" right-text="删除" @click-right="deleteSubmit">
-    </van-nav-bar>
-  </van-sticky>
-  <van-form style="margin-top: 50px" @submit="onSubmit">
-    <!--  日历选择器-->
-    <van-sticky :offset-top="45">
-      <van-field
-          required
-          colon
-          v-model="delivery"
-          is-link
-          readonly
-          name="calendar"
-          label="入库日期"
-          placeholder="点击选择日期"
-          @click="showCalendar = true"
-      />
-      <van-calendar v-model:show="showCalendar" @confirm="onConfirm" color="#1989fa"/>
-      <!--订单编号-->
-      <van-field
-          scroll-to-error
-          autofocus
-          clickable
-          clearable
-          colon
-          v-model.trim="order"
-          name="order"
-          label="入库订单"
-          placeholder="如为空自动生成入库单编号"
-          :rules="[{ validator, message: '已读取此订单号内容' }]"
-
-      />
-      <!--客户编号-->
-      <!--ELEMENT-->
-      <van-cell>
-        <nobr class="sub-title"><nobr style="color:red;">*</nobr>供&nbsp;应&nbsp;商:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <el-autocomplete
-              input-style='width:100%;border:none'
-              resize="horizontal "
-              class="inline-input"
-              v-model="productline"
-              :fetch-suggestions="querySearch"
-              placeholder="请输入供应商"
-              @select="handleSelect"
-              clearable
-              name="productline"
-              value-key="shortname"
-          />
-        </nobr>
-      </van-cell>
-      <!--源销售订单-->
-      <van-field v-show="!state.readonly"
-                 scroll-to-error
-                 autofocus
-                 clickable
-                 clearable
-                 colon
-                 v-model.trim="xs_order"
-                 name="xs_order"
-                 label="源采购订单"
-                 placeholder="请输入采购订单编号"
-                 :rules="[{ validator: asyncValidator, message: '该生采购单已完成，请重新输入' }]"
-
-      />
-      <van-field v-show="state.readonly"
-                 scroll-to-error
-                 autofocus
-                 clickable
-                 clearable
-                 colon
-                 disabled
-                 v-model.trim="xs_order"
-                 name="xs_order"
-                 label="源采购订单"
-                 placeholder="禁止编辑"
-                 :rules="[{ validator, message: '该生采购单已完成，请核实' }]"
-
-      />
-
-      <!--    订单商品-->
-      <table class="table-order">
-        <thead>
-        <tr>
-          <th>序号</th>
-          <th>产品编号</th>
-          <th>产品名称</th>
-          <th>数量</th>
-          <th>单位</th>
-        </tr>
-        </thead>
-      </table>
-    </van-sticky>
-
-    <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
-      <van-list
-          v-model:loading="state.loading"
-          :finished="state.finished"
-          @load="onLoad">
-        <van-swipe-cell v-for="index in state.cellnum" v-bind:key="index">
-
-          <table cellpadding = 8px style="width: 100%">
-            <tbody>
-            <tr>
-              <td style="width: 7%;word-break:break-all">{{ index }}.</td>
-
-              <td style="width: 30%;word-break:break-all"><el-autocomplete
-                  v-model="goodcoding[index]"
-                  :fetch-suggestions="querySearchAsync"
-                  placeholder="输入产品编号"
-                  @select="handleSelect"
-                  :trigger-on-focus="false"
-                  clearable
-                  value-key="coding"
-                  debounce="0"
-              >
-                <template #default="{ item }">
-
-                  <div class="name">{{ item.coding }}</div>
-                  <p class="addr">&{{ item.name }}</p>
-                </template>
-              </el-autocomplete></td>
-
-              <td style="width: 20%;word-break:break-all;font-size: 12PX;" >{{ goodname[index] }}</td>
-              <td style="width: 20%;word-break:break-all"> <input v-model="goodnum[index]" style="height:30px;width: 70%; border: 0;background-color: #eeeeee"/></td>
-              <td style="width: 10%;word-break:break-all;font-size: 12PX;">{{ goodunit[index] }}</td>
-              <td style="width: 3%"></td>
-            </tr>
-            </tbody>
-          </table>
-
+    <van-row>
+      <van-col span="24">
+        <van-nav-bar left-arrow title="采购入库" :border='false' @click-left="onClickLeft" @click-right="onClickRight">
           <template #right>
-            <van-button square type="danger" text="清除" @click="cleargood(index)"/>
+            <van-icon name="delete-o" size="22" />
           </template>
-          <van-divider style="margin: 0 0 0 0"/>
-        </van-swipe-cell>
-        <P @click="oncellnum" style="height: 80px; color: rgba(0,127,250,0.54); margin-top: 15px">+ 增加行 +</P>
-      </van-list>
-    </van-pull-refresh>
+        </van-nav-bar>
+      </van-col>
+    </van-row>
+  </van-sticky>
 
-  </van-form>
+  <van-row justify="center">
+    <van-col span="24">
+      <van-config-provider :theme-vars="themeVars">
+        <van-form @submit="onSubmit">
+          <van-cell-group inset>
+            <!--            订单交期-->
+            <van-field v-model="delivery" name="delivery" label="入库日期" placeholder="点击选择入库日期" @click="showCalendar = true" readonly required colon is-link arrow-direction="down"/>
+            <van-calendar row-height="53" v-model:show="showCalendar" @confirm="onConfirm" :show-confirm="false" color="#1989fa" :min-date="minDate" :max-date="maxDate" :formatter="formatter" round="false" show-title="false"/>
 
+            <field-cell title="订单编号" required colon placeholder="   入库单号自动生成" name="orderhao" :autodata="state.orderhaodata" :data="orderhao" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
 
-  <div class="submit-bar">
-    <van-submit-bar :price="total * 100" currency="" button-text="创建订单" button-color=var(--color-high-text) @submit="onSubmit" />
-  </div>
+            <field-cell title="供应商名" required colon placeholder="   请输入供应商名" name="productline" :autodata="state.productlinedata" :data="productline" @inputvalue="receiveproductlinevalue" @onfocus="productlineonfocus" @onblur="productlineonblur"></field-cell>
+
+            <field-cell title="采购订单" colon placeholder="   请输入源采购订单编号" name="xsorderhao" :autodata="state.xsorderhaodata" :data="xsorderhao" @inputvalue="receivexsorderhaovalue" @onfocus="xsorderhaoonfocus" @onblur="xsorderhaoonblur"></field-cell>
+
+            <van-field  style="background-color: #fafafa" v-model="message" name="message" rows="1" autosize label="信息备注" type="textarea" colon clickable />
+
+            <field-cell-list :skulist="state.skulist" @inputvalue="receiveskulistvalue"></field-cell-list>
+
+          </van-cell-group>
+          <div style="margin: 16px;">
+            <van-button block type="primary" native-type="submit">
+              保存
+            </van-button>
+          </div>
+        </van-form>
+      </van-config-provider>
+
+    </van-col>
+  </van-row>
+
 </template>
 
 <script>
 
-import {ref, onMounted, reactive, computed} from 'vue';
-import {useRouter, useRoute} from "vue-router";
-import {supplierlist, countOrderCGRK, getOrderCGRKdetail, getOrderCGRKNOTdetail, createorderCGRK, updateorderCGRK, deleteorderCGRK, countOrderCGok, getOrderCGokdetail} from "network/unsettled";
-import {goodslist} from "network/good";
-import {Toast, Dialog} from "vant";
+import FieldCell from "components/content/FieldCell";
+import FieldCellList from "components/content/FieldCellList";
+import {supplierlist, supplierount, orderCGRKlist, countOrderCGRK, getOrderCGRKdetail, orderCGlist, countOrderCGok, getOrderCGokdetail, deleteorderCGRK, updateorderCGRK, createorderCGRK} from "network/unsettled";
+import {onMounted, reactive, ref} from "vue";
+import {useRoute} from "vue-router";
+import {Dialog, Toast} from "vant";
 
 export default {
   name: "createorderCGRK",
+  components: {FieldCell, FieldCellList},
   setup() {
-    // 发送数据
-    const router = useRouter()
-    // 接收数据
-    const route =useRoute();
-    // 带建议输入用
-    const restaurants = ref([])
-
-    // 订单data
-    const showCalendar = ref(false);
-    const onConfirm = (date) => {
-      delivery.value = `${date.getYear() + 1900}-${date.getMonth() + 1}-${date.getDate()}`;
-      showCalendar.value = false;
-    };
-
-    const delivery = ref('');
-    const order = ref('');
-    const productline = ref('');
-    const remarks = ref('');
-    const xs_order = ref('');
-
-    // 带建议输入
-    const querySearch = (queryString, cb) => {
-      var results = queryString
-          ? restaurants.value.filter(createFilter(queryString))
-          : restaurants.value;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    };
-    const createFilter = (queryString) => {
-      return (restaurant) => {
-        return (
-            // 这里设置搜索的字段
-            restaurant.shortname.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        );
-      };
-    };
-    const handleSelect = (item) => {
-      for (let i in goodcoding.value) {
-        if (item.coding.indexOf(goodcoding.value[i])===0){
-          goodname.value[i]=item.name
-          goodunit.value[i]= item.unit
-        }
-      }
-    };
-    onMounted(() => {
-      restaurants.value = loadAll();
-      delivery.value = addDate()
-      validator(route.query.order)
-    });
-
+    // 订单交期
     // 获取系统当前日期
     const addDate = () =>{
       const nowDate = new Date();
@@ -220,111 +70,317 @@ export default {
       const day = date.date>9?date.date:'0'+date.date
       return date.year + '-' + newmonth + '-' + day
     };
+    const showCalendar = ref(false);
+    const formatter = (day) => {
+      const month = day.date.getMonth() + 1;
+      const date = day.date.getDate();
+      const nowDate = new Date();
 
-    // 生产线数据加载
-    const loadAll = () => {
-      let arr1=[]
-      supplierlist().then(res=>{
-        // 将json对象转换成列表
-        for(let i in res){
-          arr1.push(res[i])
-        }
-      })
-      return arr1
+      if (month === nowDate.getMonth() + 1 && date === nowDate.getDate()) {
+        day.bottomInfo = '今天';
+      }
+      return day;
+    }
+    const onConfirm = (date) => {
+      delivery.value = `${date.getYear() + 1900}-${date.getMonth() + 1}-${date.getDate()}`;
+      showCalendar.value = false;
     };
 
-    // 返回上一页
-    const onClickLeft = () => {
-      router.go(-1)
+    // 订单编号
+    // 订单列表  订单数据
+    // 获取生产订单列表
+    const getorderSClist = (query) => {
+      console.log(productline.value);
+      orderCGRKlist( query, productline.value).then(res => {
+        console.log(res);
+        state.orderhaodata = res
+      })
+    }
+    const receiveorderhaovalue = (value) => {
+      console.log(value, 'receiveorderhaovalue');
+      orderhao.value = value
+      getorderSClist(orderhao.value, )
+    }
+    const orderhaoonfocus = () => {
+      console.log(state.orderhaodata);
+      state.orderhaodata = []
+      getorderSClist(orderhao.value)
+    }
+    // 失焦 校验订单名称是否存在
+    const orderhaoonblur = () => {
+      setTimeout(() => {}, 10);
+      console.log(orderhao.value);
+      // 校验生产订单是否存在
+      if (orderhao.value) {
+        countOrderCGRK(orderhao.value).then(res=>{
+          console.log(res);
+          if (res.count > 0) {
+            Dialog.confirm({message: '是否打开已存在的订单？',}).then(() => {
+              // on confirm
+              getOrderCGRKdetail(orderhao.value).then(res=>{
+                console.log(res);
+                if (res.count===0){
+                  //先清空前面的遗留数据
+                  state.skulist = [{},{},{},{},{},{}]
+                  Toast('此订单无产品详情')
+                }else {
+                  delivery.value = res.results[0].order.order_date.split(' ')[0]
+                  orderhao.value = res.results[0].order.order
+                  productline.value = res.results[0].order.supplier.shortname
+                  message.value = res.results[0].order.remarks
+                  xsorderhao.value = res.results[0].sku.order ? res.results[0].sku.order.order: ''
+                  state.skulist = []
+                  for(let i in res.results){
+                    state.skulist.push({
+                      id:res.results[i].sku.sku ? res.results[i].sku.sku.id : res.results[i].sku.id,
+                      coding:res.results[i].sku.sku ? res.results[i].sku.sku.coding : res.results[i].sku.coding,
+                      name:res.results[i].sku.sku ? res.results[i].sku.sku.name : res.results[i].sku.name,
+                      unit:res.results[i].sku.sku ? res.results[i].sku.sku.unit : res.results[i].sku.unit,
+                      quantity:res.results[i].quantity,
+                    })
+                  }
+                  // skulist最后一行是否为空，不为空则增加两行空值
+                  if ( JSON.stringify(state.skulist[state.skulist.length - 1]) !== '{}'){
+                    state.skulist.push({},{})
+                  }
+                }
+              })
+            }).catch(() => {
+              // on cancel
+            });
+          } else {
+            // Toast('此订单没有未完成的产品,请重新输入')
+            console.log(res);
+          }
+        })}
     }
 
-    //订单商品部分
-    const restaurantsgoods = ref([])
-    const goodcoding = ref([])
-    const goodnum = ref([])
-    const goodname = ref([])
-    const goodunit = ref([])
-    const state = reactive({
-      readonly: false,
-      cellnum: 5,
-      loading: false,
-      finished: true,
-      refreshing: false,
-      list: []
-    })
-    // 产品数据加载
-    let timeout;
-    const querySearchAsync = (queryString, cb)=> {
-      goodslist(queryString).then(res=>{
-        restaurantsgoods.value =res
+    // 生产线名
+    // 获取客户列表
+    const getproductlinelist = (query) => {
+      supplierlist(query).then(res => {
+        state.productlinedata = res
+        console.log(res);
       })
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        cb(restaurantsgoods.value);
-      }, 300);
     }
-    // 增加行
-    const oncellnum = ()=>{
-      state.cellnum += 1
+    const receiveproductlinevalue = (value) => {
+      productline.value = value
+      getproductlinelist(productline.value)
     }
-    // 提交创建
-    const onSubmit=()=>{
+    // 聚焦
+    const productlineonfocus = () => {
+      getproductlinelist()
+    }
+    // 失焦 校验客户名称是否存在
+    const productlineonblur = () => {
+      // 校验客户名称是否存在，如果不存在，重新选择或者跳转新建
+      setTimeout(() => {
+      if (productline.value) {
+        supplierount(productline.value).then(res=>{
+          if (res.count === 0) {
+            state.productlinecount = false
+            Toast({message: '客户名称不存在，请重新选择', duration: 2000})
+          } else {state.productlinecount = true}
+        })}
+      }, 20);
+    }
+
+    // 源采购订单号
+    // 获取源采购订单列表
+    const getxsorderSClist = (query) => {
+      orderCGlist(query, productline.value).then(res => {
+        console.log(res);
+        state.xsorderhaodata = res
+      })
+    }
+    const receivexsorderhaovalue = (value) => {
+      console.log(value, 'receivexsorderhaovalue');
+      xsorderhao.value = value
+      getxsorderSClist(xsorderhao.value)
+    }
+    const xsorderhaoonfocus = () => {
+      console.log(state.xsorderhaodata);
+      state.xsorderhaodata = []
+      getxsorderSClist(xsorderhao.value)
+    }
+    // 失焦 校验订单名称是否存在
+    const xsorderhaoonblur = () => {
+
+      console.log(xsorderhao.value);
+      if(xsorderhao.value){
+      countOrderCGok(xsorderhao.value).then(res=>{
+        console.log(res);
+        setTimeout(() => {}, 10);
+        if(res.count >= 1){
+          Dialog.confirm({message: '是否打开未完成的采购订单？',}).then(() => {
+            // on confirm
+            getOrderCGokdetail(xsorderhao.value).then(res=>{
+              console.log(res);
+              if (res.count===0){
+                //先清空前面的遗留数据
+                state.skulist = [{},{},{},{},{},{}]
+                Toast('此订单无产品详情')
+              }else {
+                orderhao.value = ''
+                productline.value = res.results[0].order.supplier.shortname
+                state.skulist = []
+                for(let i in res.results){
+                  state.skulist.push({
+                    id:res.results[i].sku.id,
+                    coding:res.results[i].sku.coding,
+                    name:res.results[i].sku.name,
+                    unit:res.results[i].sku.unit,
+                    quantity:res.results[i].quantity-res.results[i].quantityed,
+                  })
+                }
+
+                // skulist最后一行是否为空，不为空则增加两行空值
+                if ( JSON.stringify(state.skulist[state.skulist.length - 1]) !== '{}'){
+                  state.skulist.push({},{})
+                }
+              }
+            })
+          }).catch(() => {
+            // on cancel
+          });
+        } else {
+          state.skulist = [{},{},{},{},{},{}]
+          xsorderhao.value=''
+          console.log(xsorderhao.value);
+          Toast('此订单没有未完成的产品,请重新输入')
+        }
+
+      })
+      }
+    }
+
+    // 详情列表
+    // skulist数据列表
+    const receiveskulistvalue = (value) => {
+      console.log(value);
+      // splice(‘要插入的位置’, '要删除的项数', '需要插入的项', '需要插入的项', ‘……’)
+      state.skulist.splice(value.serial,1, value)
+
+      // skulist最后一行是否为空，不为空则增加两行空值
+      if ( JSON.stringify(state.skulist[state.skulist.length - 1]) !== '{}'){
+        state.skulist.push({},{})
+      }
+    }
+
+    // 数据
+    const delivery = ref('')
+    const message = ref('')
+    const orderhao = ref('')
+    const xsorderhao = ref('')
+    const productline = ref('');
+    const state = reactive({
+      orderhaodata: [],
+      xsorderhaodata: [],
+      productlinedata: [],
+      skulist: [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+      ],
+      // 客户/供应商/生产线是否存在
+      productlinecount: false
+    })
+
+    // 接收数据
+    const route =useRoute();
+    onMounted(() => {
+      delivery.value = addDate()
+      orderhao.value = route.query.order
+      if(orderhao.value){
+        orderhaoonblur(orderhao.value)
+      }
+    });
+
+    // 返回按钮和搜索按钮
+    const onClickLeft = () => history.back();
+    // 删除按钮
+    const onClickRight = () => {
+      if(orderhao.value){
+        Dialog.confirm({
+          message: `删除订单，请点击"确认"`,
+        })
+            .then(() => {
+              // 删除订单
+              deleteorderCGRK({'order':orderhao.value}).then(res=>{
+                Toast(res)
+              })
+            })
+            .catch(() => {
+              // on cancel
+            });
+
+      }else {Toast('请输入入库单编号')}
+    }
+
+    // 保存/更新按钮
+    const onSubmit = () => {
       let data = {}
-      console.log(order.value, goodcoding.value);
       data.delivery = delivery.value
       if (!data.delivery){
         Toast({message:'请输入订单交货期', duration: 1000 })
         return
       }
-      data.order = order.value
 
       data.productline = productline.value
       if (!data.productline){
-        Toast({message:'请输入选择供应商', duration: 1000 })
+        Toast({message:'请选择供应商', duration: 1000 })
         return
       }
-      data.remarks = remarks.value
-      data.xs_order = xs_order.value
+      data.remarks = message.value
+      data.xs_order = xsorderhao.value
       data.sku = []
-      for (let i in goodcoding.value){
-        if(!goodname.value[i] || !goodnum.value[i] || parseInt(goodnum.value[i]) === 0){
-          continue
-        }
+      for (let i in state.skulist){
+        // if ( JSON.stringify(state.skulist[i]) === '{}'){
+        //   continue
+        // }
 
-        data.sku.push({'coding':goodcoding.value[i], 'quantity':goodnum.value[i]})
+        if(state.skulist[i]?.coding && state.skulist[i]?.quantity && Number(state.skulist[i]?.quantity) !== 0) {
+          data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, unit:state.skulist[i]?.unit, quantity:state.skulist[i]?.quantity})
+        }
       }
       if (data.sku.length === 0){
         Toast({message:'产品编号有误或未添加产品数量', duration: 1000 })
         return
       }
+      state.skulist = data.sku
+      state.skulist.push({},{})
 
       // 校验订单编号是否重复
-      console.log(data);
-      countOrderCGRK(data.order).then(res=> {
+      console.log(data, data.sku);
+
+      countOrderCGRK(orderhao.value).then(res=> {
+        console.log(res);
         if (res.count >= 1) {
           // 订单已存在，弹出对话框选择是覆盖 还是取消
+          data.order = orderhao.value
           console.log(data);
           Dialog.confirm({
             message: `订单编号已存在，需要更新原订单，请点击"确认"`,
-          })
-              .then(() => {
-                // 覆盖原订单
-                updateorderCGRK(data).then(res=>{
-                  if(res === 'ok'){
-                    Toast.success('订单更新成功')
-                  } else {
-                    Toast(res)
-                  }
-                })
-              })
-              .catch(() => {
-                // on cancel
-              });
+          }).then(() => {
+            // 覆盖原订单
+            updateorderCGRK(data).then(res=>{
+              if(res === 'ok'){
+                Toast.success('订单更新成功')
+              } else {
+                Toast("在订单列表页面打开，查看是否更新成功")
+              }
+            })
+          }).catch(() => {
+            // on cancel
+          });
         } else {
           // 订单不存在，创建订单执行下面的代码
           createorderCGRK(data).then(res=>{
-            if(res.split(':')[0] === 'ok'){
-              order.value = res.split(':')[1]
+            if(res.orderhao){
+              orderhao.value = res.orderhao
               Toast.success('订单创建成功')
             } else {
               Toast("重新打开订单，查看是否创建成功")
@@ -334,234 +390,61 @@ export default {
       })
     }
 
-    // 下拉刷新
-    const onRefresh = () => {
-      // 清空列表数据
-      state.finished = false;
+    // themeVars 内的值会被转换成对应 CSS 变量
+    const themeVars = {
+      fieldLabelColor: '#02519E8C',
+      fieldLabelMarginRight: '8px',
+      fieldLabelWidth: '80px',
+      fieldClearIconSize: '14px',
 
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
-      state.loading = true;
-
-      order.value = []
-      delivery.value = []
-      productline.value = []
-      xs_order.value = []
-      goodcoding.value = []
-      goodname.value = []
-      goodunit.value = []
-      goodnum.value = []
-      onLoad();
-    };
-    // 列表
-    const onLoad = () => {
-      setTimeout(() => {
-        if (state.refreshing) {
-          //state.list = [];
-          state.refreshing = false;
-        }
-
-        for (let i = 0; i < 2; i++) {
-          state.list.push(state.list.length + 1);
-        }
-        state.loading = false;
-
-        if (state.list.length >= 10) {
-          state.finished = true;
-        }
-      }, 1000);
-    };
-
-    // 校验  检查订单号是否存在，如果存在，是否打开已存在的订单
-    // const validator = (val) => /1\d{10}/.test(val);
-    const validator = (val) => countOrderCGRK(val).then(res => {
-      state.readonly=false
-      if(res.count >= 1) {
-        state.readonly=true
-        Dialog.confirm({
-          message: '是否打开已存在的订单？',
-        })
-            .then(() => {
-              // on confirm
-              getOrderCGRKdetail(val).then(res=>{
-                console.log('有订单', res);
-                if (res.count===0){
-                  getOrderCGRKNOTdetail(val).then(res=>{
-                    console.log('无订单', res);
-                    if (res.count===0) {
-                      //先清空前面的遗留数据
-                      goodcoding.value = []
-                      goodname.value = []
-                      goodunit.value = []
-                      goodnum.value = []
-                      Toast('此订单无产品详情')
-                    }else {
-                      order.value = val
-                      state.cellnum = res.count + 3
-                      delivery.value = res.results[0].order.order_date.split(" ")[0]
-                      productline.value = res.results[0].order.supplier
-                      xs_order.value = ""
-                      state.readonly = true
-
-                      //先清空前面的遗留数据
-                      goodcoding.value = []
-                      goodname.value = []
-                      goodunit.value = []
-                      goodnum.value = []
-                      for (let i in res.results) {
-                        goodcoding.value[parseInt(i) + 1] = res.results[i].sku.split(":")[1]
-                        goodname.value[parseInt(i) + 1] = res.results[i].sku.split(":")[2]
-                        goodunit.value[parseInt(i) + 1] = res.results[i].sku.split(":")[4]
-                        goodnum.value[parseInt(i) + 1] = res.results[i].quantity
-                      }
-                    }
-                  })
-
-                }else {
-                  order.value = val
-                  state.cellnum = res.count + 3
-                  delivery.value = res.results[0].order.order_date.split(" ")[0]
-                  productline.value = res.results[0].sku.order.supplier
-                  xs_order.value = res.results[0].sku.order.order
-
-                  //先清空前面的遗留数据
-                  goodcoding.value = []
-                  goodname.value = []
-                  goodunit.value = []
-                  goodnum.value = []
-                  for(let i in res.results){
-                    goodcoding.value[parseInt(i)+1] = res.results[i].sku.sku.split(":")[1]
-                    goodname.value[parseInt(i)+1] = res.results[i].sku.sku.split(":")[2]
-                    goodunit.value[parseInt(i)+1] = res.results[i].sku.sku.split(":")[4]
-                    goodnum.value[parseInt(i)+1] = res.results[i].quantity
-                  }
-                }
-              })
-            })
-            .catch(() => {
-              // on cancel
-            });
-      }
-      return res.count < 1
-    })
-    // 源销售订单校验
-    const asyncValidator = (val) => countOrderCGok(val).then(res => {
-      console.log(res);
-      if(res.count >= 1) {
-        Dialog.confirm({
-          message: '是否打开未完成的销售订单？',
-        })
-            .then(() => {
-              // on confirm
-              getOrderCGokdetail(val).then(res=>{
-                console.log(res);
-                if (res.count===0){
-                  //先清空前面的遗留数据
-
-                  goodcoding.value = []
-                  goodname.value = []
-                  goodunit.value = []
-                  goodnum.value = []
-                  Toast('此订单无产品详情')
-                }else {
-                  state.cellnum = res.count + 3
-
-                  //先清空前面的遗留数据
-                  goodcoding.value = []
-                  goodname.value = []
-                  goodunit.value = []
-                  goodnum.value = []
-                  productline.value = res.results[0].order.supplier
-                  for(let i in res.results){
-                    goodcoding.value[parseInt(i)+1] = res.results[i].sku.split(":")[1]
-                    goodname.value[parseInt(i)+1] = res.results[i].sku.split(":")[2]
-                    goodunit.value[parseInt(i)+1] = res.results[i].sku.split(":")[4]
-                    goodnum.value[parseInt(i)+1] = res.results[i].quantity-res.results[i].quantityed
-                  }
-                }
-              })
-            })
-            .catch(() => {
-              // on cancel
-            });
-      }
-      return res.count >= 1
-    })
-
-    // 删除按钮
-    const deleteSubmit = ()=>{
-      if(order.value){
-        Dialog.confirm({
-          message: `删除订单，请点击"确认"`,
-        })
-            .then(() => {
-              // 删除订单
-              deleteorderCGRK({'order':order.value}).then(res=>{
-                Toast(res)
-              })
-            })
-            .catch(() => {
-              // on cancel
-            });
-
-      }else {Toast('请输入订单编号')}
-    }
-
-    // 通过计算属性 计算数量列的和
-    const total = computed(()=> {
-      let sum = 0;
-      for (let i in goodnum.value){
-        sum +=  parseInt(goodnum.value[i])
-      }
-      return sum;
-    })
-
-    // 侧滑 清除 内容
-    const cleargood = (index) => {
-      Dialog.confirm({
-        message: '确认清除吗？',
-      })
-          .then(() => {
-            // on confirm
-            delete goodcoding.value?.[index]
-            delete goodnum.value?.[index]
-            delete goodname.value?.[index]
-            delete goodunit.value?.[index]
-            Toast('清除成功')
-
-          })
-          .catch(() => {
-            // on cancel
-          });
+      calendarBackgroundColor: '#fafafa',
+      calendarHeaderBoxShadow: '0 1px 5px rgba(2, 81, 158, 0.55)',
+      calendarPopupHeight: '60%',
+      calendarMonthMarkColor: '#02519E17',
+      calendarMonthMarkFontSize: '200px',
 
     };
-
     return {
-      xs_order,
-      remarks,
-      total,
-      onRefresh,
-      querySearchAsync,
+      // themeVars 内的值会被转换成对应 CSS 变量
+      themeVars,
+
+      // 数据
       state,
-      oncellnum,
-      goodcoding,
-      goodnum,
-      goodname,
-      goodunit,
-      loadAll,
-      handleSelect,
-      querySearch,
-      onClickLeft,
-      onSubmit,
-      onConfirm,
-      showCalendar,
-      order,
+      message,
       delivery,
+      orderhao,
+      xsorderhao,
       productline,
-      validator,
-      asyncValidator,
-      cleargood,
-      deleteSubmit,
+
+      // 订单交期
+      showCalendar,
+      onConfirm,
+      formatter,
+      minDate: new Date(2019, 0, 1),
+      maxDate: new Date(2050, 11, 31),
+
+      // 订单编号
+      receiveorderhaovalue,
+      orderhaoonfocus,
+      orderhaoonblur,
+
+      // 生产线名
+      receiveproductlinevalue,
+      productlineonfocus,
+      productlineonblur,
+
+      // 详情列表
+      receiveskulistvalue,
+
+      // 销售订单号
+      receivexsorderhaovalue,
+      xsorderhaoonfocus,
+      xsorderhaoonblur,
+
+      onClickLeft,
+      onClickRight,
+
+      onSubmit,
 
     };
   },
@@ -570,39 +453,13 @@ export default {
 </script>
 
 <style scoped>
-.table-order {
-  background-color: #ffffff;
-  border-collapse: separate;
-  border-spacing: 10px 0px;
-  width: 100%;
-  height: 40px;
-  margin-left: 8px;
-}
-.table-order thead {
-  margin-left: 0;
-  text-align: left;
-  background-color: #ffffff;
-  font-size: 12PX;
-  color: rgba(131,135,137,0.54);
-}
-.van-swipe-cell {
-  margin-top: 10px;
-  margin-left: 8px;
-  width: 100%;
-}
-.van-swipe-cell tbody {
-  height: 40px;
-  font-family: "微软雅黑", "仿宋", sans-serif;
-
+/*信息备注 样式*/
+.van-field {
+  font-size: 14px;
+  line-height: 2;
+  border: 1px solid;
+  border-color: var(--color-border);
+  margin: 15px 0 15px 0
 }
 
-.submit-bar {
-  background-color: #f6f6f6;
-  display: flex;
-  position: fixed;
-  z-index: 98;
-  left: 0;
-  right: 0;
-  margin-bottom: 10px;
-}
 </style>

@@ -7,7 +7,7 @@
       <span style="line-height: 3; font-size: 12px; text-align: left;"><p>{{data.order.delivery ? data.order.delivery.split(' ')[0].split('-')[1]+"月"+data.order.delivery.split(' ')[0].split('-')[2]+"日":
           data.order.update_time.split(' ')[0].split('-')[1]+"月"+data.order.update_time.split(' ')[0].split('-')[2]+"日"}}</p></span>
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: left;">
-        <p>{{data.order.user}}</p>
+        <p>{{data.order.user.username ? data.order.user.username : data.order.user}}</p>
       <span style="color: var(--color-red);">{{data.order.order_date.split(' ')[0].split('-')[1]+"月"+data.order.order_date.split(' ')[0].split('-')[2]+"日"}}</span>
       </span>
     </van-col>
@@ -21,7 +21,13 @@
     <van-col span="4">
       <span style="line-height: 3; font-size: 10px; text-align: left;"><p>{{data.quantity + " "}}{{data.sku.sku ? data.sku.sku.unit : data.sku.unit}}</p></span>
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: left;">
-        <p>{{data.sku.order ? data.sku.order.supplier : data.order.supplier}}{{data.order.customer?.shortname}}</p>
+        <p>
+<!--          {{data.sku.order ? data.sku.order.supplier.shortname : (data.order.supplier ? data.order.supplier.shortname : '')}}-->
+<!--          {{data.sku.order.supplier?.shortname}}-->
+          {{data.order.supplier?.shortname || data.order.customer?.shortname || data.sku.order.supplier?.shortname}}
+<!--          {{data.order.customer?.shortname}}-->
+<!--          {{}}-->
+        </p>
         <span style="color: var(--color-red);font-size: 8px;">{{data.sku.order ? data.sku.order.order : ''}}</span>
       </span>
     </van-col>

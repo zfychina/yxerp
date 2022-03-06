@@ -9,8 +9,10 @@ const search = () => import('@/views/search/search')
 const Unsettled = () => import('@/views/unsettled/Unsettled')
 const createorderSC = () => import('@/views/unsettled/ChildComps/createorderSC')
 const createorderSCRK = () => import('@/views/unsettled/ChildComps/createorderSCRK')
+const createorderSCRE = () => import('@/views/unsettled/ChildComps/createorderSCRE')
 const createorderCG = () => import('@/views/unsettled/ChildComps/createorderCG')
 const createorderCGRK = () => import('@/views/unsettled/ChildComps/createorderCGRK')
+const createorderCGRE = () => import('@/views/unsettled/ChildComps/createorderCGRE')
 const createorderSCTL = () => import('@/views/order/createsctl')
 
 const Profile = () => import('@/views/profile/Profile')
@@ -148,6 +150,15 @@ const routes = [
     }
   },
   {
+    path: '/createorderscre',
+    name: 'createorderscre',
+    component: createorderSCRE,
+    meta: {
+      title: '创建生产退料',
+      isAuthRequired: true,
+    }
+  },
+  {
     path: '/createordercg',
     name: 'createordercg',
     component: createorderCG,
@@ -162,6 +173,15 @@ const routes = [
     component: createorderCGRK,
     meta: {
       title: '创建采购入库订单',
+      isAuthRequired: true,
+    }
+  },
+  {
+    path: '/createordercgre',
+    name: 'createordercgre',
+    component: createorderCGRE,
+    meta: {
+      title: '创建采购退货',
       isAuthRequired: true,
     }
   },

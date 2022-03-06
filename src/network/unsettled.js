@@ -365,9 +365,20 @@ export function deleteorderSCRK(data) {
 
 
 // 校验采购入库单号是否重复
-export function countOrderCGRK(order) {
+export function countOrderCGRK(order="") {
   return request({
-    url: "/orderscgrk/" + order + '/count/',
+    url: "/orderscgrkcount/?query=" + order,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+//获取采购入库订单编号列表信息
+export function orderCGRKlist(query='',su_query="") {
+  return request({
+    url: "/orderscgrk/?query=" + query+ "&su_query=" + su_query,
     method: 'get',
     params: {
 
@@ -379,17 +390,6 @@ export function countOrderCGRK(order) {
 export function getOrderCGRKdetail(orderhao) {
   return request({
     url: "/orderscgrk/" + orderhao,
-    method: 'get',
-    params: {
-
-    }
-  })
-}
-
-// 获取采购入库无订单详情信息
-export function getOrderCGRKNOTdetail(orderhao) {
-  return request({
-    url: "/orderscgrknot/" + orderhao,
     method: 'get',
     params: {
 
@@ -443,5 +443,80 @@ export function deleteorderCGRK(data) {
     url: '/orderscgrk/action/',
     method: 'delete',
     data
+  })
+}
+
+
+// 采购退货
+//获取采购退货订单编号列表信息
+export function orderCGRElist(query='',su_query="") {
+  return request({
+    url: "/orderscgre/?query=" + query+ "&su_query=" + su_query,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 校验采购退货单号是否重复
+export function countOrderCGRE(order='') {
+  return request({
+    url: "/orderscgrecount/?query=" + order,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取采购退货单详情信息
+export function getOrderCGREdetail(orderhao) {
+  return request({
+    url: "/orderscgre/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 创建采购退货单
+export function createorderCGRE(data) {
+  return request({
+    url: '/orderscgre/action/',
+    method: 'post',
+    data
+  })
+}
+
+// 更新采购退货单
+export function updateorderCGRE(data) {
+  return request({
+    url: '/orderscgre/action/',
+    method: 'put',
+    data
+  })
+}
+
+// 删除采购退货单
+export function deleteorderCGRE(data) {
+  return request({
+    url: '/orderscgre/action/',
+    method: 'delete',
+    data
+  })
+}
+
+
+// 生产入库
+// 生产入库单号列表
+export function orderSCRKlist(query='',su_query="") {
+  return request({
+    url: "/orderscrk/?query=" + query+ "&su_query=" + su_query,
+    method: 'get',
+    params: {
+
+    }
   })
 }

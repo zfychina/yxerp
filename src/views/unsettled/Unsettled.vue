@@ -267,7 +267,7 @@ export default {
     // grid使用
     const gridvalue = ['生产订单', '生产领料', '生产入库', '生产退料', '销售出库', '采购订单', '采购退货', '采购入库']
     const gridicon = ['icon_scdd.svg', 'icon_scll.svg', 'icon_scrk.svg', 'icon_sctl.svg', 'icon_xsck.svg', 'icon_cgdd.svg', 'icon_cgtl.svg', 'icon_cgrk.svg']
-    const torouter = ['/createordersc', '/createordersctl', '/createorderscrk', '/statement', '/createordercg', '/createordercg', '/createordercg', '/createordercgrk']
+    const torouter = ['/createordersc', '/createordersctl', '/createorderscrk', '/createorderscre', '/createordercg', '/createordercg', '/createordercgre', '/createordercgrk']
 
     // VAN组件CSS样式
     const themeVars = {
@@ -295,26 +295,32 @@ export default {
       if (active.value === 2) {
         // 打开生产入库
         console.log(active.value, order);
+        router.push({path:'/createorderscrk', query: { order: order}})
       }
       if (active.value === 3) {
         // 打开采购订单
         console.log(active.value, order);
+        router.push({path:'/createordercg', query: { order: order}})
       }
       if (active.value === 4) {
         // 打开采购入库
         console.log(active.value, order);
+        router.push({path:'/createordercgrk', query: { order: order}})
       }
       if (active.value === 5) {
         // 打开无订单采购入库
         console.log(active.value, order);
+        router.push({path:'/createordercgrk', query: { order: order}})
       }
       if (active.value === 6) {
         // 打开采购退货
         console.log(active.value, order);
+        router.push({path:'/createordercgre', query: { order: order}})
       }
       if (active.value === 7) {
         // 打开生产退料
         console.log(active.value, order);
+        router.push({path:'/createorderscre', query: { order: order}})
       }
       if (active.value === 8) {
         // 打开销售出库
