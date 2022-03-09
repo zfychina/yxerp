@@ -581,3 +581,86 @@ export function deleteorderSCRE(data) {
     data
   })
 }
+
+// 销售出货
+// 校验销售出货单号是否重复
+export function countOrderXS(order="") {
+  return request({
+    url: "/ordersxscount/?query=" + order,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+//获取销售出货订单编号列表信息
+export function orderXSlist(query='',su_query="") {
+  return request({
+    url: "/ordersxs/?query=" + query+ "&su_query=" + su_query,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取销售出货单详情信息
+export function getOrderXSdetail(orderhao) {
+  return request({
+    url: "/ordersxs/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 校验销售出货是否读取完
+export function countOrderXSok(orderhao) {
+  return request({
+    url: "/ordersxs/" + orderhao + '/countok/',
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 获取未完成的销售出货详情信息
+export function getOrderXSokdetail(orderhao) {
+  return request({
+    url: "/ordersxsok/" + orderhao,
+    method: 'get',
+    params: {
+
+    }
+  })
+}
+
+// 创建销售出货
+export function createordeXS(data) {
+  return request({
+    url: '/ordersxs/action/',
+    method: 'post',
+    data
+  })
+}
+
+// 更新销售出货
+export function updateorderXS(data) {
+  return request({
+    url: '/ordersxs/action/',
+    method: 'put',
+    data
+  })
+}
+
+// 删除销售出货
+export function deleteorderXS(data) {
+  return request({
+    url: '/ordersxs/action/',
+    method: 'delete',
+    data
+  })
+}

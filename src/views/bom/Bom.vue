@@ -101,7 +101,10 @@ export default {
 
       console.log(state.searchvalue);
       if (state.searchvalue){
+        Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
         GETbomdetail()
+        Toast.clear()
+        Toast.success("加载完成")
       } else {
         state.skulist = [{},{},{},{},{},{},]
       }
@@ -109,6 +112,7 @@ export default {
     }
 
     const GETbomdetail = () =>{
+
       getbomdetail(state.searchvalue.id).then(res=>{
         if (res.length === 0){
           state.skulist = [{},{},{},{},{},{},]
@@ -123,6 +127,7 @@ export default {
           state.skulist.push({},{})
         }
       })
+
     }
     const onsearch = () =>{
       console.log('搜索按钮');

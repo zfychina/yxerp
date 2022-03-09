@@ -2,7 +2,7 @@
   <van-sticky>
     <van-row>
       <van-col span="24">
-        <van-nav-bar left-arrow title="采购入库" :border='false' @click-left="onClickLeft" @click-right="onClickRight">
+        <van-nav-bar left-arrow title="销售出货" :border='false' @click-left="onClickLeft" @click-right="onClickRight">
           <template #right>
             <van-icon name="delete-o" size="22" />
           </template>
@@ -17,14 +17,14 @@
         <van-form @submit="onSubmit">
           <van-cell-group inset>
             <!--            订单交期-->
-            <van-field v-model="delivery" name="delivery" label="入库日期" placeholder="点击选择入库日期" @click="showCalendar = true" readonly required colon is-link arrow-direction="down"/>
+            <van-field v-model="delivery" name="delivery" label="出货日期" placeholder="点击选择入库日期" @click="showCalendar = true" readonly required colon is-link arrow-direction="down"/>
             <van-calendar row-height="53" v-model:show="showCalendar" @confirm="onConfirm" :show-confirm="false" color="#1989fa" :min-date="minDate" :max-date="maxDate" :formatter="formatter" round="false" show-title="false"/>
 
-            <field-cell title="订单编号" required colon placeholder="   入库单号自动生成" name="orderhao" :autodata="state.orderhaodata" :data="orderhao" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
+            <field-cell title="订单编号" required colon placeholder="   出货单号自动生成" name="orderhao" :autodata="state.orderhaodata" :data="orderhao" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
 
-            <field-cell title="供应商名" required colon placeholder="   请输入供应商名" name="productline" :autodata="state.productlinedata" :data="productline" @inputvalue="receiveproductlinevalue" @onfocus="productlineonfocus" @onblur="productlineonblur"></field-cell>
+            <field-cell title="客 户 名" required colon placeholder="   请输入客户名" name="productline" :autodata="state.productlinedata" :data="productline" @inputvalue="receiveproductlinevalue" @onfocus="productlineonfocus" @onblur="productlineonblur"></field-cell>
 
-            <field-cell title="采购订单" colon placeholder="   请输入源采购订单编号" name="xsorderhao" :autodata="state.xsorderhaodata" :data="xsorderhao" @inputvalue="receivexsorderhaovalue" @onfocus="xsorderhaoonfocus" @onblur="xsorderhaoonblur"></field-cell>
+            <field-cell title="销售订单" colon placeholder="   请输入源销售订单编号" name="xsorderhao" :autodata="state.xsorderhaodata" :data="xsorderhao" @inputvalue="receivexsorderhaovalue" @onfocus="xsorderhaoonfocus" @onblur="xsorderhaoonblur"></field-cell>
 
             <van-field  style="background-color: #fafafa" v-model="message" name="message" rows="1" autosize label="信息备注" type="textarea" colon clickable />
 
@@ -48,13 +48,15 @@
 
 import FieldCell from "components/content/FieldCell";
 import FieldCellList from "components/content/FieldCellList";
-import {supplierlist, supplierount, orderCGRKlist, countOrderCGRK, getOrderCGRKdetail, orderCGlist, countOrderCGok, getOrderCGokdetail, deleteorderCGRK, updateorderCGRK, createorderCGRK} from "network/unsettled";
+import { orderXSlist, countOrderXS, getOrderXSdetail, countOrderXSok, getOrderXSokdetail, deleteorderXS, updateorderXS, createordeXS} from "network/unsettled";
+import {customerslist, customerscount} from "network/customer";
 import {onMounted, reactive, ref} from "vue";
 import {useRoute} from "vue-router";
 import {Dialog, Toast} from "vant";
+import {orderhaolist} from "network/order";
 
 export default {
-  name: "createorderCGRK",
+  name: "createorderXS",
   components: {FieldCell, FieldCellList},
   setup() {
     // 订单交期
@@ -91,7 +93,7 @@ export default {
     // 获取生产订单列表
     const getorderSClist = (query) => {
       console.log(productline.value);
-      orderCGRKlist( query, productline.value).then(res => {
+      orderXSlist( query, productline.value).then(res => {
         console.log(res);
         state.orderhaodata = res
       })
@@ -112,12 +114,12 @@ export default {
       console.log(orderhao.value);
       // 校验生产订单是否存在
       if (orderhao.value) {
-        countOrderCGRK(orderhao.value).then(res=>{
+        countOrderXS(orderhao.value).then(res=>{
           console.log(res);
           if (res.count > 0) {
             Dialog.confirm({message: '是否打开已存在的订单？',}).then(() => {
               // on confirm
-              getOrderCGRKdetail(orderhao.value).then(res=>{
+              getOrderXSdetail(orderhao.value).then(res=>{
                 console.log(res);
                 if (res.count===0){
                   //先清空前面的遗留数据
@@ -126,9 +128,9 @@ export default {
                 }else {
                   delivery.value = res.results[0].order.order_date.split(' ')[0]
                   orderhao.value = res.results[0].order.order
-                  productline.value = res.results[0].order.supplier.shortname
+                  productline.value = res.results[0].order.customer
                   message.value = res.results[0].order.remarks
-                  xsorderhao.value = res.results[0].sku.order ? res.results[0].sku.order.order: ''
+                  xsorderhao.value = res.results[0].sku.order ? res.results[0].sku.order.orderhao: ''
                   state.skulist = []
                   for(let i in res.results){
                     state.skulist.push({
@@ -159,7 +161,7 @@ export default {
     // 生产线名
     // 获取客户列表
     const getproductlinelist = (query) => {
-      supplierlist(query).then(res => {
+      customerslist(query).then(res => {
         state.productlinedata = res
         console.log(res);
       })
@@ -177,7 +179,7 @@ export default {
       // 校验客户名称是否存在，如果不存在，重新选择或者跳转新建
       setTimeout(() => {
       if (productline.value) {
-        supplierount(productline.value).then(res=>{
+        customerscount(productline.value).then(res=>{
           if (res.count === 0) {
             state.productlinecount = false
             Toast({message: '客户名称不存在，请重新选择', duration: 2000})
@@ -189,7 +191,7 @@ export default {
     // 源采购订单号
     // 获取源采购订单列表
     const getxsorderSClist = (query) => {
-      orderCGlist(query, productline.value).then(res => {
+      orderhaolist(query, productline.value).then(res => {
         console.log(res);
         state.xsorderhaodata = res
       })
@@ -209,13 +211,13 @@ export default {
 
       console.log(xsorderhao.value);
       if(xsorderhao.value){
-      countOrderCGok(xsorderhao.value).then(res=>{
+        countOrderXSok(xsorderhao.value).then(res=>{
         console.log(res);
         setTimeout(() => {}, 10);
         if(res.count >= 1){
           Dialog.confirm({message: '是否打开未完成的采购订单？',}).then(() => {
             // on confirm
-            getOrderCGokdetail(xsorderhao.value).then(res=>{
+            getOrderXSokdetail(xsorderhao.value).then(res=>{
               console.log(res);
               if (res.count===0){
                 //先清空前面的遗留数据
@@ -223,15 +225,16 @@ export default {
                 Toast('此订单无产品详情')
               }else {
                 orderhao.value = ''
-                productline.value = res.results[0].order.supplier.shortname
+                productline.value = res.results[0].order.customer
                 state.skulist = []
                 for(let i in res.results){
                   state.skulist.push({
                     id:res.results[i].sku.id,
                     coding:res.results[i].sku.coding,
                     name:res.results[i].sku.name,
+                    stock:res.results[i].sku.stock,
                     unit:res.results[i].sku.unit,
-                    quantity:res.results[i].quantity-res.results[i].quantityed,
+                    quantity:res.results[i].quantity-res.results[i].shipped_quantityed,
                   })
                 }
 
@@ -310,7 +313,7 @@ export default {
         })
             .then(() => {
               // 删除订单
-              deleteorderCGRK({'order':orderhao.value}).then(res=>{
+              deleteorderXS({'order':orderhao.value}).then(res=>{
                 Toast(res)
               })
             })
@@ -344,7 +347,7 @@ export default {
         // }
 
         if(state.skulist[i]?.coding && state.skulist[i]?.quantity && Number(state.skulist[i]?.quantity) !== 0) {
-          data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, unit:state.skulist[i]?.unit, quantity:state.skulist[i]?.quantity})
+          data.sku.push({stock:state.skulist[i]?.stock,coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, unit:state.skulist[i]?.unit, quantity:state.skulist[i]?.quantity})
         }
       }
       if (data.sku.length === 0){
@@ -357,7 +360,7 @@ export default {
       // 校验订单编号是否重复
       console.log(data, data.sku);
 
-      countOrderCGRK(orderhao.value).then(res=> {
+      countOrderXS(orderhao.value).then(res=> {
         console.log(res);
         if (res.count >= 1) {
           // 订单已存在，弹出对话框选择是覆盖 还是取消
@@ -367,7 +370,7 @@ export default {
             message: `订单编号已存在，需要更新原订单，请点击"确认"`,
           }).then(() => {
             // 覆盖原订单
-            updateorderCGRK(data).then(res=>{
+            updateorderXS(data).then(res=>{
               if(res === 'ok'){
                 Toast.success('订单更新成功')
               } else {
@@ -379,7 +382,7 @@ export default {
           });
         } else {
           // 订单不存在，创建订单执行下面的代码
-          createorderCGRK(data).then(res=>{
+          createordeXS(data).then(res=>{
             if(res.orderhao){
               orderhao.value = res.orderhao
               Toast.success('订单创建成功')

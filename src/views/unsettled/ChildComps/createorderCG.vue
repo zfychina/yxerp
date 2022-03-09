@@ -136,6 +136,7 @@ export default {
                       id:res.results[i].sku.id,
                       coding:res.results[i].sku.coding,
                       name:res.results[i].sku.name,
+                      stock:res.results[i].sku.stock,
                       unit:res.results[i].sku.unit,
                       quantity:res.results[i].quantity,
                       quantityed:res.results[i].quantityed,

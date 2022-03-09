@@ -29,7 +29,7 @@
     <van-col span="6">
         <input class="input" type="number" step="0.001" name="quantity" :value="data.quantity" @input="quantityoninput" placeholder="请输入数量" autocomplete="off" style="text-align: center;width: 100%"/>
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: center;">
-        <p>{{data.quantityed >0 ? '完成 ' + data.quantityed : ''}}</p>
+        <p>{{data.quantityed >0 ? '完成 ' + data.quantityed : (data.coding ? '库存 ' + data.stock : '')}}</p>
       </span>
     </van-col>
 
