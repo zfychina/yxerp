@@ -5,6 +5,7 @@ export function upShortmold(data) {
   return request({
     url: '/shortmoldimport/',
     method: 'post',
+    timeout: 30000,
     data
   })
 }
@@ -15,6 +16,7 @@ export function upSkuimport(data) {
   return request({
     url: '/skuimport/',
     method: 'post',
+    timeout: 30000,
     data
   })
 }
@@ -24,6 +26,7 @@ export function upSupplier(data) {
   return request({
     url: '/skuimport/',
     method: 'put',
+    timeout: 30000,
     data
   })
 }
@@ -43,6 +46,7 @@ export function upSupplierdir(data) {
   return request({
     url: '/supplierimport/',
     method: 'post',
+    timeout: 30000,
     data
   })
 }
@@ -52,6 +56,7 @@ export function upCustomer(data) {
   return request({
     url: '/customerimport/',
     method: 'post',
+    timeout: 30000,
     data
   })
 }
@@ -61,6 +66,7 @@ export function upBOM(data) {
   return request({
     url: '/bomimport/',
     method: 'post',
+    timeout: 30000,
     data
   })
 }

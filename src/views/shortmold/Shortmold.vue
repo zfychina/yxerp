@@ -165,7 +165,7 @@ export default {
     margin-bottom: 0px;
     margin-right: 0px;
     margin-left: 0px;
-    font-weight: bloder; /*bold：加粗；bloder：深度加粗；lighter：细体；*/
+    font-weight: bold; /*bold：加粗；bloder：深度加粗；lighter：细体；*/
     /*border: 1px solid;*/
     background-color: white;
   }

@@ -19,6 +19,7 @@ const createorderSCTL = () => import('@/views/order/createsctl')
 const Profile = () => import('@/views/profile/Profile')
 const Register = () => import('@/views/profile/Register')
 const Login = () => import('@/views/profile/Login')
+const setting = () => import('@/views/profile/ChildComps/setting')
 const Statement = () => import('@/views/profile/ChildComps/Statement')
 const customerStatement = () => import('@/views/profile/ChildComps/customerStatement')
 const yearStatement = () => import('@/views/profile/ChildComps/yearStatement')
@@ -212,6 +213,15 @@ const routes = [
     component: Statement,
     meta: {
       title: '产品报表',
+    }
+  },
+
+  {
+    path: '/setting',
+    name: 'setting',
+    component: setting,
+    meta: {
+      title: '个人设置',
     }
   },
   {
