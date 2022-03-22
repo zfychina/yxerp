@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 const Shortmold = () => import('@/views/shortmold/Shortmold')
 const Shortmold_backup = () => import('@/views/shortmold/Shortmold_backup')
 const Bom = () => import('@/views/bom/Bom')
@@ -220,6 +220,7 @@ const routes = [
     path: '/setting',
     name: 'setting',
     component: setting,
+    props: true,
     meta: {
       title: '个人设置',
     }
@@ -260,7 +261,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes
 })
 

@@ -1,7 +1,7 @@
 <template>
   <van-sticky>
-  <van-row  @click="setting" justify="center " class="touxiang" style="margin-top: 20px;vertical-align: bottom;line-height: 4;background-color: white;" align="bottom">
-    <van-col span="6" style="vertical-align: bottom; line-height: 2">
+  <van-row  @click="setting" justify="center " class="touxiang" style="vertical-align: bottom;line-height: 4;background-color: white;" align="bottom">
+    <van-col span="6" style="vertical-align: bottom; line-height: 2 ;margin-top: 20px;">
 <!--      头像-->
       <van-image
           round
@@ -86,6 +86,8 @@ export default {
           {name:'客户名称导入', explain:'含物料编号、物料名称、单位.xls文件，从第二行开始', url:'upCustomer'},
           {name:'BOM表导入', explain:'系统BOM导出保存为.xls文件', url:'upBOM'},
           {name:'存货往来导入', explain:'先导入库成品查询文件，再导入存货往来文件', url:'recordsimport'},
+          {name:'物料类型分类(待更新)', explain:'将订单物料划分为锁体、锁芯、保护器、面板、配件等', url:'categoryimport'},
+          {name:'物料单位转换(待更新)', explain:'物料单位箱转换成个', url:'tounitimport'},
       ],
     })
 

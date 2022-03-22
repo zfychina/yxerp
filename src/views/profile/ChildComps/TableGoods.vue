@@ -60,10 +60,10 @@ export default {
     })
 
     const upfile=(file)=> {
+      console.log(file);
       const data = new FormData();
       data.append('files', file.file)
       Toast.loading({message:props.data.url + '文件导入中...', forbidClick:true});
-
       if(props.data.url === 'upShortmold') {
         // 缺料表更新
         upShortmold(data).then(res=>{

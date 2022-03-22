@@ -29,6 +29,8 @@
 
 <script>
 
+import {useRouter} from "vue-router";
+
 export default {
   name: "TableOrderSpread",
   props: {
@@ -41,10 +43,11 @@ export default {
 
   },
   setup() {
-
+    const router = useRouter()
     // 跳转到创建生产订单
     const tocreateorderSC = (order, coding) => {
       console.log('跳转到创建生产订单',order, coding);
+      router.push({path:'/createorder', query: { order: order}})
     }
 
     // VAN分割样式修改

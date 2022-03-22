@@ -125,6 +125,7 @@ export default {
             state.skulist.push({coding:subs[i].coding.coding,name:subs[i].coding.name,quantity:subs[i].stock,unit:subs[i].coding.unit,})
           }
           state.skulist.push({},{})
+          console.log(state.skulist);
         }
       })
 

@@ -8,24 +8,42 @@
     </van-row>
   </van-sticky>
 
-  <p>1</p>  <p>1</p>  <p>1</p>  <p>1</p>  <p>1</p>  <p>1</p>  <p>1</p>
-  <p>1</p>  <p>1</p>  <p>1</p>  <p>1</p>  <p>1</p>  <p>1</p>  <p>1</p>
+  <van-row justify="center">
+    <van-col span="23" class="cellborder" :accept="accept">
+      <setting-item/>
+    </van-col>
+  </van-row>
 
+  <van-row  justify="center">
+    <van-col span="23">
+      <div style="margin-top: 40px;">
+        <van-button block type="primary" @click="updatepwd">
+          修改密码
+        </van-button>
+      </div>
+    </van-col>
+  </van-row>
 
-  <div style="margin: 16px;">
-    <van-button block type="primary" @click="tologout">
-      登出
-    </van-button>
-  </div>
+  <van-row  justify="center">
+    <van-col span="23">
+      <div style="margin-top: 20px;">
+        <van-button block type="primary" @click="tologout">
+          登出帐号
+        </van-button>
+      </div>
+    </van-col>
+  </van-row>
 </template>
 
 <script>
 import {Toast} from "vant";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
+import SettingItem from "./SettingItem";
 
 export default {
   name: "setting",
+  components: {SettingItem,},
 
   setup(){
     const router = useRouter()
@@ -35,6 +53,11 @@ export default {
     // 返回按钮和搜索按钮
     const onClickLeft = () => history.back();
 
+
+    // 密码修改
+    const updatepwd = () =>{
+      Toast('密码无法修改，请联系管理员')
+    }
     // 退出登录
     const tologout = ()=>{
       // 清除boken window.localStroage
@@ -46,11 +69,13 @@ export default {
       // 在vuex isLogin
       store.commit('setIsLogin', false);
       setTimeout(()=>{
-        router.push({path:'/'})
+        router.push({path:'/login'})
       },500)
     }
     return {
       onClickLeft,
+
+      updatepwd,
       tologout,
     }
   }
