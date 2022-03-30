@@ -22,3 +22,16 @@ export function getYearList() {
     }
   })
 }
+
+
+// 获取锁体订单产品数据-new
+export function getSTReportsku(year) {
+  return request({
+    url: "/orders/streport/" + year,
+    method: 'get',
+    timeout: 30000,
+    params: {
+
+    }
+  })
+}

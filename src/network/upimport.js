@@ -80,3 +80,24 @@ export function recordsimport(data) {
     data
   })
 }
+
+
+// 更新产品分类
+export function upcategoryimport(data) {
+  return request({
+    url: '/goodscategory/',
+    method: 'put',
+    timeout: 30000,
+    data
+  })
+}
+
+// 增加产品分类及单位数量
+export function tounitimport(data) {
+  return request({
+    url: '/categoryimport/',
+    method: 'post',
+    timeout: 30000,
+    data
+  })
+}

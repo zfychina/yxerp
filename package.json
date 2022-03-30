@@ -8,11 +8,13 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@antv/f2": "^4.0.11",
     "@nutui/nutui": "^3.1.12",
     "axios": "^0.21.4",
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.55",
     "element-ui": "^2.15.3",
+    "insert-css": "^2.0.0",
     "muse-ui": "^3.0.2",
     "nanoid": "^3.1.23",
     "pinyin": "^2.10.2",
@@ -23,6 +25,7 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.17.3",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",

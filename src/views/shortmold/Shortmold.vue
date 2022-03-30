@@ -41,16 +41,42 @@
       </van-config-provider>
     </van-col>
   </van-row>
+
+<!--  半圆进度条-->
+  <van-row justify="center" style="margin-top: 30px;margin-bottom: 15px;">
+    <van-col span="23">
+      <van-circle
+          v-model:current-rate="currentRate"
+          :rate="state.order_num_finish"
+          :speed="80"
+          :text="text"
+          :stroke-width="120"
+          :clockwise="false"
+          size="120px"
+
+          layer-color="#ebedf0"
+          color='#1989fa'
+
+      />
+    </van-col>
+  </van-row>
+
+
+
 <!--需本月完成的销售订单数据-->
   <div ref="container">
     <van-sticky :container="container" :offset-top="45">
       <van-row justify="center">
         <van-col span="23">
-          <div class="textcss">-本月需完成的销售订单：{{ state.order_num - state.order_num_unfinish }}/{{ state.order_num }}（完成率：{{ ((state.order_num - state.order_num_unfinish) / state.order_num * 100).toFixed(1) }}%）</div>
+          <div class="textcss">-本月需完成的销售订单：{{ state.order_num - state.order_num_unfinish }}/{{ state.order_num }}</div>
 
         </van-col>
       </van-row>
     </van-sticky>
+
+
+
+
     <van-row justify="center">
       <van-col span="23">
         <erp-order-item @ordernum="ordernum"></erp-order-item>
@@ -83,12 +109,12 @@
 <script>
 import ErpOrderItem from "components/common/ErpOrderItem";
 import ErpGoodsItem from "components/common/ErpGoodsItem";
-import {reactive} from "vue";
+import {onMounted, reactive, computed, ref } from "vue";
 import {getMonthfinishinfo} from "network/order";
 
 export default {
   name: "Shortmold",
-  components: {ErpOrderItem, ErpGoodsItem},
+  components: {ErpOrderItem, ErpGoodsItem, },
   setup() {
 
     // notice通知使用
@@ -98,16 +124,23 @@ export default {
     const state = reactive({
       order_num:0,
       order_num_unfinish:0,
+      order_num_finish:0,
     })
-    const ordernum = (num) => {
+    onMounted(() => {
+// 先要获取数据
+      getMonthfinishinfo().then(res=> {
+        state.order_num_finish = (res.count_total - res.count_unfinish) / res.count_total * 100
+      })
+    })
+    const ordernum = () => {
       // 当月未完成订单数量
       getMonthfinishinfo().then(res=>{
-        state.order_num_unfinish = res.count
+        console.log(res);
+        // 未完成的数量
+        state.order_num_unfinish = res.count_unfinish
+        // 本月需要完成的总数
+        state.order_num = res.count_total
       })
-      console.log(num);
-      // 当月订单总数量
-      state.order_num = num
-
     }
 
     // grid使用
@@ -124,6 +157,10 @@ export default {
       gridItemTextFontSize: "10px",
       noticeBarHeight: "50px"
     };
+
+    // 进度条
+    const currentRate = ref(0);
+    const text = computed(() => '本月进度' +currentRate.value.toFixed(0) + '%');
     return {
       state,
       themeVars,
@@ -134,6 +171,10 @@ export default {
       torouter,
       // 本月订单总数
       ordernum,
+
+      // 进度条
+      text,
+      currentRate,
 
 
     };

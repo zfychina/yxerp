@@ -26,13 +26,13 @@
 
 <script>
 import {reactive} from "vue";
-import {upSkuimport, upShortmold, upSupplier, uporderimport, upCustomer, upSupplierdir, upBOM, recordsimport} from "network/upimport";
+import {tounitimport, upcategoryimport, upSkuimport, upShortmold, upSupplier, uporderimport, upCustomer, upSupplierdir, upBOM, recordsimport} from "network/upimport";
 import {Dialog, Toast} from "vant";
 
 
 
 export default {
-  name: "TableOrder",
+  name: "TableGoods",
   props: {
     serial:{
       type: Number,
@@ -137,6 +137,26 @@ export default {
       }else if(props.data.url === 'recordsimport') {
         // 存货往来导入
         recordsimport(data).then(res=>{
+          console.log(res);
+          Dialog.alert({
+            message: res,
+          }).then(() => {
+            // on close
+          });
+        })
+      }else if(props.data.url === 'upcategoryimport') {
+        // 物料类型分类
+        upcategoryimport(data).then(res=>{
+          console.log(res);
+          Dialog.alert({
+            message: res,
+          }).then(() => {
+            // on close
+          });
+        })
+      }else if(props.data.url === 'tounitimport') {
+        // 增加产品分类及单位数量
+        tounitimport(data).then(res=>{
           console.log(res);
           Dialog.alert({
             message: res,

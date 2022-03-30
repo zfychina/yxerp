@@ -58,6 +58,7 @@ export default {
 
     // 传递数据到父组件
     const ordernum = ()=>{
+      // 可不传
       emit('ordernum', state.tabledata.length)
     }
 
