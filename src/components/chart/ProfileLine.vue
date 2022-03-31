@@ -9,7 +9,7 @@
     margin-bottom: 5px;
   ">
     <van-row justify="center">
-      <van-col span="4" v-for="(item, index) in data" :key="index" style="margin-top:15px;font-size: 16px; height: 40px;text-align: center;vertical-align: middle">
+      <van-col span="4" v-for="(item, index) in data" :key="index" style="margin-top:15px;font-size: 14px; height: 40px;text-align: center;vertical-align: middle">
         <p>{{ item.quantity }}</p>
         <span style="font-weight: initial ;font-size: 10px;color: #d29403">{{item.month}}</span>
       </van-col>

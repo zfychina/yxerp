@@ -123,7 +123,7 @@ export default {
       // 报表
       reportshow: true,
       reportdata: [
-        {name:'产能统计', explain:'本年度客户每月需要产品数据详情', url:'/capacityStatement'},
+        {name:'产能统计', explain:'生产年度完成每月产品数据(入库)', url:'/capacityStatement'},
         {name:'本年度产品统计', explain:'本年度产品类别及每月数据详情', url:'/statement'},
         {name:'本年度客户需求统计', explain:'本年度客户每月需要产品数据详情', url:'/customerStatement'},
         {name:'产品年度对比报表', explain:'往年产品销售对比', url:'/yearstatement'},

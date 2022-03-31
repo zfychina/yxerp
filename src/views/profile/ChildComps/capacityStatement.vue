@@ -36,6 +36,8 @@
       <!--            // 折线图-->
                   <profile-line v-if="flag" :data="state.data?.[state.tabtitle[active]]" :active='active'></profile-line>
 
+<!--                产品分类详情-->
+                  <category-goods v-if="flag_category" :data="sortBykey(state.categorydata?.[state.tabtitle[active]], 'quantity')" :active='active'></category-goods>
 
               </van-list>
               <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
@@ -51,16 +53,17 @@
 <script>
 import ProfileLine from "components/chart/ProfileLine";
 import {onMounted, reactive, ref} from "vue";
-import {getYearList} from "network/statement";
 import {Toast} from "vant";
-import {getSTReportsku} from "network/statement";
+import {getYearList, getSTReportsku, getCateReportsku} from "network/statement";
+import CategoryGoods from "./CategoryGoods";
 
 export default {
   name: "capacityStatement",
-  components: {ProfileLine},
+  components: {CategoryGoods, ProfileLine,},
   setup(){
     // 异步传值到子组件设定
     const flag = ref(false)
+    const flag_category = ref(false)
 
     const currentDate = ref();
     // 年份选择
@@ -78,6 +81,7 @@ export default {
       } else {
         console.log('获取数据', value);
         getreport(value)
+        getreport_cat(value)
         currentDate.value = value;
         showPicker.value = false;
       }
@@ -92,11 +96,13 @@ export default {
 
 
     data:[],
+    categorydata:[],
   })
     onMounted(() => {
       currentDate.value = Date().split(' ')[3]
       getyearlist()
       getreport(currentDate.value)
+      getreport_cat(currentDate.value)
 
     });
 
@@ -114,7 +120,30 @@ export default {
         Toast(err)
         console.log(err)})
     }
+    const getreport_cat = (year) => {
+      getCateReportsku(year).then(res=>{
+        state.categorydata = res[0]
+        flag_category.value = true
+        console.log('res_cat',state.categorydata);
+      }).catch(err =>{
+        Toast(err)
+        console.log(err)})
+    }
 
+    // 据数组中对象为数字情况进行排序
+    const sortBykey = (ary, key) => {
+      return ary.sort(function (a, b) {
+        let x = a[key]
+        let y = b[key]
+        return ((x > y) ? -1 : (x < y) ? 1 : 0)
+      })
+    }
+    // // 根据数组中对象为字母情况进行排序
+    // sortList(lists){                // lists传的是数组
+    //   return lists.sort((a, b) => {
+    //     return a['grapheme'].localeCompare(b['grapheme'])     // grapheme为字母对应的属性名
+    //   })
+    // }
 
     // 返回按钮和搜索按钮
     const onClickLeft = () => history.back();
@@ -160,6 +189,7 @@ export default {
     return{
       // 异步传值到子组件设定
       flag,
+      flag_category,
 
       state,
       themeVars,
@@ -176,6 +206,10 @@ export default {
       // 产品分类切换
       active,
       onRefresh,
+
+
+      // 排序
+      sortBykey,
 
 
     }
