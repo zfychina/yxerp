@@ -14,7 +14,7 @@
   <div class="cellborder">
     <!--产品分类详情-->
     <div  v-for="(item,index) in data" :key="index">
-      <van-row justify="left" align="bottom" style="line-height: 2;" @click="spread_detail">
+      <van-row justify="left" align="bottom" style="line-height: 2;" @click="spread_detail(item.category, year)">
         <van-col span="12" offset="1">
           <span style="line-height: 1; font-size: 16px; text-align: left;">
             <p>{{item.category}}
@@ -53,6 +53,7 @@
 <script>
 import {onMounted, reactive, } from "vue";
 import ProfileLnterval from "components/chart/ProfileLnterval";
+import {useRouter} from "vue-router";
 
 export default {
   name: "CategoryGoods",
@@ -71,13 +72,12 @@ export default {
       type:Number,
     }
   },
-  setup(props){
+  setup(){
     const state = reactive({
 
     })
 
     onMounted(()=>{
-      console.log(props.data);
     })
 
 
@@ -93,9 +93,16 @@ export default {
       dividerContentRightWidth:	'10%',
 
     };
+
+    const router = useRouter()
+    const spread_detail = (category, year)=>{
+      console.log('spread_detail', category, year);
+      router.push({path:'/categorygoodsdetail', query: { category: category, year: year}})
+    }
     return{
       themeVars,
       state,
+      spread_detail,
 
     }
   }

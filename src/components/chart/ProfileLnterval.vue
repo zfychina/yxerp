@@ -30,13 +30,6 @@ export default {
 
     })
     onMounted(()=>{
-      // console.log('interval',props.active);
-      // for (let i in props.data){
-      //   data.value.push(props.data[i])
-      // }
-      // data.value = data.value.slice(0, 10)
-      // show.value = true
-      // console.log(data.value);
       nextTick(()=>{
           drawChart()
         });

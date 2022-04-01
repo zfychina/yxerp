@@ -1,0 +1,254 @@
+<template>
+  <van-sticky>
+    <van-nav-bar :title="category + ' 详情'" left-arrow :border='false' fixed @click-left="onClickLeft">
+    </van-nav-bar>
+  </van-sticky>
+
+  <van-row justify="center">
+    <van-col span="23">
+      <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh" success-text="刷新成功" style="min-height: 100vh;">
+        <van-list
+            v-model:loading="state.loading"
+            :finished="state.finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+        >
+          <div style="margin-top: 45px"></div>
+    <!--    折线图 -->
+          <div v-if="line_show">
+            <canvas :id="myChart2" width="400" height="150"></canvas>
+          </div>
+
+
+
+          <div v-for="(item, index) in state.data" :key="index">
+            <div>
+              <div style="color: white;line-height: 2;text-align: left; background-image: linear-gradient(#043eb8, #399efd);border-radius: 5px;margin-top: 5px;margin-bottom: 5px;">
+                <van-row >
+                  <van-col span="4" style="text-align: center;font-size:14px">{{year}}</van-col>
+                  <van-col span="10" style="text-align: left;font-weight: bold;">{{item.month}}</van-col>
+                  <van-col span="10" style="text-align: left"><span style="font-size: 12px;">Q：</span>{{item.quantity}}</van-col>
+                </van-row>
+              </div>
+
+              <div class="orderitem"  v-if="item.quantity > 0">
+                <div v-for="(itemsku, indexsku) in item.sku" :key="indexsku">
+
+                  <van-row justify="center" style="margin-top: 15px">
+                    <van-col span="7" style="text-align: left;font-size: 10px;color: var(--color-border)">
+                      {{itemsku.order.order}}
+                    </van-col>
+                    <van-col span="7" style="text-align: center;font-size: 10px;color: var(--color-border)">
+                      {{itemsku.order.order_date.slice(0,10)}}
+                    </van-col>
+                    <van-col span="7"  style="text-align: right;font-size: 10px;color: var(--color-border)">
+                      {{itemsku.order.user}}
+                    </van-col>
+                  </van-row>
+
+                  <van-row justify="center">
+                    <van-col span="16" style="line-height:2;text-align: left">
+                      {{itemsku.sku.sku.coding}}
+                    </van-col>
+                    <van-col span="5" style="line-height:2;text-align: right;font-weight: bold">
+                      {{parseInt(itemsku.report_quantityed)}}
+                    </van-col>
+                  </van-row>
+
+                  <van-row  justify="center">
+                    <van-col span="21" style="font-size:12px;color: var(--color-red)">
+                      {{itemsku.sku.sku.name}}
+                    </van-col>
+                  </van-row>
+
+                  <van-row  justify="center">
+                    <van-col span="10" style="font-size:10px;color: #a8a7a7">
+                      {{itemsku.sku.order.order}}
+                    </van-col>
+                    <van-col span="1"></van-col>
+                    <van-col span="10" style="text-align:right;font-size:10px;color: #a8a7a7">
+                      {{itemsku.sku.xs_order}}
+                    </van-col>
+                  </van-row>
+
+                  <!--分割线-->
+                  <van-config-provider :theme-vars="themeVars">
+                    <van-divider v-show="true" :style="{ color: 'var(--color-border)', borderColor: 'var(--color-border)', padding: '0 16px' }"/>
+                  </van-config-provider>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+
+
+
+        </van-list>
+        <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
+      </van-pull-refresh>
+    </van-col>
+  </van-row>
+
+</template>
+
+<script>
+import {nextTick, onMounted, reactive, ref, watch} from "vue";
+import {useRoute} from "vue-router";
+import {getGoodCateReport} from "network/statement";
+import {Toast} from "vant";
+import {Canvas, Chart, Line, Axis, Tooltip, Point } from '@antv/f2';
+
+export default {
+  name: "CategoryGoodsDetail",
+  setup(){
+    const year = ref()
+    const category = ref()
+    const line_show = ref(false)
+
+    const myChart2 = "myChart" + Date.now() + Math.random()
+
+    const state = reactive({
+      refreshing: false,
+      loading: false,
+      finished: true,
+
+      data: []
+    })
+
+    // 接收数据
+    const route =useRoute();
+    onMounted(() => {
+      year.value = route.query.year
+      category.value = route.query.category
+
+      GoodCate()
+      setTimeout(()=>{
+        nextTick(()=>{
+          drawChart()
+        });
+      },1000)
+    });
+
+    watch(
+        () => state.data,
+        () => {
+          // 逻辑代码
+          setTimeout(()=>{
+            nextTick(()=>{
+              drawChart()
+            });
+          },1000)
+        }
+    )
+
+    const drawChart=()=>{
+      const context = document.getElementById(myChart2).getContext('2d');
+      const LineChart = (
+          <Canvas context={context} pixelRatio={window.devicePixelRatio}>
+            <Chart data={state.data}>
+              <Axis
+                  field="month"
+                  tickCount={12}
+                  style={{
+                    label: { align: 'between' },
+                  }}
+              />
+              <Axis field="quantity" tickCount={6} />
+              <Line x="month" y="quantity" shape="smooth"/>
+              <Point x="month" y="quantity" color="#518DFE"/>
+              <Tooltip />
+            </Chart>
+          </Canvas>
+      );
+
+      const chart = new Canvas(LineChart.props);
+      chart.render();
+    }
+
+    // 获取产品数据
+    const GoodCate = () => {
+      getGoodCateReport(year.value, category.value).then(res=>{
+        console.log(res);
+        state.data = res[0]?.[category.value]
+        console.log(state.data);
+        line_show.value = true
+      }).catch(err =>{
+        Toast(err)
+        console.log(err)})
+    }
+
+    // 返回按钮和搜索按钮
+    const onClickLeft = () => history.back();
+
+    // 下拉刷新
+    const onRefresh = () => {
+      // 清空列表数据
+      state.finished = false;
+      state.refreshing = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      state.loading = false;
+      onLoad();
+    };
+
+    const onLoad = () => {
+      setTimeout(() => {
+
+        state.loading = false;
+        // 所有页获取完，设置true，没有更多了
+        state.finished = true;
+      },1000)
+    }
+
+    // VAN分割样式修改
+    const themeVars = {
+      dividerMargin: '1px',
+      dividerTextColor:	'#969799',
+      dividerFontSize: '14px',
+      dividerLineHeight: '1px',
+      dividerBorderColor:	'#ebedf0',
+      dividerContentPadding: '16px',
+      dividerContentLeftWidth: '10%',
+      dividerContentRightWidth:	'10%',
+
+    };
+    return{
+      onClickLeft,
+      state,
+
+      year,
+      category,
+      line_show,
+
+      onRefresh,
+
+      myChart2,
+
+      themeVars,
+
+    }
+  }
+}
+</script>
+
+<style scoped>
+.orderitem {
+  font-size: 14px;
+  color: #666;
+  text-align: left;
+
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+
+  font-weight: bloder; /*bold：加粗；bloder：深度加粗；lighter：细体；*/
+  border: 1px solid;
+  border-color: var(--color-border);
+}
+
+
+</style>

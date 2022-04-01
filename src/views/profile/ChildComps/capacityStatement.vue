@@ -84,6 +84,7 @@ export default {
         getreport_cat(value)
         currentDate.value = value;
         showPicker.value = false;
+        Toast.success('加载完成')
       }
     };
 
@@ -113,9 +114,6 @@ export default {
         state.data = res[0]
         flag.value = true
 
-        console.log('res',state.data);
-        // Toast.clear()
-        // Toast.success("加载完成")
       }).catch(err =>{
         Toast(err)
         console.log(err)})
@@ -124,7 +122,6 @@ export default {
       getCateReportsku(year).then(res=>{
         state.categorydata = res[0]
         flag_category.value = true
-        console.log('res_cat',state.categorydata);
 
       }).catch(err =>{
         Toast(err)

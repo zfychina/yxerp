@@ -25,6 +25,7 @@ const customerStatement = () => import('@/views/profile/ChildComps/customerState
 const yearStatement = () => import('@/views/profile/ChildComps/yearStatement')
 const yearcustomerStatement = () => import('@/views/profile/ChildComps/yearcustomerStatement')
 const capacityStatement = () => import('@/views/profile/ChildComps/capacityStatement')
+const CategoryGoodsDetail = () => import('@/views/profile/ChildComps/CategoryGoodsDetail')
 
 
 const routes = [
@@ -256,6 +257,14 @@ const routes = [
     component: capacityStatement,
     meta: {
       title: '产能报表',
+    }
+  },
+  {
+    path: '/categorygoodsdetail',
+    name: 'categorygoodsdetail',
+    component: CategoryGoodsDetail,
+    meta: {
+      title: '产品详情',
     }
   },
 ]
