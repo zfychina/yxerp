@@ -1,12 +1,12 @@
 <template>
-<!--  <router-view/>-->
-  <router-view v-slot="{ Component, route }">
-    <transition>
-      <keep-alive >
-        <component :is="Component" v-bind="route.params" />
-      </keep-alive>
-    </transition>
-  </router-view>
+  <router-view/>
+<!--  <router-view v-slot="{ Component, route }">-->
+<!--    <transition>-->
+<!--      <keep-alive >-->
+<!--        <component :is="Component" v-bind="route.params" />-->
+<!--      </keep-alive>-->
+<!--    </transition>-->
+<!--  </router-view>-->
 
   <div v-show="$route.meta.showNav" id="nav">
     <router-link class="tab-bar-item" to="/">

@@ -1,7 +1,14 @@
 <template>
   <van-sticky>
-    <van-nav-bar :title="category + ' 详情'" left-arrow :border='false' fixed @click-left="onClickLeft">
+    <van-nav-bar :title="category + ' 详情'" left-arrow :border='false' fixed  :right-text="year" @click-left="onClickLeft"   @click-right="onClickright">
     </van-nav-bar>
+    <van-popup v-model:show="showPicker" round position="bottom">
+      <van-picker
+          :columns="columns"
+          @cancel="showPicker = false"
+          @confirm="onConfirm"
+      />
+    </van-popup>
   </van-sticky>
 
   <van-row justify="center">
@@ -96,7 +103,7 @@
 <script>
 import {nextTick, onMounted, reactive, ref, watch} from "vue";
 import {useRoute} from "vue-router";
-import {getGoodCateReport} from "network/statement";
+import {getGoodCateReport, getYearList} from "network/statement";
 import {Toast} from "vant";
 import {Canvas, Chart, Line, Axis, Tooltip, Point } from '@antv/f2';
 
@@ -106,6 +113,8 @@ export default {
     const year = ref()
     const category = ref()
     const active = ref()
+    const showPicker = ref()
+    const columns = ref()
     const line_show = ref(false)
 
     const myChart2 = "myChart" + Date.now() + Math.random()
@@ -118,19 +127,27 @@ export default {
       data: []
     })
 
+    // 获取年份列表
+    const getyearlist = () => {
+      getYearList().then(res=>{
+        columns.value = res
+      }).catch(err=>{console.log(err);})
+    }
+
     // 接收数据
     const route =useRoute();
     onMounted(() => {
+      getyearlist()
       year.value = route.query.year
       category.value = route.query.category
       active.value =  route.query.active
 
       GoodCate()
-      setTimeout(()=>{
-        nextTick(()=>{
-          drawChart()
-        });
-      },1000)
+      // setTimeout(()=>{
+      //   nextTick(()=>{
+      //     drawChart()
+      //   });
+      // },1000)
     });
 
     watch(
@@ -186,6 +203,20 @@ export default {
 
     // 返回按钮和搜索按钮
     const onClickLeft = () => history.back();
+    const onClickright = () => {
+      showPicker.value = true
+    }
+    const onConfirm = (value) => {
+      if(value === year.value){
+        showPicker.value = false;
+      } else {
+        console.log('获取数据', value);
+        year.value = value
+        GoodCate()
+        showPicker.value = false;
+        Toast.success('加载完成')
+      }
+    };
 
     // 下拉刷新
     const onRefresh = () => {
@@ -221,6 +252,10 @@ export default {
 
     };
     return{
+      showPicker,
+      columns,
+      onConfirm,
+      onClickright,
       onClickLeft,
       state,
 
