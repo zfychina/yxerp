@@ -1,49 +1,79 @@
 <template>
-  <canvas id="container" width="400" height="260"></canvas>
+  <van-row>
+    <van-col span="24">
+      <canvas :id="myChart1" width="370" height="200"></canvas>
+    </van-col>
+  </van-row>
 </template>
 
 <script>
-import {onMounted} from "vue";
+import {nextTick, onMounted, watch, reactive} from "vue";
 import { Canvas, Chart, Interval, Axis, Tooltip, Legend} from '@antv/f2';
 
 export default {
   name: "ProfileLnterval",
-  setup(){
-    const data = [
-      { genre: 'Sports', sold: 275 },
-      { genre: 'Strategy', sold: 115 },
-      { genre: 'Action', sold: 120 },
-      { genre: 'Shooter', sold: 350 },
-      { genre: 'Other', sold: 150 },
-    ];
+  props: {
+    data: {
+      type: Array,
+      required: true,
+      default() {
+        return []
+      }
+    },
+    active:{
+      type:Number,
+    }
+  },
+  setup(props){
+    const myChart1 ="myChart1" + Date.now() + Math.random()
+    const state = reactive({
 
+    })
     onMounted(()=>{
-      drawChart()
+      // console.log('interval',props.active);
+      // for (let i in props.data){
+      //   data.value.push(props.data[i])
+      // }
+      // data.value = data.value.slice(0, 10)
+      // show.value = true
+      // console.log(data.value);
+      nextTick(()=>{
+          drawChart()
+        });
+
     })
 
-    const drawChart=()=>{
+    watch(
+        () => props.data,
+        () => {
+          // 逻辑代码
+            nextTick(()=>{
+              drawChart()
+            });
+        },
 
-// 获取 canvas context
-      const context = document.getElementById('container').getContext('2d');
-      const { props } = (
+    )
+
+    const drawChart=()=>{
+      const context = document.getElementById(myChart1).getContext('2d');
+      const LntervalChart = (
           <Canvas context={context} pixelRatio={window.devicePixelRatio}>
-            <Chart data={data}>
+            <Chart data={ props.data.slice(0, 10) }>
               <Legend/>
-              <Axis field="genre" />
-              <Axis field="sold" />
-              <Interval x="genre" y="sold" color="genre" />
+              <Axis field="category" />
+              <Axis field="quantity" />
+              <Interval x="category" y="quantity" color="category" />
               <Tooltip />
             </Chart>
           </Canvas>
       );
 
-      const canvas = new Canvas(props);
+      const canvas = new Canvas( LntervalChart.props );
       canvas.render();
-
-
     }
     return{
-      data
+      state,
+      myChart1,
     }
   }
 

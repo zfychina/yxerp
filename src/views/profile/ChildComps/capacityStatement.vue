@@ -37,7 +37,7 @@
                   <profile-line v-if="flag" :data="state.data?.[state.tabtitle[active]]" :active='active'></profile-line>
 
 <!--                产品分类详情-->
-                  <category-goods v-if="flag_category" :data="sortBykey(state.categorydata?.[state.tabtitle[active]], 'quantity')" :active='active'></category-goods>
+                  <category-goods v-if="flag_category" :data="sortBykey(state.categorydata?.[state.tabtitle[active]], 'quantity')" :active='active' :year="currentDate"></category-goods>
 
               </van-list>
               <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
@@ -125,6 +125,7 @@ export default {
         state.categorydata = res[0]
         flag_category.value = true
         console.log('res_cat',state.categorydata);
+
       }).catch(err =>{
         Toast(err)
         console.log(err)})

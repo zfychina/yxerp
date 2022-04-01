@@ -1,14 +1,20 @@
 <template>
-    <van-row justify="center" @click="state.systemshow=!state.systemshow">
+    <van-row justify="center">
       <van-col span="23">
         <div class="textcss">产品分类详情</div>
       </van-col>
     </van-row>
 
+<!--  柱形图-->
+<div>
+  <profile-lnterval :data="data" :active='active'></profile-lnterval>
+</div>
+
+
   <div class="cellborder">
-    <!--缺料物料详情-->
+    <!--产品分类详情-->
     <div  v-for="(item,index) in data" :key="index">
-      <van-row justify="left" align="bottom" style="line-height: 2;">
+      <van-row justify="left" align="bottom" style="line-height: 2;" @click="spread_detail">
         <van-col span="12" offset="1">
           <span style="line-height: 1; font-size: 16px; text-align: left;">
             <p>{{item.category}}
@@ -45,10 +51,12 @@
 </template>
 
 <script>
-import {onMounted, reactive} from "vue";
+import {onMounted, reactive, } from "vue";
+import ProfileLnterval from "components/chart/ProfileLnterval";
 
 export default {
   name: "CategoryGoods",
+  components: { ProfileLnterval},
   props: {
     data: {
       type: Array,
@@ -56,16 +64,20 @@ export default {
         return []
       }
     },
+    year:{
+      type: Number,
+    },
+    active:{
+      type:Number,
+    }
   },
   setup(props){
-
     const state = reactive({
 
     })
 
     onMounted(()=>{
       console.log(props.data);
-
     })
 
 

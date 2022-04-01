@@ -58,7 +58,7 @@ export default {
     })
 
     onMounted(()=>{
-
+      console.log('line', props.active);
       nextTick(()=>{
             drawChart()
           });
