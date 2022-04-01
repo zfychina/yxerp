@@ -23,7 +23,7 @@
           <div style="margin-top: 45px"></div>
     <!--    折线图 -->
           <div v-if="line_show">
-            <canvas :id="myChart2" width="400" height="150"></canvas>
+            <canvas :id="myChart2" width="370" height="150"></canvas>
           </div>
 
 

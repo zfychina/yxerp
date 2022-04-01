@@ -19,7 +19,7 @@
 <!--// 折线图-->
   <van-row>
     <van-col span="24">
-      <canvas :id="myChart" width="400" height="150"></canvas>
+      <canvas :id="myChart" width="370" height="150"></canvas>
     </van-col>
   </van-row>
 
