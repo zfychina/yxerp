@@ -14,7 +14,7 @@
   <div class="cellborder">
     <!--产品分类详情-->
     <div  v-for="(item,index) in data" :key="index">
-      <van-row justify="left" align="bottom" style="line-height: 2;" @click="spread_detail(item.category, year)">
+      <van-row justify="left" align="bottom" style="line-height: 2;" @click="spread_detail(item.category, year, active)">
         <van-col span="12" offset="1">
           <span style="line-height: 1; font-size: 16px; text-align: left;">
             <p>{{item.category}}
@@ -95,9 +95,9 @@ export default {
     };
 
     const router = useRouter()
-    const spread_detail = (category, year)=>{
+    const spread_detail = (category, year, active)=>{
       console.log('spread_detail', category, year);
-      router.push({path:'/categorygoodsdetail', query: { category: category, year: year}})
+      router.push({path:'/categorygoodsdetail', query: { category: category, year: year, active: active}})
     }
     return{
       themeVars,

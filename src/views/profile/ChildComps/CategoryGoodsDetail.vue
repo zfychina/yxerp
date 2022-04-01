@@ -73,7 +73,7 @@
 
                   <!--分割线-->
                   <van-config-provider :theme-vars="themeVars">
-                    <van-divider v-show="true" :style="{ color: 'var(--color-border)', borderColor: 'var(--color-border)', padding: '0 16px' }"/>
+                    <van-divider v-show="indexsku + 1 < item.sku.length" :style="{ color: 'var(--color-border)', borderColor: 'var(--color-border)', padding: '0 16px' }"/>
                   </van-config-provider>
                 </div>
               </div>
@@ -105,6 +105,7 @@ export default {
   setup(){
     const year = ref()
     const category = ref()
+    const active = ref()
     const line_show = ref(false)
 
     const myChart2 = "myChart" + Date.now() + Math.random()
@@ -122,6 +123,7 @@ export default {
     onMounted(() => {
       year.value = route.query.year
       category.value = route.query.category
+      active.value =  route.query.active
 
       GoodCate()
       setTimeout(()=>{
@@ -168,12 +170,15 @@ export default {
     }
 
     // 获取产品数据
+    const sku_category = ['锁体', '锁芯', '保护器', '面板', '配件']
     const GoodCate = () => {
       getGoodCateReport(year.value, category.value).then(res=>{
         console.log(res);
-        state.data = res[0]?.[category.value]
+
+        state.data = res[0]?.[sku_category[active.value]]
         console.log(state.data);
         line_show.value = true
+
       }).catch(err =>{
         Toast(err)
         console.log(err)})
