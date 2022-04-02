@@ -10,12 +10,21 @@
 <script>
 import TableTitle from "components/common/TableTitle";
 import TableOrder from "components/common/TableOrder";
-import {onMounted, reactive} from "vue";
+import {nextTick, onMounted, reactive, watch} from "vue";
 import {getMonthOrderinfo} from "network/order";
+import {Toast} from "vant";
 
 export default {
   name: "ErpOrderItem",
   components: { TableOrder, TableTitle},
+  props:{
+    currentDate: {
+      type: String,
+      default() {
+        return ''
+      }
+    },
+  },
   setup(props, { emit }) {
     // 表头及排序点击
     const title = ['下单日期', '销售订单', '交货日期', '客户']
@@ -26,7 +35,7 @@ export default {
     })
 
     onMounted(()=>{
-      getdata('create_time')
+      // getdata('create_time')
     })
 
     // 排序
@@ -42,11 +51,23 @@ export default {
       }
     }
 
+    watch(
+        () => props.currentDate,
+        () => {
+          // 逻辑代码
+          nextTick(()=>{
+            getdata('create_time')
+          });
+        }
+    )
     // 表数据及展开点击
     const getdata = (ordering) => {
-      getMonthOrderinfo(ordering).then(res=>{
+      Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
+      getMonthOrderinfo(ordering, props.currentDate).then(res=>{
         state.tabledata = res
         ordernum()
+        Toast.clear()
+        // Toast.success("加载完成")
         console.log('++++++++++++++++++++++++++++', state.tabledata);
       })
     }

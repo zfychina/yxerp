@@ -1,23 +1,23 @@
 import {request} from "./request";
 
 // 获取当月订单信息
-export function getMonthOrderinfo(ordering) {
+export function getMonthOrderinfo(ordering, currentDate) {
   return request({
     url: "/orders/month/?ordering=" + ordering,
     method: 'get',
     params: {
-
+      date:currentDate,
     }
   })
 }
 
 // 获取当月未完成订单数量
-export function getMonthfinishinfo() {
+export function getMonthfinishinfo(currentDate) {
   return request({
     url: "/orders/monthfinish/",
     method: 'get',
     params: {
-
+      date:currentDate,
     }
   })
 }

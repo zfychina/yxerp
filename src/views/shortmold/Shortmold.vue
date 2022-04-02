@@ -66,10 +66,17 @@
 <!--需本月完成的销售订单数据-->
   <div ref="container">
     <van-sticky :container="container" :offset-top="45">
-      <van-row justify="center">
-        <van-col span="23">
-          <div class="textcss">-本月需完成的销售订单：{{ state.order_num - state.order_num_unfinish }}/{{ state.order_num }}</div>
-
+      <van-row justify="center" align="center" style="background-color: white;">
+        <van-col span="17">
+          <div class="textcss">-{{currentDate}}月需完成的销售订单：{{ state.order_num - state.order_num_unfinish }}/{{ state.order_num }}
+          </div>
+        </van-col>
+        <van-col v-if="Date_num>-13" span="3" @click="deductdate">
+          <van-icon name="arrow-left"  size="20" color="#1989fa"/>
+        </van-col>
+        <van-col v-if="Date_num<=-13 || Date_num>=12" span="3"></van-col>
+        <van-col v-if="Date_num<12" span="3" @click="adddate">
+          <van-icon name="arrow"  size="20" color="#1989fa"/>
         </van-col>
       </van-row>
     </van-sticky>
@@ -79,7 +86,7 @@
 
     <van-row justify="center">
       <van-col span="23">
-        <erp-order-item @ordernum="ordernum"></erp-order-item>
+        <erp-order-item @ordernum="ordernum" :currentDate="currentDate"></erp-order-item>
       </van-col>
     </van-row>
   </div>
@@ -116,6 +123,39 @@ export default {
   name: "Shortmold",
   components: {ErpOrderItem, ErpGoodsItem, },
   setup() {
+    const Mydate = ref(new Date());
+    const currentDate = ref()
+    const Date_num = ref(0)
+    //按月减少日期
+    const deductdate=()=>{
+      Date_num.value--
+      Mydate.value.setMonth(Mydate.value.getMonth()-1);
+      let year = Mydate.value.getFullYear()
+      let month = Mydate.value.getMonth()
+      if (month === 0) {
+        // year--
+        month = 1
+      } else {month++}
+      currentDate.value = year + '-' + month
+      ordernum(currentDate.value)
+      console.log(currentDate.value);
+    }
+    //按月增加日期
+    const adddate=()=>{
+      Date_num.value++
+      Mydate.value.setMonth(Mydate.value.getMonth()+1);
+      let year = Mydate.value.getFullYear()
+      let month = Mydate.value.getMonth()
+      if (month === 0) {
+        console.log(year, month);
+        // year--
+        month = 1
+      } else {month++}
+      currentDate.value = year + '-' + month
+      ordernum(currentDate.value)
+      console.log(currentDate.value);
+    }
+
 
     // notice通知使用
     const noticeorder = () => {
@@ -127,19 +167,26 @@ export default {
       order_num_finish:0,
     })
     onMounted(() => {
-// 先要获取数据
-      getMonthfinishinfo().then(res=> {
-        state.order_num_finish = (res.count_total - res.count_unfinish) / res.count_total * 100
-      })
+      let year = Mydate.value.getFullYear()
+      let month = Mydate.value.getMonth()
+      if (month ==0) {
+        month = 1
+      } else {month++}
+      currentDate.value = year + '-' + month;
     })
+
+    // 获取订单完成数
     const ordernum = () => {
       // 当月未完成订单数量
-      getMonthfinishinfo().then(res=>{
+      getMonthfinishinfo(currentDate.value).then(res=>{
         console.log(res);
         // 未完成的数量
         state.order_num_unfinish = res.count_unfinish
         // 本月需要完成的总数
         state.order_num = res.count_total
+        // 本月未完成的数量
+        state.order_num_finish = (res.count_total - res.count_unfinish)===0 ? 0 : (res.count_total - res.count_unfinish) / res.count_total * 100
+
       })
     }
 
@@ -175,6 +222,12 @@ export default {
       // 进度条
       text,
       currentRate,
+
+      // 日期选择
+      currentDate,
+      Date_num,
+      deductdate,
+      adddate,
 
 
     };
