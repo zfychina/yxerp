@@ -70,9 +70,12 @@ export default {
     },
     active:{
       type:Number,
+    },
+    details:{
+      type:Number,
     }
   },
-  setup(){
+  setup(props){
     const state = reactive({
 
     })
@@ -97,7 +100,8 @@ export default {
     const router = useRouter()
     const spread_detail = (category, year, active)=>{
       console.log('spread_detail', category, year);
-      router.push({path:'/categorygoodsdetail', query: { category: category, year: year, active: active}})
+
+      router.push({path:'/categorygoodsdetail', query: { category: category, year: year, active: active, details:props.details}})
     }
     return{
       themeVars,

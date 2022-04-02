@@ -40,10 +40,15 @@
 
                   <van-row justify="center" style="margin-top: 15px">
                     <van-col span="7" style="text-align: left;font-size: 10px;color: var(--color-border)">
-                      {{itemsku.order.order}}
+                      {{itemsku.order.order ? itemsku.order.order : itemsku.order.orderhao}}
                     </van-col>
                     <van-col span="7" style="text-align: center;font-size: 10px;color: var(--color-border)">
-                      {{itemsku.order.order_date.slice(0,10)}}
+                      <span v-if="details==='sales'">
+                        {{itemsku.order.delivery.slice(0,10)}}
+                      </span>
+                      <span v-else>
+                        {{itemsku.order.order_date.slice(0,10)}}
+                      </span>
                     </van-col>
                     <van-col span="7"  style="text-align: right;font-size: 10px;color: var(--color-border)">
                       {{itemsku.order.user}}
@@ -52,7 +57,7 @@
 
                   <van-row justify="center">
                     <van-col span="16" style="line-height:2;text-align: left">
-                      {{itemsku.sku.sku.coding}}
+                      {{itemsku.sku.sku ? itemsku.sku.sku.coding : itemsku.sku.coding}}
                     </van-col>
                     <van-col span="5" style="line-height:2;text-align: right;font-weight: bold">
                       {{parseInt(itemsku.report_quantityed)}}
@@ -61,17 +66,17 @@
 
                   <van-row  justify="center">
                     <van-col span="21" style="font-size:12px;color: var(--color-red)">
-                      {{itemsku.sku.sku.name}}
+                      {{itemsku.sku.sku ? itemsku.sku.sku.name : itemsku.sku.name}}
                     </van-col>
                   </van-row>
 
                   <van-row  justify="center">
                     <van-col span="10" style="font-size:10px;color: #a8a7a7">
-                      {{itemsku.sku.order.order}}
+                      {{ itemsku.sku.order ? itemsku.sku.order.order : ''}}
                     </van-col>
                     <van-col span="1"></van-col>
                     <van-col span="10" style="text-align:right;font-size:10px;color: #a8a7a7">
-                      {{itemsku.sku.xs_order}}
+                      {{itemsku.sku.xs_order ? itemsku.sku.xs_order : itemsku.order.customer}}
                     </van-col>
                   </van-row>
 
@@ -96,7 +101,7 @@
 <script>
 import { onMounted, reactive, ref } from "vue";
 import {useRoute} from "vue-router";
-import {getGoodCateReport, getYearList} from "network/statement";
+import {getGoodCateReport, getXSGoodCateReport, getYearList} from "network/statement";
 import {Toast} from "vant";
 import ProfileLine from "components/chart/ProfileLine";
 
@@ -110,6 +115,7 @@ export default {
     const showPicker = ref()
     const columns = ref()
     const line_show = ref(false)
+    const details = ref(false)
 
     const state = reactive({
       refreshing: false,
@@ -133,6 +139,7 @@ export default {
       year.value = route.query.year
       category.value = route.query.category
       active.value =  route.query.active
+      details.value =  route.query.details
 
       GoodCate()
 
@@ -142,18 +149,33 @@ export default {
     const sku_category = ['锁体', '锁芯', '保护器', '面板', '配件']
     const GoodCate = () => {
       Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
-      getGoodCateReport(year.value, category.value).then(res=>{
-        console.log(res);
+      if (details.value === 'sales'){
+        getXSGoodCateReport(year.value, category.value).then(res=>{
+          console.log(res);
 
-        state.data = res[0]?.[sku_category[active.value]]
-        console.log(state.data);
-        line_show.value = true
-        Toast.clear()
-        Toast.success('加载完成')
+          state.data = res[0]?.[sku_category[active.value]]
+          console.log(state.data);
+          line_show.value = true
+          Toast.clear()
+          Toast.success('加载完成')
 
-      }).catch(err =>{
-        Toast(err)
-        console.log(err)})
+        }).catch(err =>{
+          Toast(err)
+          console.log(err)})
+      }else {
+        getGoodCateReport(year.value, category.value).then(res=>{
+          console.log(res);
+
+          state.data = res[0]?.[sku_category[active.value]]
+          console.log(state.data);
+          line_show.value = true
+          Toast.clear()
+          Toast.success('加载完成')
+
+        }).catch(err =>{
+          Toast(err)
+          console.log(err)})
+      }
     }
 
     // 返回按钮和搜索按钮

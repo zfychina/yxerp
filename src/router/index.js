@@ -24,6 +24,7 @@ const customerStatement = () => import('@/views/profile/ChildComps/customerState
 const yearStatement = () => import('@/views/profile/ChildComps/yearStatement')
 const yearcustomerStatement = () => import('@/views/profile/ChildComps/yearcustomerStatement')
 const capacityStatement = () => import('@/views/profile/ChildComps/capacityStatement')
+const SalesStatement = () => import('@/views/profile/ChildComps/SalesStatement')
 const CategoryGoodsDetail = () => import('@/views/profile/ChildComps/CategoryGoodsDetail')
 
 
@@ -200,6 +201,40 @@ const routes = [
       isAuthRequired: true,
     }
   },
+  {
+    path: '/setting',
+    name: 'setting',
+    component: setting,
+    props: true,
+    meta: {
+      title: '个人设置',
+    }
+  },
+  {
+    path: '/capacitystatement',
+    name: 'capacityStatement',
+    component: capacityStatement,
+    meta: {
+      title: '产量报表',
+    }
+  },
+  {
+    path: '/categorygoodsdetail',
+    name: 'categorygoodsdetail',
+    component: CategoryGoodsDetail,
+    meta: {
+      title: '产品详情',
+    }
+  },
+  {
+    path: '/SalesStatement',
+    name: 'SalesStatement',
+    component: SalesStatement,
+    meta: {
+      title: '销售统计',
+    }
+  },
+
 
   {
     path: '/statement',
@@ -210,15 +245,6 @@ const routes = [
     }
   },
 
-  {
-    path: '/setting',
-    name: 'setting',
-    component: setting,
-    props: true,
-    meta: {
-      title: '个人设置',
-    }
-  },
   {
     path: '/customerStatement',
     name: 'customerStatement',
@@ -244,22 +270,8 @@ const routes = [
       title: '客户报表',
     }
   },
-  {
-    path: '/capacitystatement',
-    name: 'capacityStatement',
-    component: capacityStatement,
-    meta: {
-      title: '产能报表',
-    }
-  },
-  {
-    path: '/categorygoodsdetail',
-    name: 'categorygoodsdetail',
-    component: CategoryGoodsDetail,
-    meta: {
-      title: '产品详情',
-    }
-  },
+
+
 ]
 
 const router = createRouter({

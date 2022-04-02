@@ -205,7 +205,7 @@ export default {
     // grid使用
     const gridvalue = ['销售管理', '生产管理', '采购管理', '报表管理', '基础资料', '物料管理', '库存查询', '人员管理']
     const gridicon = ['iconxiaoshoudingdan.svg', 'iconshengchandingdan.svg', 'iconcaigoudingdan-.svg', 'iconbaobiaotongji.svg', 'iconjichu-.svg', 'iconwuliaojihua.svg', 'iconkucunchaxun.svg', 'iconrenyuanguanli.svg']
-    const torouter = ['/order', '/unsettled', '/unsettled', '/statement', '/Shortmoldbackup', '/order', '/profile', '/profile']
+    const torouter = ['/order', '/unsettled', '/unsettled', '/profile', '/profile', '/profile', '/bom', '/profile']
 
     // VAN组件CSS样式
     const themeVars = {

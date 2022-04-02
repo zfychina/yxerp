@@ -1,6 +1,6 @@
 <template>
   <van-sticky>
-    <van-nav-bar title="产量统计" left-arrow :right-text="currentDate" :border='false' fixed @click-left="onClickLeft"  @click-right="onClickright">
+    <van-nav-bar title="销售统计" left-arrow :right-text="currentDate" :border='false' fixed @click-left="onClickLeft"  @click-right="onClickright">
     </van-nav-bar>
     <van-popup v-model:show="showPicker" round position="bottom">
       <van-picker
@@ -37,7 +37,7 @@
                   <profile-line v-if="flag" :data="state.data?.[state.tabtitle[active]]" :active='active'></profile-line>
 
 <!--                产品分类详情-->
-                  <category-goods v-if="flag_category" :data="sortBykey(state.categorydata?.[state.tabtitle[active]], 'quantity')" :active='active' :year="currentDate"></category-goods>
+                  <category-goods v-if="flag_category" :data="sortBykey(state.categorydata?.[state.tabtitle[active]], 'quantity')" :active='active' :year="currentDate" details= 'sales'></category-goods>
 
               </van-list>
               <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
@@ -54,11 +54,11 @@
 import ProfileLine from "components/chart/ProfileLine";
 import {onMounted, reactive, ref} from "vue";
 import {Toast} from "vant";
-import {getYearList, getSTReportsku, getCateReportsku} from "network/statement";
+import {getYearList, getXSReportsku, getXSCateReportsku} from "network/statement";
 import CategoryGoods from "./CategoryGoods";
 
 export default {
-  name: "capacityStatement",
+  name: "SalesStatement",
   components: {CategoryGoods, ProfileLine,},
   setup(){
     // 异步传值到子组件设定
@@ -110,7 +110,7 @@ export default {
     // 获取数据
     const getreport = (year) => {
       // Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
-      getSTReportsku(year).then(res=>{
+      getXSReportsku(year).then(res=>{
         state.data = res[0]
         flag.value = true
 
@@ -119,7 +119,7 @@ export default {
         console.log(err)})
     }
     const getreport_cat = (year) => {
-      getCateReportsku(year).then(res=>{
+      getXSCateReportsku(year).then(res=>{
         state.categorydata = res[0]
         flag_category.value = true
 
