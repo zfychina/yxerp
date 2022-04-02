@@ -43,21 +43,35 @@
   </van-row>
 
 <!--  半圆进度条-->
-  <van-row justify="center" style="margin-top: 30px;margin-bottom: 15px;">
+  <van-row justify="center">
     <van-col span="23">
-      <van-circle
-          v-model:current-rate="currentRate"
-          :rate="state.order_num_finish"
-          :speed="80"
-          :text="text"
-          :stroke-width="120"
-          :clockwise="false"
-          size="120px"
+      <div style="
+        border-radius: 5px;
+        background-image: linear-gradient(#043eb8, #399efd);
+        height: 130px;
+        color: white;
+        font-weight: bold;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        vertical-align: middle;
+      ">
+        <van-config-provider :theme-vars="themeVars">
+          <van-circle
+              style="margin-top: 5px;"
+              v-model:current-rate="currentRate"
+              :rate="state.order_num_finish"
+              :speed="80"
+              :text="text"
+              :stroke-width="110"
+              :clockwise="false"
+              size="120px"
 
-          layer-color="#ebedf0"
-          color='#1989fa'
+              layer-color="#399efd"
+              color='white'
 
-      />
+          />
+        </van-config-provider>
+      </div>
     </van-col>
   </van-row>
 
@@ -80,8 +94,6 @@
         </van-col>
       </van-row>
     </van-sticky>
-
-
 
 
     <van-row justify="center">
@@ -202,12 +214,16 @@ export default {
       gridItemIconSize: "25px",
       gridItemTextColor: "#666",
       gridItemTextFontSize: "10px",
-      noticeBarHeight: "50px"
+      noticeBarHeight: "50px",
+      // 圆环
+      circleTextColor: '#ffffff',
+      circleTextFontWeight: '500',
+      circleTextFontSize: '24px',
     };
 
     // 进度条
     const currentRate = ref(0);
-    const text = computed(() => '本月进度' +currentRate.value.toFixed(0) + '%');
+    const text = computed(() => currentRate.value.toFixed(0) + '%');
     return {
       state,
       themeVars,
