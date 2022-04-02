@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 const Shortmold = () => import('@/views/shortmold/Shortmold')
-const Shortmold_backup = () => import('@/views/shortmold/Shortmold_backup')
 const Bom = () => import('@/views/bom/Bom')
 const Order = () => import('@/views/order/Order')
 const CreateOrder = () => import('@/views/order/CreateOrder')
@@ -36,16 +35,7 @@ const routes = [
     meta: {
       title: '缺料',
       showNav: true,
-    }
-  },
-  {
-    path: '/Shortmoldbackup',
-    name: 'Shortmoldbackup',
-    component: Shortmold_backup,
-    props: true,
-    meta: {
-      title: '缺料',
-      showNav: true,
+      keepAlive: true,
     }
   },
   {
@@ -56,6 +46,7 @@ const routes = [
     meta: {
       title: '缺料',
       showNav: true,
+      keepAlive: true,
     }
   },
   {
@@ -76,6 +67,7 @@ const routes = [
       title: '订单',
       isAuthRequired: true,
       showNav: true,
+      keepAlive: true,
     }
   },
   {
@@ -86,6 +78,7 @@ const routes = [
       title: '未决',
       isAuthRequired: true,
       showNav: true,
+      keepAlive: true,
     }
   },
   {

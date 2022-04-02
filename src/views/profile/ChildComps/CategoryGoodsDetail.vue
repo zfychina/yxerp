@@ -22,10 +22,7 @@
         >
           <div style="margin-top: 45px"></div>
     <!--    折线图 -->
-          <div v-if="line_show">
-            <canvas :id="myChart2" width="370" height="150"></canvas>
-          </div>
-
+          <profile-line v-if="line_show" :data="state.data" :active='active'></profile-line>
 
 
           <div v-for="(item, index) in state.data" :key="index">
@@ -88,10 +85,6 @@
             </div>
           </div>
 
-
-
-
-
         </van-list>
         <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
       </van-pull-refresh>
@@ -101,14 +94,15 @@
 </template>
 
 <script>
-import {nextTick, onMounted, reactive, ref, watch} from "vue";
+import { onMounted, reactive, ref } from "vue";
 import {useRoute} from "vue-router";
 import {getGoodCateReport, getYearList} from "network/statement";
 import {Toast} from "vant";
-import {Canvas, Chart, Line, Axis, Tooltip, Point } from '@antv/f2';
+import ProfileLine from "components/chart/ProfileLine";
 
 export default {
   name: "CategoryGoodsDetail",
+  components: { ProfileLine,},
   setup(){
     const year = ref()
     const category = ref()
@@ -116,8 +110,6 @@ export default {
     const showPicker = ref()
     const columns = ref()
     const line_show = ref(false)
-
-    const myChart2 = "myChart" + Date.now() + Math.random()
 
     const state = reactive({
       refreshing: false,
@@ -143,58 +135,21 @@ export default {
       active.value =  route.query.active
 
       GoodCate()
-      // setTimeout(()=>{
-      //   nextTick(()=>{
-      //     drawChart()
-      //   });
-      // },1000)
+
     });
-
-    watch(
-        () => state.data,
-        () => {
-          // 逻辑代码
-          setTimeout(()=>{
-            nextTick(()=>{
-              drawChart()
-            });
-          },1000)
-        }
-    )
-
-    const drawChart=()=>{
-      const context = document.getElementById(myChart2).getContext('2d');
-      const LineChart = (
-          <Canvas context={context} pixelRatio={window.devicePixelRatio}>
-            <Chart data={state.data}>
-              <Axis
-                  field="month"
-                  tickCount={12}
-                  style={{
-                    label: { align: 'between' },
-                  }}
-              />
-              <Axis field="quantity" tickCount={6} />
-              <Line x="month" y="quantity" shape="smooth"/>
-              <Point x="month" y="quantity" color="#518DFE"/>
-              <Tooltip />
-            </Chart>
-          </Canvas>
-      );
-
-      const chart = new Canvas(LineChart.props);
-      chart.render();
-    }
 
     // 获取产品数据
     const sku_category = ['锁体', '锁芯', '保护器', '面板', '配件']
     const GoodCate = () => {
+      Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
       getGoodCateReport(year.value, category.value).then(res=>{
         console.log(res);
 
         state.data = res[0]?.[sku_category[active.value]]
         console.log(state.data);
         line_show.value = true
+        Toast.clear()
+        Toast.success('加载完成')
 
       }).catch(err =>{
         Toast(err)
@@ -214,7 +169,7 @@ export default {
         year.value = value
         GoodCate()
         showPicker.value = false;
-        Toast.success('加载完成')
+
       }
     };
 
@@ -264,8 +219,6 @@ export default {
       line_show,
 
       onRefresh,
-
-      myChart2,
 
       themeVars,
 
