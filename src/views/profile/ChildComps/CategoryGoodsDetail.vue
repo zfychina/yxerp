@@ -101,7 +101,7 @@
 <script>
 import { onMounted, reactive, ref } from "vue";
 import {useRoute} from "vue-router";
-import {getGoodCateReport, getXSGoodCateReport, getYearList} from "network/statement";
+import {getGoodCateReport, getXSGoodCateReport, getYearList, getXScustomerGoodCateReport} from "network/statement";
 import {Toast} from "vant";
 import ProfileLine from "components/chart/ProfileLine";
 
@@ -151,6 +151,19 @@ export default {
       Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
       if (details.value === 'sales'){
         getXSGoodCateReport(year.value, category.value).then(res=>{
+          console.log(res);
+
+          state.data = res[0]?.[sku_category[active.value]]
+          console.log(state.data);
+          line_show.value = true
+          Toast.clear()
+          Toast.success('加载完成')
+
+        }).catch(err =>{
+          Toast(err)
+          console.log(err)})
+      } else if(details.value === 'customer') {
+        getXScustomerGoodCateReport(year.value, category.value).then(res=>{
           console.log(res);
 
           state.data = res[0]?.[sku_category[active.value]]
