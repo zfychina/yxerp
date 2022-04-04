@@ -174,3 +174,15 @@ export function getPRGoodCateReport(year, month, category) {
     }
   })
 }
+
+// 产量与销量对比
+export function getPRcontrastReportsku(year) {
+  return request({
+    url: "/orders/prcontrastreport/" + year + "/" + 'month',
+    method: 'get',
+    timeout: 30000,
+    params: {
+
+    }
+  })
+}

@@ -28,6 +28,7 @@ const SalesStatement = () => import('@/views/profile/ChildComps/SalesStatement')
 const ProcessStatement = () => import('@/views/profile/ChildComps/ProcessStatement')
 const CategoryGoodsDetail = () => import('@/views/profile/ChildComps/CategoryGoodsDetail')
 const ProcessGoodsDetail = () => import('@/views/profile/ChildComps/ProcessGoodsDetail')
+const casaStatement = () => import('@/views/profile/ChildComps/casaStatement')
 
 
 const routes = [
@@ -262,12 +263,17 @@ const routes = [
     name: 'processgoodsdetail',
     component: ProcessGoodsDetail,
     meta: {
-      title: '产品详情',
+      title: '产品详情'
     }
   },
-
-
-
+  {
+    path: '/casaStatement',
+    name: 'casaStatement',
+    component: casaStatement,
+    meta: {
+      title: '产量与销售对比详情'
+    }
+  },
 
   {
     path: '/statement',
@@ -277,7 +283,6 @@ const routes = [
       title: '产品统计',
     }
   },
-
 
   {
     path: '/yearstatement',
