@@ -31,8 +31,8 @@ export default {
     })
     onMounted(()=>{
       nextTick(()=>{
-          drawChart()
-        });
+        drawChart()
+      });
 
     })
 

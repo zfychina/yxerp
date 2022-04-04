@@ -3,13 +3,13 @@
 <!--  <router-view/>-->
 
 <!--  第二种：全部缓存-->
-<!--  <router-view v-slot="{ Component }" v-if="$route.meta.keepAlive">-->
-<!--    <transition>-->
-<!--      <keep-alive >-->
-<!--        <component :is="Component"/>-->
-<!--      </keep-alive>-->
-<!--    </transition>-->
-<!--  </router-view>-->
+  <router-view v-slot="{ Component }" v-if="$route.meta.keepAlive">
+    <transition>
+      <keep-alive >
+        <component :is="Component"/>
+      </keep-alive>
+    </transition>
+  </router-view>
 
 <!--  第三种：网上查阅，根据需要缓存-->
   <router-view v-slot="{ Component }">

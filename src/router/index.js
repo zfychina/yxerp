@@ -25,7 +25,9 @@ const yearStatement = () => import('@/views/profile/ChildComps/yearStatement')
 const yearcustomerStatement = () => import('@/views/profile/ChildComps/yearcustomerStatement')
 const capacityStatement = () => import('@/views/profile/ChildComps/capacityStatement')
 const SalesStatement = () => import('@/views/profile/ChildComps/SalesStatement')
+const ProcessStatement = () => import('@/views/profile/ChildComps/ProcessStatement')
 const CategoryGoodsDetail = () => import('@/views/profile/ChildComps/CategoryGoodsDetail')
+const ProcessGoodsDetail = () => import('@/views/profile/ChildComps/ProcessGoodsDetail')
 
 
 const routes = [
@@ -90,6 +92,7 @@ const routes = [
       title: '个人中心',
       isAuthRequired: true,
       showNav: true,
+      keepAlive: true,
     }
   },
   {
@@ -215,7 +218,8 @@ const routes = [
     name: 'capacityStatement',
     component: capacityStatement,
     meta: {
-      title: '产量报表',
+      title: '产量统计',
+      keepAlive: true,
     }
   },
   {
@@ -224,6 +228,7 @@ const routes = [
     component: CategoryGoodsDetail,
     meta: {
       title: '产品详情',
+      keepAlive: true,
     }
   },
   {
@@ -232,8 +237,38 @@ const routes = [
     component: SalesStatement,
     meta: {
       title: '销售统计',
+      keepAlive: true,
     }
   },
+  {
+    path: '/customerStatement',
+    name: 'customerStatement',
+    component: customerStatement,
+    meta: {
+      title: '客户报表',
+      keepAlive: true,
+    }
+  },
+  {
+    path: '/processstatement',
+    name: 'processStatement',
+    component: ProcessStatement,
+    meta: {
+      title: '客户报表',
+      keepAlive: true,
+    }
+  },
+  {
+    path: '/processgoodsdetail',
+    name: 'processgoodsdetail',
+    component: ProcessGoodsDetail,
+    meta: {
+      title: '产品详情',
+      keepAlive: true,
+    }
+  },
+
+
 
 
   {
@@ -241,18 +276,10 @@ const routes = [
     name: 'Statement',
     component: Statement,
     meta: {
-      title: '产品报表',
+      title: '产品统计',
     }
   },
 
-  {
-    path: '/customerStatement',
-    name: 'customerStatement',
-    component: customerStatement,
-    meta: {
-      title: '客户报表',
-    }
-  },
 
   {
     path: '/yearstatement',

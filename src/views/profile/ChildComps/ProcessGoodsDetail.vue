@@ -20,30 +20,15 @@
             finished-text="没有更多了"
             @load="onLoad"
         >
-          <div style="margin-top: 45px"></div>
-    <!--    折线图 -->
-          <profile-line v-if="line_show" :data="state.data" :active='active'></profile-line>
-
-
-          <div v-for="(item, index) in state.data" :key="index">
-            <div>
-              <div  @click="onclick_detail_show(index)" style="color: white;line-height: 2;text-align: left; background-image: linear-gradient(#043eb8, #399efd);border-radius: 5px;margin-top: 5px;margin-bottom: 5px;">
-                <van-row >
-                  <van-col span="4" style="text-align: center;font-size:14px">{{year}}</van-col>
-                  <van-col span="10" style="text-align: left;font-weight: bold;">{{item.month}}</van-col>
-                  <van-col span="10" style="text-align: left"><span style="font-size: 12px;">Q：</span>{{item.quantity}}</van-col>
-                </van-row>
-              </div>
-
-              <div class="orderitem"  v-if="(item.quantity > 0) && detail_show[index]">
-                <div v-for="(itemsku, indexsku) in item.sku" :key="indexsku">
+          <div class="orderitem"  style="margin-top: 50px">
+            <div v-for="(itemsku, index) in state.data" :key="index">
 
                   <van-row justify="center" style="margin-top: 15px">
                     <van-col span="7" style="text-align: left;font-size: 10px;color: var(--color-border)">
                       {{itemsku.order.order ? itemsku.order.order : itemsku.order.orderhao}}
                     </van-col>
                     <van-col span="7" style="text-align: center;font-size: 10px;color: var(--color-border)">
-                      <span v-if="details==='sales'">
+                      <span v-if="details==='process'">
                         {{itemsku.order.delivery.slice(0,10)}}
                       </span>
                       <span v-else>
@@ -82,14 +67,10 @@
 
                   <!--分割线-->
                   <van-config-provider :theme-vars="themeVars">
-                    <van-divider v-show="indexsku + 1 < item.sku.length" :style="{ color: 'var(--color-border)', borderColor: 'var(--color-border)', padding: '0 16px' }"/>
+                    <van-divider v-show="index + 1 < state.data.length" :style="{ color: 'var(--color-border)', borderColor: 'var(--color-border)', padding: '0 16px' }"/>
                   </van-config-provider>
                 </div>
-              </div>
-
-            </div>
           </div>
-
         </van-list>
         <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
       </van-pull-refresh>
@@ -101,22 +82,20 @@
 <script>
 import { onMounted, reactive, ref } from "vue";
 import {useRoute} from "vue-router";
-import {getGoodCateReport, getXSGoodCateReport, getYearList, getXScustomerGoodCateReport} from "network/statement";
+import {getPRGoodCateReport, getYearList} from "network/statement";
 import {Toast} from "vant";
-import ProfileLine from "components/chart/ProfileLine";
 
 export default {
-  name: "CategoryGoodsDetail",
-  components: { ProfileLine,},
+  name: "ProcessGoodsDetail",
   setup(){
     const year = ref()
+    const month = ref()
     const category = ref()
     const active = ref()
     const showPicker = ref()
     const columns = ref()
     const line_show = ref(false)
     const details = ref(false)
-    const detail_show = ref([true, true, true, true, true, true, true, true, true, true, true, true])
 
     const state = reactive({
       refreshing: false,
@@ -138,10 +117,11 @@ export default {
     onMounted(() => {
       getyearlist()
       year.value = route.query.year
+      month.value = route.query.month
       category.value = route.query.category
       active.value =  route.query.active
       details.value =  route.query.details
-
+      console.log(category.value);
       GoodCate()
 
     });
@@ -150,46 +130,17 @@ export default {
     const sku_category = ['锁体', '锁芯', '保护器', '面板', '配件']
     const GoodCate = () => {
       Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
-      if (details.value === 'sales'){
-        getXSGoodCateReport(year.value, category.value).then(res=>{
+        getPRGoodCateReport(year.value, month.value, category.value).then(res=>{
           console.log(res);
 
-          state.data = res[0]?.[sku_category[active.value]]
+          state.data = res[0]?.[sku_category[active.value]][0]
           console.log(state.data);
           line_show.value = true
           Toast.clear()
           Toast.success('加载完成')
-
         }).catch(err =>{
           Toast(err)
           console.log(err)})
-      } else if(details.value === 'customer') {
-        getXScustomerGoodCateReport(year.value, category.value).then(res=>{
-          console.log(res);
-
-          state.data = res[0]?.[sku_category[active.value]]
-          console.log(state.data);
-          line_show.value = true
-          Toast.clear()
-          Toast.success('加载完成')
-
-        }).catch(err =>{
-          Toast(err)
-          console.log(err)})
-      }else {
-        getGoodCateReport(year.value, category.value).then(res=>{
-          console.log(res);
-
-          state.data = res[0]?.[sku_category[active.value]]
-          console.log(state.data);
-          line_show.value = true
-          Toast.clear()
-          Toast.success('加载完成')
-
-        }).catch(err =>{
-          Toast(err)
-          console.log(err)})
-      }
     }
 
     // 返回按钮和搜索按钮
@@ -242,11 +193,7 @@ export default {
       dividerContentRightWidth:	'10%',
 
     };
-    const onclick_detail_show = (index) =>{
-      console.log(detail_show.value[index]);
-      detail_show.value[index] = !detail_show.value[index]
-      console.log(detail_show.value[index]);
-    }
+
     return{
       showPicker,
       columns,
@@ -257,9 +204,7 @@ export default {
 
       year,
       category,
-      line_show,
-      detail_show,
-      onclick_detail_show,
+      details,
 
       onRefresh,
 

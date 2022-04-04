@@ -123,10 +123,11 @@ export default {
       // 报表
       reportshow: true,
       reportdata: [
+        {name:'产能统计', explain:'生产未完成产品及所需的工时统计', url:'/processstatement'},
         {name:'产量统计', explain:'生产年度完成每月产品数据(入库)', url:'/capacityStatement'},
         {name:'销售统计', explain:'销售年度完成每月产品数据(销售订单)', url:'/SalesStatement'},
-        {name:'产能统计（待更新）', explain:'生产未完成产品及所需的工时统计', url:'/capacityStatement'},
         {name:'客户统计', explain:'客户年度订购每月产品数据', url:'/customerStatement'},
+        {name:'产量/销售对比（待更新）', explain:'月产量与销售量数据对比', url:'/customerStatement'},
         {name:'产量年度对比报表（待更新）', explain:'往年产品产量对比', url:'/statement'},
         {name:'产品年度对比报表（待更新）', explain:'往年产品销售对比', url:'/yearstatement'},
         {name:'客户年度对比报表（待更新）', explain:'往年产品客户订购对比', url:'/yearcustomerStatement'}
@@ -135,7 +136,7 @@ export default {
       // 系统设置
       systemshow: true,
       systemdata: [
-        {name:'产品数量更新-常更新', explain:'对新增订单数量转换为报表数量', url:'unit_convert'},
+        {name:'产品数量更新-常更新 ！！！', explain:'对新增订单数量转换为报表数量', url:'unit_convert'},
 
       ],
     })
@@ -180,10 +181,10 @@ export default {
   font-size: 16px;
   text-align: left;
   line-height: 50px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  margin-right: 0px;
-  margin-left: 0px;
+  /*margin-top: 0;*/
+  /*margin-bottom: 0;*/
+  /*margin-right: 0;*/
+  /*margin-left: 0;*/
   font-weight: bold; /*bold：加粗；bloder：深度加粗；lighter：细体；*/
   /*border: 1px solid;*/
   background-color: white;

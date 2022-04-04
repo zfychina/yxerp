@@ -135,3 +135,42 @@ export function getXScustomerGoodCateReport(year, customer) {
     }
   })
 }
+
+
+
+// 产能报表
+// 获取锁体锁芯面板保护器配件产品数据-按月-new 未完成的销售订单
+export function getPRReportsku(year) {
+  return request({
+    url: "/orders/prreport/" + year + "/" + 'month',
+    method: 'get',
+    timeout: 30000,
+    params: {
+
+    }
+  })
+}
+
+// 获取锁体锁芯面板保护器配件产品数据-按产品类别-new 未完成的销售订单    option 查询详情
+export function getPRCateReportsku(year) {
+  return request({
+    url: "/orders/prreport/" + year + "/" + 'category',
+    method: 'get',
+    timeout: 30000,
+    params: {
+
+    }
+  })
+}
+
+// 获取产品详情数据-按月-new  未完成的销售订单   option 查询详情
+export function getPRGoodCateReport(year, month, category) {
+  return request({
+    url: "/orders/prreport/" + year + "/" + category,
+    method: 'get',
+    timeout: 30000,
+    params: {
+      month:month,
+    }
+  })
+}
