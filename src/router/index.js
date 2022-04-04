@@ -228,7 +228,6 @@ const routes = [
     component: CategoryGoodsDetail,
     meta: {
       title: '产品详情',
-      keepAlive: true,
     }
   },
   {
@@ -264,7 +263,6 @@ const routes = [
     component: ProcessGoodsDetail,
     meta: {
       title: '产品详情',
-      keepAlive: true,
     }
   },
 
