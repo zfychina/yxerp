@@ -93,6 +93,7 @@ export default {
       } else {
         console.log('获取数据', value);
         getreport(value)
+        getsareport(currentDate.value)
         getreport_cat(value)
         currentDate.value = value;
         showPicker.value = false;
