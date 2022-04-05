@@ -58,8 +58,8 @@ export default {
         () => props.data,
         () => {
           // 逻辑代码
+          chartdata.value = props.data.pr_data.concat(props.data.sa_data)
           nextTick(()=>{
-
             drawChart()
           });
         }
