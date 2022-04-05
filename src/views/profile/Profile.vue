@@ -127,7 +127,6 @@ export default {
         {name:'产量统计', explain:'生产年度完成每月产品数据(入库)', url:'/capacityStatement'},
         {name:'销售统计', explain:'销售年度完成每月产品数据(销售订单)', url:'/SalesStatement'},
         {name:'客户统计', explain:'客户年度订购每月产品数据', url:'/customerStatement'},
-        {name:'产量/销售对比', explain:'月产量与销售量数据对比', url:'/casaStatement'},
 
         {name:'产量年度对比报表（待更新）', explain:'往年产品产量对比', url:'/statement'},
         {name:'产品年度对比报表（待更新）', explain:'往年产品销售对比', url:'/yearstatement'},

@@ -34,8 +34,18 @@
 
                   <div style="margin-top: 45px"></div>
       <!--            // 折线图-->
+
                   <profile-line v-if="flag" :data="state.data?.[state.tabtitle[active]]" :active='active'></profile-line>
 
+                <van-row justify="center">
+                  <van-col span="23">
+                    <div class="textcss">产量与销售订单量对比详情</div>
+                  </van-col>
+                </van-row>
+                <profile-multiple v-if="sa_flag && state.sa_data"
+                                  :data="state.sa_data?.[state.tabtitle[active]][0]"
+                                  :active='active'
+                                  :year="currentDate"></profile-multiple>
 <!--                产品分类详情-->
                   <category-goods v-if="flag_category" :data="sortBykey(state.categorydata?.[state.tabtitle[active]], 'quantity')" :active='active' :year="currentDate"></category-goods>
 
@@ -54,15 +64,17 @@
 import ProfileLine from "components/chart/ProfileLine";
 import {onMounted, reactive, ref} from "vue";
 import {Toast} from "vant";
-import {getYearList, getSTReportsku, getCateReportsku} from "network/statement";
+import {getYearList, getSTReportsku, getCateReportsku, getPRcontrastReportsku} from "network/statement";
 import CategoryGoods from "./CategoryGoods";
+import ProfileMultiple from "components/chart/ProfileMultiple";
 
 export default {
   name: "capacityStatement",
-  components: {CategoryGoods, ProfileLine,},
+  components: {CategoryGoods, ProfileLine, ProfileMultiple},
   setup(){
     // 异步传值到子组件设定
     const flag = ref(false)
+    const sa_flag = ref(false)
     const flag_category = ref(false)
 
     const currentDate = ref();
@@ -98,11 +110,13 @@ export default {
 
     data:[],
     categorydata:[],
+    sa_data: [],
   })
     onMounted(() => {
       currentDate.value = Date().split(' ')[3]
       getyearlist()
       getreport(currentDate.value)
+      getsareport(currentDate.value)
       getreport_cat(currentDate.value)
 
     });
@@ -114,6 +128,17 @@ export default {
         state.data = res[0]
         flag.value = true
 
+      }).catch(err =>{
+        Toast(err)
+        console.log(err)})
+    }
+    const getsareport = (year) => {
+      console.log(year);
+      // Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
+      getPRcontrastReportsku(year).then(res=>{
+        console.log(res);
+        state.sa_data = res[0]
+        sa_flag.value = true
       }).catch(err =>{
         Toast(err)
         console.log(err)})
@@ -188,6 +213,7 @@ export default {
       // 异步传值到子组件设定
       flag,
       flag_category,
+      sa_flag,
 
       state,
       themeVars,
@@ -216,5 +242,16 @@ export default {
 
 </script>
 <style>
-
+.textcss {
+  font-size: 14px;
+  text-align: left;
+  line-height: 50px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  font-weight: bold; /*bold：加粗；bloder：深度加粗；lighter：细体；*/
+  /*border: 1px solid;*/
+  background-color: white;
+}
 </style>
