@@ -124,13 +124,13 @@ export default {
       reportshow: true,
       reportdata: [
         {name:'产能统计', explain:'生产未完成产品及所需的工时统计', url:'/processstatement'},
-        {name:'产量统计', explain:'生产年度完成每月产品数据(入库)', url:'/capacityStatement'},
-        {name:'销售统计', explain:'销售年度完成每月产品数据(销售订单)', url:'/SalesStatement'},
-        {name:'客户统计', explain:'客户年度订购每月产品数据', url:'/customerStatement'},
+        {name:'产量统计', explain:'生产年度完成每月产品数据(成品入库日期)', url:'/capacityStatement'},
+        {name:'销售统计', explain:'销售年度完成每月产品数据（合同交货日期）', url:'/SalesStatement'},
+        {name:'客户统计', explain:'客户年度订购每月产品数据（合同签订日期）', url:'/customerStatement'},
 
-        {name:'产量年度对比报表（待更新）', explain:'往年产品产量对比', url:'/statement'},
-        {name:'产品年度对比报表（待更新）', explain:'往年产品销售对比', url:'/yearstatement'},
-        {name:'客户年度对比报表（待更新）', explain:'往年产品客户订购对比', url:'/yearcustomerStatement'}
+        {name:'产量年度对比报表', explain:'往年产品产量对比（成品入库日期）', url:'/yearcastatement'},
+        {name:'产品年度对比报表', explain:'往年产品销售对比（合同交货日期）', url:'/yearsastatement'},
+        {name:'客户年度对比报表', explain:'往年产品客户订购对比（合同签订日期）', url:'/yearcuStatement'}
       ],
 
       // 系统设置

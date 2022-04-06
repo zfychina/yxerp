@@ -175,7 +175,7 @@ export function getPRGoodCateReport(year, month, category) {
   })
 }
 
-// 产量与销量对比
+// 产量与销量对比，和产量放一起
 export function getPRcontrastReportsku(year) {
   return request({
     url: "/orders/prcontrastreport/" + year + "/" + 'month',
@@ -183,6 +183,52 @@ export function getPRcontrastReportsku(year) {
     timeout: 30000,
     params: {
 
+    }
+  })
+}
+
+// 年度产量对比报表
+// 获取产量详情数据-按月-new  入库单   option 查询详情
+export function getYeargoodsReport(category) {
+  return request({
+    url: "/orders/yearreport/",
+    method: 'get',
+    timeout: 30000,
+    params: {
+      category:category,
+    }
+  })
+}
+
+
+
+
+// 年度销售产品对比报表
+// 获取产品详情数据-按月-new  未完成的销售订单   option 查询详情
+export function getYearsagoodsReport(category) {
+  return request({
+    url: "/orders/yearsareport/",
+    method: 'get',
+    timeout: 30000,
+    params: {
+      category:category,
+    }
+  })
+}
+
+
+
+
+
+// 年度客户对比报表
+// 获取客户产品详情数据-按月-new  未完成的销售订单   option 查询详情
+export function getYearcugoodsReport(category) {
+  return request({
+    url: "/orders/yearcureport/",
+    method: 'get',
+    timeout: 30000,
+    params: {
+      category:category,
     }
   })
 }

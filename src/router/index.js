@@ -19,10 +19,10 @@ const Profile = () => import('@/views/profile/Profile')
 const Register = () => import('@/views/profile/Register')
 const Login = () => import('@/views/profile/Login')
 const setting = () => import('@/views/profile/ChildComps/setting')
-const Statement = () => import('@/views/profile/ChildComps/Statement')
+const yearcaStatement = () => import('@/views/profile/ChildComps/yearcaStatement')
 const customerStatement = () => import('@/views/profile/ChildComps/CustomerStatement')
-const yearStatement = () => import('@/views/profile/ChildComps/yearStatement')
-const yearcustomerStatement = () => import('@/views/profile/ChildComps/yearcustomerStatement')
+const yearsaStatement = () => import('@/views/profile/ChildComps/yearsaStatement')
+const yearcuStatement = () => import('@/views/profile/ChildComps/yearcuStatement')
 const capacityStatement = () => import('@/views/profile/ChildComps/capacityStatement')
 const SalesStatement = () => import('@/views/profile/ChildComps/SalesStatement')
 const ProcessStatement = () => import('@/views/profile/ChildComps/ProcessStatement')
@@ -276,28 +276,28 @@ const routes = [
   },
 
   {
-    path: '/statement',
-    name: 'Statement',
-    component: Statement,
+    path: '/yearcastatement',
+    name: 'yearcastatement',
+    component: yearcaStatement,
     meta: {
-      title: '产品统计',
+      title: '年度产量统计对比',
     }
   },
 
   {
-    path: '/yearstatement',
-    name: 'yearStatement',
-    component: yearStatement,
+    path: '/yearsaStatement',
+    name: 'yearsaStatement',
+    component: yearsaStatement,
     meta: {
-      title: '产品报表',
+      title: '年度销售统计对比',
     }
   },
   {
-    path: '/yearcustomerStatement',
-    name: 'yearcustomerStatement',
-    component: yearcustomerStatement,
+    path: '/yearcuStatement',
+    name: 'yearcuStatement',
+    component: yearcuStatement,
     meta: {
-      title: '客户报表',
+      title: '年度客户统计对比',
     }
   },
 
