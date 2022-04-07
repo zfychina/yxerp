@@ -101,7 +101,17 @@ export default {
     const spread_detail = (category, year, active)=>{
       console.log('spread_detail', category, year);
 
-      router.push({path:'/categorygoodsdetail', query: { category: category, year: year, active: active, details:props.details}})
+      if (props.details === 'yearcagoods' || props.details === 'yearsagoods' ||props.details === 'yearcustomer' ){
+        router.push({
+          path: '/yeargoodsdetail',
+          query: {category: category, year: year, active: active, details: props.details}
+        })
+      } else {
+        router.push({
+          path: '/categorygoodsdetail',
+          query: {category: category, year: year, active: active, details: props.details}
+        })
+      }
     }
     return{
       themeVars,

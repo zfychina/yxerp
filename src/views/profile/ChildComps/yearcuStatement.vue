@@ -29,7 +29,7 @@
                 <!--                月总-->
                 <year-profile-multiple v-if="year_flag && state.yeardata?.[state.tabtitle[active]]" :data="state.yeardata?.[state.tabtitle[active]]"></year-profile-multiple>
                 <!--                详情-->
-                <category-goods  v-if="category_flag && state.categorydata?.[state.tabtitle[active]]" :data="sortBykey(state.categorydata?.[state.tabtitle[active]], 'quantity')"   details= 'yearcustomer'></category-goods>
+                <category-goods  v-if="category_flag && state.categorydata?.[state.tabtitle[active]]" :data="sortBykey(state.categorydata?.[state.tabtitle[active]], 'quantity')"   :active='active' details= 'yearcustomer'></category-goods>
 
               </van-list>
               <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
