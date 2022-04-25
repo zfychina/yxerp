@@ -28,7 +28,7 @@
 
             <van-field  style="background-color: #fafafa" v-model="message" name="message" rows="1" autosize label="信息备注" type="textarea" colon clickable />
 
-            <field-cell-list :skulist="state.skulist" @inputvalue="receiveskulistvalue"></field-cell-list>
+            <sc-field-cell-list ref="scfield" :skulist="state.skulist" @inputvalue="receiveskulistvalue"></sc-field-cell-list>
 
           </van-cell-group>
           <div style="margin: 16px;">
@@ -47,7 +47,7 @@
 <script>
 
 import FieldCell from "components/content/FieldCell";
-import FieldCellList from "components/content/FieldCellList";
+import ScFieldCellList from "components/content/ScFieldCellList";
 import {orderSClist, productlinecount, productlinelist, countOrderhaook, getxsOrderokdetail, countOrderSC, getOrderSCdetail, createorderSC, updateorderSC, deleteorderSC} from "network/unsettled";
 import {orderhaolist} from "network/order";
 import {onMounted, reactive, ref} from "vue";
@@ -56,7 +56,7 @@ import {useRoute} from "vue-router";
 
 export default {
   name: "createorderSC",
-  components: {FieldCell, FieldCellList},
+  components: {FieldCell, ScFieldCellList},
   setup() {
 
     // 订单交期
@@ -126,7 +126,7 @@ export default {
                   state.skulist = [{},{},{},{},{},{}]
                   Toast('此订单无产品详情')
                 }else {
-                  console.log(res.results[0].order);
+                  console.log(res);
                   delivery.value = res.results[0].order.delivery.split(' ')[0]
                   orderhao.value = res.results[0].order.order
                   productline.value = res.results[0].order.supplier.shortname
@@ -134,6 +134,16 @@ export default {
                   xsorderhao.value = res.results[0].xs_order
                   state.skulist = []
                   for(let i in res.results){
+                    let bom = []
+
+                    for (let j in res.results[i].bom){
+                      bom.push(res.results[i].bom[j].sku)
+                      bom[j].order = res.results[i].bom[j].order
+                      bom[j].quantity = res.results[i].bom[j].quantity
+                      bom[j].picking = res.results[i].bom[j].picking
+                    }
+                    bom.push({})
+                    console.log('bom', bom);
                     state.skulist.push({
                       id:res.results[i].sku.id,
                       coding:res.results[i].sku.coding,
@@ -142,9 +152,9 @@ export default {
                       unit:res.results[i].sku.unit,
                       quantity:res.results[i].quantity,
                       quantityed:res.results[i].quantityed,
+                      bom:bom,
                     })
                   }
-
                   // skulist最后一行是否为空，不为空则增加两行空值
                   if ( JSON.stringify(state.skulist[state.skulist.length - 1]) !== '{}'){
                     state.skulist.push({},{})
@@ -258,10 +268,15 @@ export default {
     // 详情列表
     // skulist数据列表
     const receiveskulistvalue = (value) => {
-      console.log(value);
+      console.log('SC', value);
+      console.log('SC', state.skulist);
       // splice(‘要插入的位置’, '要删除的项数', '需要插入的项', '需要插入的项', ‘……’)
-      state.skulist.splice(value.serial,1, value)
-
+      if(value.bom){
+        state.skulist[value.serial].bom = value.bom
+      } else {
+        state.skulist.splice(value.serial,1, value)
+      }
+      console.log( state.skulist);
       // skulist最后一行是否为空，不为空则增加两行空值
       if ( JSON.stringify(state.skulist[state.skulist.length - 1]) !== '{}'){
         state.skulist.push({},{})
@@ -347,7 +362,8 @@ export default {
         //   continue
         // }
         if(state.skulist[i]?.coding && state.skulist[i]?.quantity && Number(state.skulist[i]?.quantity) !== 0) {
-          data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, unit:state.skulist[i]?.unit, quantity:state.skulist[i]?.quantity})
+          // data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, unit:state.skulist[i]?.unit, quantity:state.skulist[i]?.quantity})
+          data.sku.push(state.skulist[i])
         }
       }
       if (data.sku.length === 0){
@@ -360,7 +376,8 @@ export default {
       // 校验订单编号是否重复
       console.log(data, data.sku);
       countOrderSC(data.order).then(res=> {
-        console.log(res);
+        console.log(ref);
+        console.log(' 最后提交的数据',data, state.skulist);
         if (res.count >= 1) {
           // 订单已存在，弹出对话框选择是覆盖 还是取消
           console.log(data);
