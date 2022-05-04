@@ -52,8 +52,10 @@
   <div class="reg" style="margin: 10px; font-size: 10px; color:var(--color-high-text)">
     <span @click="toRegister">没有账号？立即注册</span>
     <!--      <div @click="$router.push({path:'/register'})">没有账号？立即注册</div>-->
+
   </div>
 
+  <div class="icp"><p>沪ICP备2020030571号</p></div>
 </template>
 
 <script>
@@ -141,6 +143,14 @@ export default {
 </script>
 
 <style scoped>
-
+.icp{
+  /*background-color: #fff;*/
+  position: absolute;
+  bottom: 5px;
+  width: 100%;
+  font-size: 10px;
+  color: #898888;
+  text-align: center;
+}
 
 </style>

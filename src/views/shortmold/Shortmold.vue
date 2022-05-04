@@ -3,7 +3,7 @@
   <van-sticky>
   <van-row>
     <van-col span="24">
-      <van-nav-bar title="YXERP" :border='false'>
+      <van-nav-bar title="YXERP" :border='false' @click-right="onClickRight">
         <template #right>
           <van-icon name="search" size="18" />
         </template>
@@ -120,7 +120,7 @@
 </div>
 
 
-  <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">我是有底线的哦！！！</van-divider>
+  <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">沪ICP备2020030571号</van-divider>
 
 <!--  <nut-backtop  el-id="elId" ></nut-backtop>-->
 </template>
@@ -130,6 +130,7 @@ import ErpOrderItem from "components/common/ErpOrderItem";
 import ErpGoodsItem from "components/common/ErpGoodsItem";
 import {onMounted, reactive, computed, ref } from "vue";
 import {getMonthfinishinfo} from "network/order";
+import {useRouter} from "vue-router";
 
 export default {
   name: "Shortmold",
@@ -224,6 +225,12 @@ export default {
     // 进度条
     const currentRate = ref(0);
     const text = computed(() => currentRate.value.toFixed(0) + '%');
+
+    const router = useRouter()
+    const onClickRight = ()=>{
+      console.log('搜索');
+      router.push({path:'/search'})
+    }
     return {
       state,
       themeVars,
@@ -244,6 +251,8 @@ export default {
       Date_num,
       deductdate,
       adddate,
+
+      onClickRight,
 
 
     };
