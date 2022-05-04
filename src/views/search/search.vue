@@ -79,6 +79,7 @@
 <script>
 import {onMounted, ref} from 'vue';
 import { Toast } from 'vant';
+import {Search} from "../../network/search";
 
 export default {
   name: "search",
@@ -129,9 +130,23 @@ export default {
 
     // 搜索
     const search = ()=>{
-      console.log(checked.value, date_start, date_end, searchvalue.value);
+      console.log(checked.value, date_start.value, date_end.value, searchvalue.value);
       if (checked.value != 0 && searchvalue.value){
-        Toast('OK')
+        Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
+        Search({
+          checked:checked.value,
+          date_start:date_start.value,
+          date_end:date_end.value,
+          keyword:searchvalue.value}).then(res=>{
+          Toast.clear()
+          Toast.success("加载完成")
+
+          console.log(res);
+          Toast(res)
+        }).catch(err=>{
+          console.log(err);
+          Toast.fail('查询失败')
+        })
       }else {
         Toast('查询类别未选或未输入搜索关键字')
       }
