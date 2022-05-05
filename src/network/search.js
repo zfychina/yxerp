@@ -48,10 +48,18 @@ export function Searchsctl(params) {
     params
   })
 }
-//采购入库
+//采购入库有订单
 export function Searchcgrk(params) {
   return request({
     url: '/search/cgrk',
+    method: 'get',
+    params
+  })
+}
+//采购入库无订单
+export function Searchnotcgrk(params) {
+  return request({
+    url: '/search/notcgrk',
     method: 'get',
     params
   })
@@ -64,10 +72,18 @@ export function Searchcgth(params) {
     params
   })
 }
-//销售出库
+//销售出库有订单
 export function Searchxsck(params) {
   return request({
     url: '/search/xsck',
+    method: 'get',
+    params
+  })
+}
+//销售出库无订单
+export function Searchnotxsck(params) {
+  return request({
+    url: '/search/notxsck',
     method: 'get',
     params
   })

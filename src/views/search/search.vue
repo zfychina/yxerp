@@ -22,9 +22,9 @@
      </div>
 
       <div class="check_css">
-        <van-radio name='cgrk' shape="square"><div style="line-height: 30px">采购入库</div></van-radio>
+        <van-radio name='cgrk' shape="square"><div style="line-height: 30px">采购入库(有)</div></van-radio>
+        <van-radio name='notcgrk' shape="square"><div style="line-height: 30px">采购入库(无)</div></van-radio>
         <van-radio name='cgth' shape="square"><div style="line-height: 30px">采购退货</div></van-radio>
-        <van-radio name='xsck' shape="square"><div style="line-height: 30px">销售出库</div></van-radio>
       </div>
 
       <div class="check_css">
@@ -36,6 +36,11 @@
       <div class="check_css">
         <van-radio name='user' shape="square"><div style="line-height: 30px">用户查询</div></van-radio>
         <van-radio name='supplier' shape="square"><div style="line-height: 30px">供 应 商</div></van-radio>
+      </div>
+
+      <div class="check_css">
+        <van-radio name='xsck' shape="square"><div style="line-height: 30px">销售出库(有)</div></van-radio>
+        <van-radio name='notxsck' shape="square"><div style="line-height: 30px">销售出库(无)</div></van-radio>
       </div>
 
     </van-radio-group>
@@ -80,7 +85,7 @@
 import {onMounted, reactive, ref} from 'vue';
 import { Toast } from 'vant';
 import { Searchxsorder, Searchscorder, Searchcgorder, Searchscrk, Searchscll,
-  Searchsctl, Searchcgrk, Searchcgth, Searchxsck, Searchsku,
+  Searchsctl, Searchcgrk, Searchnotcgrk, Searchcgth, Searchxsck, Searchnotxsck, Searchsku,
   Searchcategory, Searchto_unity, Searchuser, Searchsupplier} from "network/search";
 
 export default {
@@ -223,9 +228,23 @@ export default {
             Toast.fail('查询失败')
           })
         }
-        // 采购入库
+        // 采购入库有订单
         if(checked.value === 'cgrk'){
           Searchcgrk({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
+            state.search_rel = res
+            Toast.clear()
+            Toast.success("加载完成")
+
+            console.log(res);
+          }).catch(err=>{
+            console.log(err);
+            Toast.clear()
+            Toast.fail('查询失败')
+          })
+        }
+        // 采购入库无订单
+        if(checked.value === 'notcgrk'){
+          Searchnotcgrk({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
             Toast.clear()
             Toast.success("加载完成")
@@ -251,9 +270,23 @@ export default {
             Toast.fail('查询失败')
           })
         }
-        // 销售出库
+        // 销售出库有订单
         if(checked.value === 'xsck'){
           Searchxsck({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
+            state.search_rel = res
+            Toast.clear()
+            Toast.success("加载完成")
+
+            console.log(res);
+          }).catch(err=>{
+            console.log(err);
+            Toast.clear()
+            Toast.fail('查询失败')
+          })
+        }
+        // 销售出库无订单
+        if(checked.value === 'notxsck'){
+          Searchnotxsck({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
             Toast.clear()
             Toast.success("加载完成")
