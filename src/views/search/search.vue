@@ -41,6 +41,7 @@
       <div class="check_css">
         <van-radio name='xsck' shape="square"><div style="line-height: 30px">销售出库(有)</div></van-radio>
         <van-radio name='notxsck' shape="square"><div style="line-height: 30px">销售出库(无)</div></van-radio>
+        <van-radio name='xsth' shape="square"><div style="line-height: 30px">销售退货</div></van-radio>
       </div>
 
     </van-radio-group>
@@ -85,7 +86,7 @@
 import {onMounted, reactive, ref} from 'vue';
 import { Toast } from 'vant';
 import { Searchxsorder, Searchscorder, Searchcgorder, Searchscrk, Searchscll,
-  Searchsctl, Searchcgrk, Searchnotcgrk, Searchcgth, Searchxsck, Searchnotxsck, Searchsku,
+  Searchsctl, Searchcgrk, Searchnotcgrk, Searchcgth, Searchxsck, Searchnotxsck, Searchxsth, Searchsku,
   Searchcategory, Searchto_unity, Searchuser, Searchsupplier} from "network/search";
 
 export default {
@@ -287,6 +288,20 @@ export default {
         // 销售出库无订单
         if(checked.value === 'notxsck'){
           Searchnotxsck({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
+            state.search_rel = res
+            Toast.clear()
+            Toast.success("加载完成")
+
+            console.log(res);
+          }).catch(err=>{
+            console.log(err);
+            Toast.clear()
+            Toast.fail('查询失败')
+          })
+        }
+        // 销售退货
+        if(checked.value === 'xsth'){
+          Searchxsth({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
             Toast.clear()
             Toast.success("加载完成")

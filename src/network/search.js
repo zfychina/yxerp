@@ -88,6 +88,14 @@ export function Searchnotxsck(params) {
     params
   })
 }
+//销售退货
+export function Searchxsth(params) {
+  return request({
+    url: '/search/xsth',
+    method: 'get',
+    params
+  })
+}
 //物料查询
 export function Searchsku(params) {
   return request({
