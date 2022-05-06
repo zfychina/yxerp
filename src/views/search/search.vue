@@ -1,7 +1,7 @@
 <template>
   <van-row>
     <van-col span="24">
-        <van-search background="#1989fa" v-model="searchvalue" placeholder="请输入物料编码 名称 供应商 订单号等(显示前50条)" shape="round" clearable/>
+        <van-search background="#1989fa" v-model="searchvalue" placeholder="物料编码 名称 供应商 订单号等(显示前50条)" shape="round" clearable/>
     </van-col>
   </van-row>
 
@@ -77,26 +77,90 @@
   </div>
 
 <!--  搜索结果展示-->
-  <div>
-    div
+  <div v-if="checked === 'xsorder'">
+    <van-row justify="center">
+      <van-col span="23">
+  <!--      <table-title :title="title"></table-title>-->
+        <div>{{title?.[checked]}}({{'共'+state.search_rel.length+'条'}})</div>
+        <div  class="orderitem">
+          <order-goods-col v-for="(data, index) in state.search_rel" :data="data" :button_show="state.button_show.indexOf(data.id) > -1" :key="index" @spreadorder="spreadorder">{{state.button_show=data.id}}</order-goods-col>
+        </div>
+        <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">只显示最近50条！！！</van-divider>
+      </van-col>
+    </van-row>
+  </div>
+
+  <div v-if="checked === 'scorder' || checked === 'scrk' || checked === 'scll' || checked === 'sctl' ||
+               checked === 'cgorder' || checked === 'cgrk' || checked === 'notcgrk' || checked === 'cgth' ||
+               checked === 'xsck' || checked === 'notxsck' || checked === 'xsth' ">
+    <van-row justify="center">
+      <van-col span="23">
+<!--              <table-title :title="title"></table-title>-->
+        <div>{{title?.[checked]}}({{'共'+state.search_rel.length+'条'}})</div>
+        <div  class="orderitem">
+          <sc-order-goods-col v-for="(data, index) in state.search_rel" :data="data" :key="index" @spreadorder="Unspreadorder">{{state.button_show=data.id}}</sc-order-goods-col>
+        </div>
+        <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">只显示最近50条！！！</van-divider>
+      </van-col>
+    </van-row>
+  </div>
+
+  <div v-if="checked === 'sku'|| checked === 'user'|| checked === 'supplier'|| checked === 'to_unit'|| checked === 'user'|| checked === 'category'">
+    <van-row justify="center">
+      <van-col span="23">
+        <!--      <table-title :title="title"></table-title>-->
+        <div>{{title?.[checked]}}({{'共'+state.search_rel.length+'条'}})</div>
+        <div  class="orderitem">
+          <other-info  v-for="(data, index) in state.search_rel" :data="data" :key="index" @spreadorder="otherspreadorder"></other-info>
+        </div>
+        <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">只显示最近50条！！！</van-divider>
+      </van-col>
+    </van-row>
   </div>
 </template>
 
 <script>
-import {onMounted, reactive, ref} from 'vue';
+import {nextTick, onMounted, reactive, ref, watch} from 'vue';
 import { Toast } from 'vant';
 import { Searchxsorder, Searchscorder, Searchcgorder, Searchscrk, Searchscll,
   Searchsctl, Searchcgrk, Searchnotcgrk, Searchcgth, Searchxsck, Searchnotxsck, Searchxsth, Searchsku,
   Searchcategory, Searchto_unity, Searchuser, Searchsupplier} from "network/search";
+// import {useRouter} from "vue-router";
+
+// import TableTitle from "components/common/TableTitle";
+import OrderGoodsCol from './ChildComps/OrderGoodsCol'
+import ScOrderGoodsCol from './ChildComps/ScOrderGoodsCol'
+import OtherInfo from './ChildComps/OtherInfo'
+import {useRouter} from "vue-router";
 
 export default {
   name: "search",
+  components: {  OrderGoodsCol, ScOrderGoodsCol, OtherInfo },
   setup() {
+    // const title = ['下单日期', '物料编号', '交货日期', '客户', '制单人']
+    const title ={
+      xsorder: '销售订单',
+      scorder: '生产订单',
+      cgorder: '采购订单',
+      scrk: '生产入库',
+      scll: '生产领料',
+      sctl: '生产退料',
+      cgrk: '采购入库(有)',
+      notcgrk: '采购入库(无)',
+      cgth: '采购退货',
+      xsck: '销售出库(有)',
+      notxsck: '销售出库(无)',
+      xsth: '销售退货',
+      category: '产品分类',
+      to_unit: '单位转换',
+      sku: '物料查询',
+      user: '用户查询',
+      supplier: '供应商',
+    }
+
     const searchvalue = ref('');
     // 时间选择器
     const showPicker = ref(false);
-
-
     const Mydate = ref(new Date());
     onMounted(() => {
       let year = Mydate.value.getFullYear()
@@ -107,6 +171,7 @@ export default {
     })
 
     const state = reactive({
+      button_show: [],
       search_rel: [],
     })
     // 单选
@@ -138,8 +203,19 @@ export default {
       showPicker.value = true
     }
 
+    watch(
+        () => checked.value,
+        () => {
+          // 逻辑代码
+          nextTick(()=>{
+            state.search_rel = []
+          });
+        },
+
+    )
 
     // 搜索
+    // const router = useRouter()
     const search = ()=>{
       console.log(checked.value, date_start.value, date_end.value, searchvalue.value);
 
@@ -149,8 +225,13 @@ export default {
         if(checked.value === 'xsorder'){
           Searchxsorder({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -163,8 +244,13 @@ export default {
         if(checked.value === 'scorder'){
           Searchscorder({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -177,8 +263,13 @@ export default {
         if(checked.value === 'cgorder'){
           Searchcgorder({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -191,8 +282,13 @@ export default {
         if(checked.value === 'scrk'){
           Searchscrk({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -205,8 +301,13 @@ export default {
         if(checked.value === 'scll'){
           Searchscll({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -219,8 +320,13 @@ export default {
         if(checked.value === 'sctl'){
           Searchsctl({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -233,8 +339,13 @@ export default {
         if(checked.value === 'cgrk'){
           Searchcgrk({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -247,8 +358,13 @@ export default {
         if(checked.value === 'notcgrk'){
           Searchnotcgrk({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -261,8 +377,13 @@ export default {
         if(checked.value === 'cgth'){
           Searchcgth({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -275,8 +396,13 @@ export default {
         if(checked.value === 'xsck'){
           Searchxsck({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -289,8 +415,13 @@ export default {
         if(checked.value === 'notxsck'){
           Searchnotxsck({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -303,8 +434,13 @@ export default {
         if(checked.value === 'xsth'){
           Searchxsth({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -317,8 +453,13 @@ export default {
         if(checked.value === 'sku'){
           Searchsku({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -331,8 +472,13 @@ export default {
         if(checked.value === 'category'){
           Searchcategory({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -345,8 +491,13 @@ export default {
         if(checked.value === 'to_unit'){
           Searchto_unity({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -359,8 +510,13 @@ export default {
         if(checked.value === 'user'){
           Searchuser({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
 
             console.log(res);
           }).catch(err=>{
@@ -373,9 +529,13 @@ export default {
         if(checked.value === 'supplier'){
           Searchsupplier({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
-            Toast.clear()
-            Toast.success("加载完成")
-
+            if(res.length === 0) {
+              Toast.clear()
+              Toast('没有数据')
+            } else {
+              Toast.clear()
+              Toast.success("加载完成")
+            }
             console.log(res);
           }).catch(err=>{
             console.log(err);
@@ -390,7 +550,108 @@ export default {
 
     }
 
+
+    // 销售订单展开数据接收
+    const spreadorder = (id, order, coding) => {
+      console.log('订单展开数据接收-spreadorder', id, order, coding);
+      // 按钮展示
+      if (state.button_show.indexOf(id) > -1 ){
+        state.button_show = []
+      } else {
+        state.button_show = []
+        state.button_show.push(id)
+        console.log(state.button_show);
+      }
+    }
+    // 生产 采购 销售相关展开 未完成跳转编辑页面
+    const router = useRouter()
+    const Unspreadorder = (id, order, coding)=> {
+      console.log(checked.value, id, order, coding);
+      if (checked.value === 'scorder') {
+        // 打开生产订单
+        console.log(order);
+        router.push({path:'/createordersc', query: { order: order}})
+      }
+      if (checked.value === 'scll') {
+        // 打开生产领料
+        console.log(checked.value, order);
+      }
+      if (checked.value === 'scrk') {
+        // 打开生产入库
+        console.log(checked.value, order);
+        router.push({path:'/createorderscrk', query: { order: order}})
+      }
+      if (checked.value === 'cgorder') {
+        // 打开采购订单
+        console.log(checked.value, order);
+        router.push({path:'/createordercg', query: { order: order}})
+      }
+      if (checked.value === 'cgrk') {
+        // 打开采购入库
+        console.log(checked.value, order);
+        router.push({path:'/createordercgrk', query: { order: order}})
+      }
+      if (checked.value === 'notcgrk') {
+        // 打开无订单采购入库
+        console.log(checked.value, order);
+        router.push({path:'/createordercgrk', query: { order: order}})
+      }
+      if (checked.value === 'cgth') {
+        // 打开采购退货
+        console.log(checked.value, order);
+        router.push({path:'/createordercgre', query: { order: order}})
+      }
+      if (checked.value === 'sctl') {
+        // 打开生产退料
+        console.log(checked.value, order);
+        router.push({path:'/createorderscre', query: { order: order}})
+      }
+      if (checked.value === 'xsck') {
+        // 打开销售出库
+        console.log(checked.value, order);
+        router.push({path:'/createorderxs', query: { order: order}})
+      }
+      if (checked.value === 'notxsck') {
+        // 打开无订单销售出库
+        console.log(checked.value, order);
+        router.push({path:'/createorderxs', query: { order: order}})
+      }
+    }
+    const otherspreadorder = (id)=> {
+      console.log(checked.value, id );
+      if (checked.value === 'sku') {
+        // 物料查询
+        console.log(id);
+        // router.push({path:'/createordersc', query: { id: id}})
+      }
+      if (checked.value === 'user') {
+        // 用户查询
+        console.log(id);
+        // router.push({path:'/createordersc', query: { id: id}})
+      }
+      if (checked.value === 'supplier') {
+        // 供应商
+        console.log(id);
+        // router.push({path:'/createordersc', query: { id: id}})
+      }
+      if (checked.value === 'to_unit') {
+        // 单位转换
+        console.log(id);
+        // router.push({path:'/createordersc', query: { id: id}})
+      }
+      if (checked.value === 'category') {
+        // 产品分类
+        console.log(id);
+        // router.push({path:'/createordersc', query: { id: id}})
+      }
+    }
+
     return {
+      title,
+      spreadorder,
+      Unspreadorder,
+      otherspreadorder,
+
       state,
       searchvalue,
 
@@ -419,7 +680,7 @@ export default {
 
 .check_css {
   margin-top: 12px;
-  margin-left: 12px;
+  margin-left: 5px;
   line-height: 30px;
 }
 .date_css{
@@ -428,4 +689,19 @@ export default {
 }
 
 
+.orderitem {
+  font-size: 14px;
+  color: #666;
+  text-align: left;
+  line-height: 2;
+
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+
+  font-weight: bloder; /*bold：加粗；bloder：深度加粗；lighter：细体；*/
+  border: 1px solid;
+  border-color: var(--color-border);
+}
 </style>
