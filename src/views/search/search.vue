@@ -617,33 +617,30 @@ export default {
         router.push({path:'/createorderxs', query: { order: order}})
       }
     }
-    const otherspreadorder = (id)=> {
-      console.log(checked.value, id );
-      if (checked.value === 'sku') {
-        // 物料查询
-        console.log(id);
-        // router.push({path:'/createordersc', query: { id: id}})
-      }
-      if (checked.value === 'user') {
-        // 用户查询
-        console.log(id);
-        // router.push({path:'/createordersc', query: { id: id}})
-      }
-      if (checked.value === 'supplier') {
-        // 供应商
-        console.log(id);
-        // router.push({path:'/createordersc', query: { id: id}})
-      }
-      if (checked.value === 'to_unit') {
-        // 单位转换
-        console.log(id);
-        // router.push({path:'/createordersc', query: { id: id}})
-      }
-      if (checked.value === 'category') {
-        // 产品分类
-        console.log(id);
-        // router.push({path:'/createordersc', query: { id: id}})
-      }
+    const otherspreadorder = (data)=> {
+      console.log(checked.value, data );
+      data.checked = checked.value
+      router.push({path:'/edititem',  query: { data: JSON.stringify(data)}})
+      // if (checked.value === 'user') {
+      //   // 用户查询
+      //   console.log(id);
+      //   // router.push({path:'/createordersc', query: { id: id}})
+      // }
+      // if (checked.value === 'supplier') {
+      //   // 供应商
+      //   console.log(id);
+      //   // router.push({path:'/createordersc', query: { id: id}})
+      // }
+      // if (checked.value === 'to_unit') {
+      //   // 单位转换
+      //   console.log(id);
+      //   // router.push({path:'/createordersc', query: { id: id}})
+      // }
+      // if (checked.value === 'category') {
+      //   // 产品分类
+      //   console.log(id);
+      //   // router.push({path:'/createordersc', query: { id: id}})
+      // }
     }
 
     return {

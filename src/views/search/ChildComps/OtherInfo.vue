@@ -69,8 +69,8 @@ export default {
   setup(props, { emit }) {
 
     const spread = (id) => {
-      console.log(props.data);
-      emit('spreadorder', id )
+      console.log(id, props.data);
+      emit('spreadorder', props.data )
     }
 
     // VAN分割样式修改

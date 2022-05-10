@@ -30,7 +30,7 @@ const CategoryGoodsDetail = () => import('@/views/profile/ChildComps/CategoryGoo
 const ProcessGoodsDetail = () => import('@/views/profile/ChildComps/ProcessGoodsDetail')
 const yearGoodsDetail = () => import('@/views/profile/ChildComps/yearGoodsDetail')
 const casaStatement = () => import('@/views/profile/ChildComps/casaStatement')
-const XSresult = () => import('@/views/search/XSresult')
+const EditItem = () => import('@/views/search/ChildComps/EditItem')
 
 const routes = [
   {
@@ -310,13 +310,13 @@ const routes = [
     }
   },
 
-  // 搜索结果跳转
+  // 数据修改
   {
-    path: '/xsresult',
-    name: 'xsresult',
-    component: XSresult,
+    path: '/edititem',
+    name: 'edititem',
+    component: EditItem,
     meta: {
-      title: '搜索结果',
+      title: '编辑',
     }
   },
 ]
