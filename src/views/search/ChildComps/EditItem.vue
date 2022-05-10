@@ -69,7 +69,7 @@
 import {Toast} from "vant";
 import {onMounted, reactive} from "vue";
 import {useRoute} from "vue-router";
-import {Search} from "../../../network/search";
+import {Search} from "network/search";
 
 
 export default {

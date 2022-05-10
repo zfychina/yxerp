@@ -139,7 +139,7 @@ export function Searchsupplier(params) {
 
 export function Search(data) {
   return request({
-    url: '/search/',
+    url: '/search/edit/',
     method: 'put',
     data
   })
