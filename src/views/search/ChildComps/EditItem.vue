@@ -28,7 +28,7 @@
         </van-cell-group>
         <van-cell-group v-if="state.data.checked === 'category'" inset>
           <van-field v-model="state.data.name" name="name" label="型号：" readonly/>
-          <van-field v-model="state.data.parent" name="stock" label="属于"/>
+          <van-field v-model="state.data.parent" name="parent" label="属于"/>
           <van-field v-model="state.data.capacity" name="capacity" label="工时：" placeholder="每小时生产的数量"/>
           <van-field v-model="state.data.process" name="process" label="工序：" placeholder="输入生产工序"/>
         </van-cell-group>
@@ -39,10 +39,10 @@
         </van-cell-group>
         <van-cell-group v-if="state.data.checked === 'user'" inset>
           <van-field v-model="state.data.date_joined" name="date_joined" label="创建时间：" readonly/>
-          <van-field v-model="state.data.username" name="username" label="姓名" readonly/>
-          <van-field v-model="state.data.mobile" name="mobile" label="手机" readonly/>
+          <van-field v-model="state.data.username" name="username" label="姓名"/>
+          <van-field v-model="state.data.mobile" name="mobile" label="手机"/>
           <van-field v-model="state.data.last_login" name="last_login" label="最后登入时间" readonly/>
-          <van-field v-model="state.data.email" name="email" label="邮箱：" readonly/>
+          <van-field v-model="state.data.email" name="email" label="邮箱："/>
 
         </van-cell-group>
         <van-cell-group v-if="state.data.checked === 'supplier'" inset>
@@ -136,7 +136,7 @@ export default {
         if(res==='ok'){
           Toast.success('保存成功')
         } else {
-          Toast.fail('保存失败，请联系管理员')
+          Toast.fail(res)
         }
       }).catch(err=>{
         console.log(err);
