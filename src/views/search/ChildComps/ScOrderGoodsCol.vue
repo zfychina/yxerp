@@ -24,7 +24,7 @@
         <p>
 <!--          {{data.sku.order ? data.sku.order.supplier.shortname : (data.order.supplier ? data.order.supplier.shortname : '')}}-->
 <!--          {{data.sku.order.supplier?.shortname}}-->
-          {{data.order.supplier?.shortname || data.order.customer.shortname || data.sku.order.supplier?.shortname}}
+          {{data.order.supplier?.shortname || data.order.customer?.shortname || data.sku.order.supplier?.shortname}}
 <!--          {{data.order.customer?.shortname}}-->
 <!--          {{}}-->
         </p>
