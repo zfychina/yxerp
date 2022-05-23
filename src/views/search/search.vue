@@ -1,7 +1,7 @@
 <template>
   <van-row>
     <van-col span="24">
-        <van-search background="#1989fa" v-model="searchvalue" placeholder="物料编码 名称 供应商 订单号等(显示前50条)" shape="round" clearable/>
+        <van-search background="#1989fa" v-model="searchvalue" placeholder="注：加#号为精确查询(显示前50条)" shape="round" clearable/>
     </van-col>
   </van-row>
 

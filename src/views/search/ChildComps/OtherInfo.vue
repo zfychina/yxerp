@@ -6,6 +6,9 @@
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: left;">
         <p>{{data.category1?.name}}
           {{data.sku?.category1?.name}}
+          {{data.category?.name}}
+          {{data.sku?.category?.name}}
+
           {{data.last_login ? data.last_login.split(' ')[0].split('-')[1]+"月"+data.last_login.split(' ')[0].split('-')[2]+"日" : ''}}
           {{data.shortname ? data.shortname : ''}}
         </p>
