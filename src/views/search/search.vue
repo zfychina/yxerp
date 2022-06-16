@@ -620,7 +620,12 @@ export default {
     const otherspreadorder = (data)=> {
       console.log(checked.value, data );
       data.checked = checked.value
-      router.push({path:'/edititem',  query: { data: JSON.stringify(data)}})
+      if (data.hasOwnProperty('supplier') && data.supplier !== null){
+        // console.log(data.supplier.shortname);
+        console.log(data.supplier);
+        data.supplier = data.supplier.shortname
+      }
+      router.push({path:'/edititem',  query: { data: encodeURIComponent(JSON.stringify(data))}})
       // if (checked.value === 'user') {
       //   // 用户查询
       //   console.log(id);
