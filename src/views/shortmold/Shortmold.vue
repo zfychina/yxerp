@@ -120,7 +120,7 @@
 </div>
 
 
-  <van-divider style="margin-bottom: 60px" :style="{ padding: '0 56px' }">沪ICP备2020030571号</van-divider>
+  <van-divider @click="tobeian" style="margin-bottom: 60px" :style="{ padding: '0 56px' }">沪ICP备2020030571号</van-divider>
 
 <!--  <nut-backtop  el-id="elId" ></nut-backtop>-->
 </template>
@@ -231,7 +231,16 @@ export default {
       console.log('搜索');
       router.push({path:'/search'})
     }
+
+
+    // 跳转到外部链接
+    const tobeian=()=>{
+      // window.location.href = "https://beian.miit.gov.cn/";
+      window.open("https://beian.miit.gov.cn/","_blank");
+    }
+
     return {
+      tobeian,
       state,
       themeVars,
       // grid使用

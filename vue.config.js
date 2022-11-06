@@ -18,5 +18,6 @@ module.exports = {
     port:8081,
     https:false,
     open:false,
-  }
+  },
+
 }

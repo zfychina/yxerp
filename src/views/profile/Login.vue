@@ -55,14 +55,14 @@
 
   </div>
 
-  <div class="icp"><p>沪ICP备2020030571号</p></div>
+  <div class="icp" @click="tobeian"><p>沪ICP备2020030571号-1</p></div>
 </template>
 
 <script>
 import {onMounted, reactive} from "vue";
 import {useRouter} from "vue-router";
 import {nanoid} from "nanoid";
-import {login} from "network/user";
+import {login, picvalidation} from "network/user";
 import { Toast } from 'vant';
 import { useStore } from 'vuex'
 
@@ -93,33 +93,45 @@ export default {
 
     // 登录按钮提交
     const onSubmit = () => {
-      login(state).then(res=>{
-        if (res.status === 400){
-          setTimeout(()=> {
-            Toast.fail(res.msg)
-          },1000)
-        } else
-        {
-          // 将token保存在本地 window.localStorage setItem(key, value) getItem(key)
-          // eduwork2@lmonkey.com user123
-          // console.log(res);
-          sessionStorage.clear();
-          localStorage.clear();
-          window.localStorage.setItem('token', res.token);
-          // 在vuex isLogin
-          // console.log(store);
-          store.commit('setIsLogin', true);
+      picvalidation({"img_code":state.img_code, 'image_code_id':state.image_code_id}).then(res=>{
+        console.log(res);
+        if (res === 'ok') {
+          // 图片验证码校验成功方进行登陆校验
+          login(state).then(res=>{
+            if (res.status === 400){
+              setTimeout(()=> {
+                Toast.fail(res.msg)
+              },1000)
+            } else
+            {
+              // 将token保存在本地 window.localStorage setItem(key, value) getItem(key)
+              // eduwork2@lmonkey.com user123
+              // console.log(res);
+              sessionStorage.clear();
+              localStorage.clear();
+              window.localStorage.setItem('token', res.token);
+              // 在vuex isLogin
+              // console.log(store);
+              store.commit('setIsLogin', true);
 
-          Toast.success('登录成功')
-          state.username = ""
-          state.password = ""
-          state.img_code = ""
-          state.image_code_id = ""
+              Toast.success('登录成功')
+              state.username = ""
+              state.password = ""
+              state.img_code = ""
+              state.image_code_id = ""
 
-          setTimeout(() => {
-            // router.go(-1);
-            router.push({path:'/profile'});
-          }, 500)
+              setTimeout(() => {
+                // router.go(-1);
+                router.push({path:'/profile'});
+              }, 500)
+            }
+          })
+        } else {
+          if (res === 'no') {
+            Toast.fail('图片验证码错误')
+          } else {
+            Toast.fail('浏览器异常，清除缓存后再试！')
+          }
         }
       })
     };
@@ -129,11 +141,17 @@ export default {
       router.push({path:'/register'})
     }
 
+    // 跳转到外部链接
+    const tobeian=()=>{
+      // window.location.href = "https://beian.miit.gov.cn/";
+      window.open("https://beian.miit.gov.cn/","_blank");
+    }
 
      return {
       state,
       onSubmit,
       toRegister,
+      tobeian,
       onimg,
       img_code_url,
       onsubmit,
@@ -145,7 +163,9 @@ export default {
 <style scoped>
 .icp{
   /*background-color: #fff;*/
-  position: absolute;
+  /*position: absolute;*/
+  border-bottom: #666666;
+  margin-top: 15px;
   bottom: 5px;
   width: 100%;
   font-size: 10px;

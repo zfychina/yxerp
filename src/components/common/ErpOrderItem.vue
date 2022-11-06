@@ -62,7 +62,7 @@ export default {
     )
     // 表数据及展开点击
     const getdata = (ordering) => {
-      Toast.loading({duration: 20000, forbidClick: true, message: '加载中'})
+      Toast.loading({duration: 5000, forbidClick: true, message: '加载中'})
       getMonthOrderinfo(ordering, props.currentDate).then(res=>{
         state.tabledata = res
         ordernum()

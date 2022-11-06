@@ -65,7 +65,7 @@ export default {
                   Toast.success('更新完成')
                 } else {
                   Toast.clear()
-                  Toast.fail('更新失败，请联系管理员')
+                  Toast.fail('请添加转换数量' + res)
                 }
               })
 

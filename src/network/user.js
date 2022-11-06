@@ -8,6 +8,14 @@ export function register(data) {
   })
 }
 
+export function picvalidation(data) {
+  return request({
+    url: '/picvalidation/',
+    method: 'post',
+    data
+  })
+}
+
 export function updateuser(data) {
   return request({
     url: '/updateuser/',
