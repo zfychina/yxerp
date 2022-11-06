@@ -21,24 +21,6 @@
   </van-row>
   </van-sticky>
 
-  <!--  系统设置-->
-  <div ref="container">
-    <van-sticky :container="container" :offset-top="90">
-      <van-row justify="center" @click="state.systemshow=!state.systemshow">
-        <van-col span="23">
-          <div class="textcss">系统设置</div>
-        </van-col>
-      </van-row>
-    </van-sticky>
-  </div>
-
-  <van-row justify="center" v-show="state.systemshow">
-    <van-col span="23" class="cellborder">
-      <table-system  v-for="(data, index) in state.systemdata" :data="data" :key="index" :serial="index" :serials="state.systemdata.length"></table-system>
-    </van-col>
-  </van-row>
-
-
   <!--  报表-->
   <div ref="container">
     <van-sticky :container="container" :offset-top="90">
@@ -89,12 +71,11 @@ import { getuserinfo } from 'network/user'
 import {useRouter} from "vue-router";
 import TableGoods from "./ChildComps/TableGoods";
 import TableReport from "./ChildComps/TableReport";
-import TableSystem from "./ChildComps/TableSystem";
 
 
 export default {
   name: "Profile",
-  components: {TableGoods, TableReport, TableSystem },
+  components: {TableGoods, TableReport },
   setup(){
     const router = useRouter()
 
@@ -116,8 +97,7 @@ export default {
         {name:'客户名称导入', explain:'含物料编号、物料名称、单位.xls文件，从第二行开始', url:'upCustomer'},
         {name:'BOM表导入', explain:'系统BOM导出保存为.xls文件', url:'upBOM'},
         {name:'存货往来导入', explain:'先导入库成品查询文件，再导入存货往来文件', url:'recordsimport'},
-        {name:'物料类型分类', explain:'将订单物料划分为锁体、锁芯、保护器、面板、配件等', url:'upcategoryimport'},
-        {name:'物料单位转换', explain:'增加产品分类及物料单位箱转换成个', url:'tounitimport'},
+        {name:'物料类型分类', explain:'将物料分类，及装箱数更新', url:'upcategoryimport'},
       ],
 
       // 报表
