@@ -93,6 +93,11 @@ export default {
 
     // 登录按钮提交
     const onSubmit = () => {
+      // 防止登录异常，先清除缓存
+      window.localStorage.setItem('token', "")
+      sessionStorage.clear();
+      localStorage.clear();
+
       picvalidation({"img_code":state.img_code, 'image_code_id':state.image_code_id}).then(res=>{
         console.log(res);
         if (res === 'ok') {
