@@ -57,16 +57,7 @@ export function getorderCGRE(page, ordering) {
     }
   })
 }
-// 获取采购无订单入库详情信息
-export function getorderNOTCGRE(page, ordering) {
-  return request({
-    url: "/orders/ordercgrenot/?page=" + page + "&ordering=" + ordering,
-    method: 'get',
-    params: {
 
-    }
-  })
-}
 
 // 获取采购退货详情信息
 export function getorderCGRETURN(page, ordering) {
@@ -90,16 +81,7 @@ export function getorderXS(page, ordering) {
   })
 }
 
-// 获取无订单销售出库详情信息
-export function getorderNOTXS(page, ordering) {
-  return request({
-    url: "/orders/orderxsnot/?page=" + page + "&ordering=" + ordering,
-    method: 'get',
-    params: {
 
-    }
-  })
-}
 
 //获取生产线信息
 export function productlinelist(query='') {

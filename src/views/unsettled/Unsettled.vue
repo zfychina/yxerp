@@ -66,7 +66,7 @@ import {recordsimport} from "network/upimport";
 import {Dialog, Toast} from "vant";
 import TableTitle from "components/common/TableTitle";
 import OrderGoodsCol from "./ChildComps/OrderGoodsCol";
-import {getorderCG, getorderCGRE, getorderSC, getorderSCRE, getorderNOTCGRE, getorderCGRETURN, getorderSCRETURN, getorderXS, getorderNOTXS} from "network/unsettled";
+import {getorderCG, getorderCGRE, getorderSC, getorderSCRE, getorderCGRETURN, getorderSCRETURN, getorderXS} from "network/unsettled";
 import {useRouter} from "vue-router";
 
 
@@ -89,16 +89,14 @@ export default {
       // 展开显示-只展开一个
       button_show: [],
       // 控制排序正倒序
-      title_by: [true, true, true, true, true, true, true, true, true, true],
-      tabtitle: ['生产订单', '生产领料', '生产入库', '采购订单', '采购入库', '无订单采购入库', '采购退货', '生产退料', '销售出库', '无订单销售出库'],
+      title_by: [true, true, true, true, true, true, true, true],
+      tabtitle: ['生产订单', '生产领料', '生产入库', '采购订单', '采购入库', '采购退货', '生产退料', '销售出库'],
       ordering: ['-order__order_date', ''],
 
       refreshing: false,
       loading: false,
-      finished: [false, false, false, false, false, false, false, false, false, false],
+      finished: [false, false, false, false, false, false, false, false],
       tabledata: [
-        {count: 0, page: 0, list:[] },
-        {count: 0, page: 0, list:[] },
         {count: 0, page: 0, list:[] },
         {count: 0, page: 0, list:[] },
         {count: 0, page: 0, list:[] },
@@ -204,15 +202,15 @@ export default {
         }).catch(err => err)
       }
 
-      if (index === 5){
-        getorderNOTCGRE(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
-          // console.log(res);
-          state.tabledata[index].list.push(...res.results)
-          state.tabledata[index].count = res.count
-        }).catch(err => err)
-      }
+      // if (index === 5){
+      //   getorderNOTCGRE(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
+      //     // console.log(res);
+      //     state.tabledata[index].list.push(...res.results)
+      //     state.tabledata[index].count = res.count
+      //   }).catch(err => err)
+      // }
 
-      if (index === 6){
+      if (index === 5){
         getorderCGRETURN(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
           // console.log(res);
           state.tabledata[index].list.push(...res.results)
@@ -220,7 +218,7 @@ export default {
         }).catch(err => err)
       }
 
-      if (index === 7){
+      if (index === 6){
         getorderSCRETURN(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
           // console.log(res);
           state.tabledata[index].list.push(...res.results)
@@ -228,7 +226,7 @@ export default {
         }).catch(err => err)
       }
 
-      if (index === 8){
+      if (index === 7){
         getorderXS(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
           // console.log(res);
           state.tabledata[index].list.push(...res.results)
@@ -236,13 +234,13 @@ export default {
         }).catch(err => err)
       }
 
-      if (index === 9){
-        getorderNOTXS(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
-          // console.log(res);
-          state.tabledata[index].list.push(...res.results)
-          state.tabledata[index].count = res.count
-        }).catch(err => err)
-      }
+      // if (index === 9){
+      //   getorderNOTXS(state.tabledata[index].page += 1, state.ordering[0]).then(res=>{
+      //     // console.log(res);
+      //     state.tabledata[index].list.push(...res.results)
+      //     state.tabledata[index].count = res.count
+      //   }).catch(err => err)
+      // }
     }
 
     // 存货往来导入
