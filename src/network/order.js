@@ -69,9 +69,9 @@ export function getOrderinfo(orderstatus, page, ordering) {
 }
 
 //获取订单详情信息
-export function getOrderdetail(orderhao) {
+export function getOrderdetail(order) {
   return request({
-    url: "/orders/" + orderhao,
+    url: "/orders/" + order,
     method: 'get',
     params: {
 

@@ -7,14 +7,14 @@
       <span style="line-height: 3; font-size: 12px; text-align: left;"><p>{{data.order.delivery.split(' ')[0].split('-')[1]+"月"+data.order.delivery.split(' ')[0].split('-')[2]+"日"}}</p></span>
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: left;">
         <p>{{data.order.user}}</p>
-      <span style="color: var(--color-red);">{{data.order.order_date.split(' ')[0].split('-')[1]+"月"+data.order.order_date.split(' ')[0].split('-')[2]+"日"}}</span>
+      <span style="color: var(--color-red);">{{data.order._date.split(' ')[0].split('-')[1]+"月"+data.order._date.split(' ')[0].split('-')[2]+"日"}}</span>
       </span>
     </van-col>
     <van-col span="13">
       <span style="line-height: 3; font-size: 12px; text-align: left;"><p>{{data.sku.coding}}</p></span>
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: left;">
         <p>{{data.sku.name}}</p>
-        <span style="color: var(--color-red);">{{data.order.orderhao}}</span>
+        <span style="color: var(--color-red);">{{data.order.order}}</span>
       </span>
     </van-col>
     <van-col span="4">

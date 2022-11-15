@@ -2,15 +2,15 @@
 <!--订单详情-->
   <van-row  justify="space-between" style="vertical-align: middle;line-height: 2.5;font-size: 14px">
     <van-col span="6" offset="1">{{data.delivery.split(' ')[0].split('-')[1]+"月"+data.delivery.split(' ')[0].split('-')[2]+"日"}}</van-col>
-    <van-col span="11">{{data.orderhao}}</van-col>
+    <van-col span="11">{{data.order}}</van-col>
     <van-col span="6" style="text-align: center;">{{data.customer}}</van-col>
   </van-row>
   <van-row  justify="space-between" style="vertical-align: middle;">
-    <van-col span="6"  offset="1" style="height: 18px;vertical-align: middle;line-height: 1; font-size: 8px; color: var(--color-border); text-align: left;">{{data.order_date.split(' ')[0].split('-')[1]+"月"+data.order_date.split(' ')[0].split('-')[2]+"日"}}</van-col>
+    <van-col span="6"  offset="1" style="height: 18px;vertical-align: middle;line-height: 1; font-size: 8px; color: var(--color-border); text-align: left;">{{data._date.split(' ')[0].split('-')[1]+"月"+data._date.split(' ')[0].split('-')[2]+"日"}}</van-col>
     <van-col span="10"  offset="1" style="height: 18px;vertical-align: middle;line-height: 1; font-size: 8px; color: var(--color-border); text-align: left;">{{data.user}}</van-col>
     <van-col span="6" style="text-align: center;height: 18px;vertical-align: middle;line-height: 1;">
-      <van-icon v-show="!is_spread" name="arrow" color="var(--color-high-text)" @click="spread(data.orderhao)"/>
-      <van-icon v-show="is_spread" name="arrow-down" color="var(--color-high-text)" @click="spread(data.orderhao)"/>
+      <van-icon v-show="!is_spread" name="arrow" color="var(--color-high-text)" @click="spread(data.order)"/>
+      <van-icon v-show="is_spread" name="arrow-down" color="var(--color-high-text)" @click="spread(data.order)"/>
     </van-col>
   </van-row>
 
@@ -60,7 +60,7 @@ export default {
       } else {
       is_spread.value = true
       getOrderdetail(order).then(res=>{
-        console.log(res);
+        console.log('spread', order,res);
         state.goodslist = res
       })
       emit('spreadorder', order)

@@ -70,7 +70,7 @@ export default {
 
     // 表头及排序点击
     const title = ['下单日期', '物料编号', '交货日期', '客户', '制单人']
-    const title_ordering = ['order__order_date', 'sku__coding', 'order__delivery', 'order__customer', 'order__user']
+    const title_ordering = ['order___date', 'sku__coding', 'order__delivery', 'order__customer', 'order__user']
 
     const state = reactive({
       // 展开显示-只展开一个
@@ -78,7 +78,7 @@ export default {
       // 控制排序正倒序
       title_by: [true, true, true, true, true],
       tabtitle: ['锁体', '锁芯', '保护器', '面板', '配件'],
-      ordering: ['-order__order_date', ''],
+      ordering: ['order__date', ''],
 
       refreshing: false,
       loading: false,
@@ -114,7 +114,7 @@ export default {
       setTimeout(() => {
         // 是滞清空数据
         if (state.refreshing) {
-          state.ordering = ['-order__order_date', '']
+          state.ordering = ['-order___date', '']
           state.tabledata[active.value] = {count: 0, page: 0, list:[] }
           state.refreshing = false;
         }
