@@ -8,7 +8,7 @@
           data.order.update_time.split(' ')[0].split('-')[1]+"月"+data.order.update_time.split(' ')[0].split('-')[2]+"日"}}</p></span>
       <span style="line-height: 0.5; font-size: 8px; color: var(--color-border); text-align: left;">
         <p>{{data.order.user.username ? data.order.user.username : data.order.user}}</p>
-      <span style="color: var(--color-red);">{{data.order.order_date.split(' ')[0].split('-')[1]+"月"+data.order.order_date.split(' ')[0].split('-')[2]+"日"}}</span>
+      <span style="color: var(--color-red);">{{data.order._date.split(' ')[0].split('-')[1]+"月"+data.order._date.split(' ')[0].split('-')[2]+"日"}}</span>
       </span>
     </van-col>
     <van-col span="13">

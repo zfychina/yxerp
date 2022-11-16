@@ -22,15 +22,14 @@
      </div>
 
       <div class="check_css">
-        <van-radio name='cgrk' shape="square"><div style="line-height: 30px">采购入库(有)</div></van-radio>
-        <van-radio name='notcgrk' shape="square"><div style="line-height: 30px">采购入库(无)</div></van-radio>
+        <van-radio name='cgrk' shape="square"><div style="line-height: 30px">采购入库</div></van-radio>
+<!--        <van-radio name='notcgrk' shape="square"><div style="line-height: 30px">采购入库(无)</div></van-radio>-->
         <van-radio name='cgth' shape="square"><div style="line-height: 30px">采购退货</div></van-radio>
       </div>
 
       <div class="check_css">
         <van-radio name='sku' shape="square"><div style="line-height: 30px">物料查询</div></van-radio>
         <van-radio name='category' shape="square"><div style="line-height: 30px">产品分类</div></van-radio>
-        <van-radio name='to_unit' shape="square"><div style="line-height: 30px">单位转换</div></van-radio>
       </div>
 
       <div class="check_css">
@@ -39,8 +38,8 @@
       </div>
 
       <div class="check_css">
-        <van-radio name='xsck' shape="square"><div style="line-height: 30px">销售出库(有)</div></van-radio>
-        <van-radio name='notxsck' shape="square"><div style="line-height: 30px">销售出库(无)</div></van-radio>
+        <van-radio name='xsck' shape="square"><div style="line-height: 30px">销售出库</div></van-radio>
+<!--        <van-radio name='notxsck' shape="square"><div style="line-height: 30px">销售出库(无)</div></van-radio>-->
         <van-radio name='xsth' shape="square"><div style="line-height: 30px">销售退货</div></van-radio>
       </div>
 
@@ -91,8 +90,8 @@
   </div>
 
   <div v-if="checked === 'scorder' || checked === 'scrk' || checked === 'scll' || checked === 'sctl' ||
-               checked === 'cgorder' || checked === 'cgrk' || checked === 'notcgrk' || checked === 'cgth' ||
-               checked === 'xsck' || checked === 'notxsck' || checked === 'xsth' ">
+               checked === 'cgorder' || checked === 'cgrk' || checked === 'cgth' ||
+               checked === 'xsck' || checked === 'xsth' ">
     <van-row justify="center">
       <van-col span="23">
 <!--              <table-title :title="title"></table-title>-->
@@ -105,7 +104,7 @@
     </van-row>
   </div>
 
-  <div v-if="checked === 'sku'|| checked === 'user'|| checked === 'supplier'|| checked === 'to_unit'|| checked === 'user'|| checked === 'category'">
+  <div v-if="checked === 'sku'|| checked === 'user'|| checked === 'supplier'|| checked === 'user'|| checked === 'category'">
     <van-row justify="center">
       <van-col span="23">
         <!--      <table-title :title="title"></table-title>-->
@@ -123,8 +122,8 @@
 import {nextTick, onMounted, reactive, ref, watch} from 'vue';
 import { Toast } from 'vant';
 import { Searchxsorder, Searchscorder, Searchcgorder, Searchscrk, Searchscll,
-  Searchsctl, Searchcgrk, Searchnotcgrk, Searchcgth, Searchxsck, Searchnotxsck, Searchxsth, Searchsku,
-  Searchcategory, Searchto_unity, Searchuser, Searchsupplier} from "network/search";
+  Searchsctl, Searchcgrk, Searchcgth, Searchxsck, Searchxsth, Searchsku,
+  Searchcategory, Searchuser, Searchsupplier} from "network/search";
 // import {useRouter} from "vue-router";
 
 // import TableTitle from "components/common/TableTitle";
@@ -145,11 +144,9 @@ export default {
       scrk: '生产入库',
       scll: '生产领料',
       sctl: '生产退料',
-      cgrk: '采购入库(有)',
-      notcgrk: '采购入库(无)',
+      cgrk: '采购入库',
       cgth: '采购退货',
-      xsck: '销售出库(有)',
-      notxsck: '销售出库(无)',
+      xsck: '销售出库',
       xsth: '销售退货',
       category: '产品分类',
       to_unit: '单位转换',
@@ -354,25 +351,6 @@ export default {
             Toast.fail('查询失败')
           })
         }
-        // 采购入库无订单
-        if(checked.value === 'notcgrk'){
-          Searchnotcgrk({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
-            state.search_rel = res
-            if(res.length === 0) {
-              Toast.clear()
-              Toast('没有数据')
-            } else {
-              Toast.clear()
-              Toast.success("加载完成")
-            }
-
-            console.log(res);
-          }).catch(err=>{
-            console.log(err);
-            Toast.clear()
-            Toast.fail('查询失败')
-          })
-        }
         // 采购退货
         if(checked.value === 'cgth'){
           Searchcgth({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
@@ -395,25 +373,6 @@ export default {
         // 销售出库有订单
         if(checked.value === 'xsck'){
           Searchxsck({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
-            state.search_rel = res
-            if(res.length === 0) {
-              Toast.clear()
-              Toast('没有数据')
-            } else {
-              Toast.clear()
-              Toast.success("加载完成")
-            }
-
-            console.log(res);
-          }).catch(err=>{
-            console.log(err);
-            Toast.clear()
-            Toast.fail('查询失败')
-          })
-        }
-        // 销售出库无订单
-        if(checked.value === 'notxsck'){
-          Searchnotxsck({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
             state.search_rel = res
             if(res.length === 0) {
               Toast.clear()
@@ -487,25 +446,7 @@ export default {
             Toast.fail('查询失败')
           })
         }
-        // 单位箱转换
-        if(checked.value === 'to_unit'){
-          Searchto_unity({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
-            state.search_rel = res
-            if(res.length === 0) {
-              Toast.clear()
-              Toast('没有数据')
-            } else {
-              Toast.clear()
-              Toast.success("加载完成")
-            }
 
-            console.log(res);
-          }).catch(err=>{
-            console.log(err);
-            Toast.clear()
-            Toast.fail('查询失败')
-          })
-        }
         // 用户
         if(checked.value === 'user'){
           Searchuser({searchvalue:searchvalue.value, date_start:date_start.value, date_end:date_end.value}).then(res=>{
@@ -591,11 +532,6 @@ export default {
         console.log(checked.value, order);
         router.push({path:'/createordercgrk', query: { order: order}})
       }
-      if (checked.value === 'notcgrk') {
-        // 打开无订单采购入库
-        console.log(checked.value, order);
-        router.push({path:'/createordercgrk', query: { order: order}})
-      }
       if (checked.value === 'cgth') {
         // 打开采购退货
         console.log(checked.value, order);
@@ -608,11 +544,6 @@ export default {
       }
       if (checked.value === 'xsck') {
         // 打开销售出库
-        console.log(checked.value, order);
-        router.push({path:'/createorderxs', query: { order: order}})
-      }
-      if (checked.value === 'notxsck') {
-        // 打开无订单销售出库
         console.log(checked.value, order);
         router.push({path:'/createorderxs', query: { order: order}})
       }
