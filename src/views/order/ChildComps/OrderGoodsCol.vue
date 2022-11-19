@@ -67,7 +67,7 @@ export default {
     const vanbutton_url = [
       { path: 'createorder'},
       '创建生产订单',
-      { path: 'createorder', query: { order: props.data.order.orderhao}},
+      { path: 'createorder', query: { order: props.data.order.order}},
       '编辑生产订单'
     ]
     // "{ path: 'createorder', query: { order: order.value }}"

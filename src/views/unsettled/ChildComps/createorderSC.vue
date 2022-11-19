@@ -20,7 +20,7 @@
             <van-field v-model="delivery" name="delivery" label="订单交期" placeholder="点击选择订单交货日期" @click="showCalendar = true" readonly required colon is-link arrow-direction="down"/>
             <van-calendar row-height="53" v-model:show="showCalendar" @confirm="onConfirm" :show-confirm="false" color="#1989fa" :min-date="minDate" :max-date="maxDate" :formatter="formatter" round="false" show-title="false"/>
 
-            <field-cell title="订单编号" required colon placeholder="   请输入生产订单编号" name="orderhao" :autodata="state.orderhaodata" :data="orderhao" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
+            <field-cell title="订单编号" required colon placeholder="   请输入生产订单编号" name="order" :autodata="state.orderhaodata" :data="order" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
 
             <field-cell title="供应商名" required colon placeholder="   请输入生产线名" name="productline" :autodata="state.productlinedata" :data="productline" @inputvalue="receiveproductlinevalue" @onfocus="productlineonfocus" @onblur="productlineonblur"></field-cell>
 
@@ -100,26 +100,26 @@ export default {
     }
     const receiveorderhaovalue = (value) => {
       console.log(value, 'receiveorderhaovalue');
-      orderhao.value = value
-      getorderSClist(orderhao.value, )
+      order.value = value
+      getorderSClist(order.value, )
     }
     const orderhaoonfocus = () => {
       console.log(state.orderhaodata);
       state.orderhaodata = []
-      getorderSClist(orderhao.value)
+      getorderSClist(order.value)
     }
     // 失焦 校验订单名称是否存在
     const orderhaoonblur = () => {
       setTimeout(() => {}, 10);
-      console.log(orderhao.value);
+      console.log(order.value);
       // 校验生产订单是否存在
-      if (orderhao.value) {
-        countOrderSC(orderhao.value).then(res=>{
+      if (order.value) {
+        countOrderSC(order.value).then(res=>{
           console.log(res);
           if (res.count > 0) {
             Dialog.confirm({message: '是否打开已存在的订单？',}).then(() => {
               // on confirm
-              getOrderSCdetail(orderhao.value).then(res=>{
+              getOrderSCdetail(order.value).then(res=>{
                 console.log(res);
                 if (res.count===0){
                   //先清空前面的遗留数据
@@ -128,7 +128,7 @@ export default {
                 }else {
                   console.log(res);
                   delivery.value = res.results[0].order.delivery.split(' ')[0]
-                  orderhao.value = res.results[0].order.order
+                  order.value = res.results[0].order.order
                   productline.value = res.results[0].order.supplier.shortname
                   message.value = res.results[0].order.remarks
                   xsorderhao.value = res.results[0].xs_order
@@ -236,7 +236,7 @@ export default {
                 state.skulist = [{},{},{},{},{},{}]
                 Toast('此订单无产品详情')
               }else {
-                orderhao.value = ''
+                order.value = ''
                 state.skulist = []
                 for(let i in res.results){
                   state.skulist.push({
@@ -286,7 +286,7 @@ export default {
     // 数据
     const delivery = ref('')
     const message = ref('')
-    const orderhao = ref('')
+    const order = ref('')
     const xsorderhao = ref('')
     const productline = ref('');
     const state = reactive({
@@ -309,9 +309,9 @@ export default {
     const route =useRoute();
     onMounted(() => {
       delivery.value = addDate()
-      orderhao.value = route.query.order
-      if(orderhao.value){
-        orderhaoonblur(orderhao.value)
+      order.value = route.query.order
+      if(order.value){
+        orderhaoonblur(order.value)
       }
     });
 
@@ -319,13 +319,13 @@ export default {
     const onClickLeft = () => history.back();
     // 删除按钮
     const onClickRight = () => {
-      if(orderhao.value){
+      if(order.value){
         Dialog.confirm({
           message: `删除订单，请点击"确认"`,
         })
             .then(() => {
               // 删除订单
-              deleteorderSC({'order':orderhao.value}).then(res=>{
+              deleteorderSC({'order':order.value}).then(res=>{
                 Toast(res)
               })
             })
@@ -344,7 +344,7 @@ export default {
         Toast({message:'请输入订单交货期', duration: 1000 })
         return
       }
-      data.order = orderhao.value
+      data.order = order.value
       if (!data.order){
         Toast({message:'请输入订单编号', duration: 1000 })
         return
@@ -431,7 +431,7 @@ export default {
       state,
       message,
       delivery,
-      orderhao,
+      order,
       xsorderhao,
       productline,
 

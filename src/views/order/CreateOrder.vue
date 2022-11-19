@@ -22,7 +22,7 @@
 <!--            <van-field v-model="orderhao" name="orderhao" label="订单编号" placeholder="请输入订单交货编号" clearable required colon clickable is-link arrow-direction="down"/>-->
 <!--            <van-field  v-model="customer" name="customer" label="客户名称" placeholder="请输入货主名称" clearable required colon clickable is-link arrow-direction="down"/>-->
 
-            <field-cell title="订单编号" required colon placeholder="   请输入订单交货编号" name="orderhao" :autodata="state.orderhaodata" :data="orderhao" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
+            <field-cell title="订单编号" required colon placeholder="   请输入订单交货编号" name="order" :autodata="state.orderhaodata" :data="order" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
             <field-cell title="客户名称" required colon placeholder="   请输入货主名称" name="customer" :autodata="state.customerdata" :data="customer" @inputvalue="receivecustomervalue" @onfocus="customeronfocus" @onblur="customeronblur"></field-cell>
             <van-field  style="background-color: #fafafa" v-model="message" name="message" rows="1" autosize label="信息备注" type="textarea" colon clickable />
 
@@ -80,7 +80,7 @@ export default {
     };
 
     const delivery = ref('')
-    const orderhao = ref('')
+    const order = ref('')
     const customer = ref('')
     const message = ref('')
 
@@ -116,7 +116,7 @@ export default {
     const route =useRoute();
     onMounted(() => {
       delivery.value = addDate()
-      orderhao.value = route.query.order
+      order.value = route.query.order
       orderhaoonblur()
 
     });
@@ -153,17 +153,17 @@ export default {
     // 失焦 校验订单名称是否存在
     const orderhaoonblur = () => {
       // 校验客户名称是否存在，如果不存在，重新选择或者跳转新建
-      if (orderhao.value) {
-        countOrderhao(orderhao.value).then(res=>{
+      if (order.value) {
+        countOrderhao(order.value).then(res=>{
           if (res.count > 0) {
             Dialog.confirm({
               message: '是否打开已存在的订单？',
             })
               .then(() => {
                 // on confirm
-                getOrderdetail(orderhao.value).then(res=>{
+                getOrderdetail(order.value).then(res=>{
                   delivery.value = res[0].order.delivery.split(' ')[0]
-                  orderhao.value = res[0].order.orderhao
+                  order.value = res[0].order.order
                   customer.value = res[0].order.customer
                   message.value = res[0].order.remarks
                   state.skulist = []
@@ -213,12 +213,12 @@ export default {
 
     // 订单数据
     const receiveorderhaovalue = (value) => {
-      orderhao.value = value
-      getorderhaolist(orderhao.value)
+      order.value = value
+      getorderhaolist(order.value)
     }
     const orderhaoonfocus = () => {
       // state.orderhaodata = []
-      getorderhaolist(orderhao.value)
+      getorderhaolist(order.value)
     }
 
 
@@ -243,13 +243,13 @@ export default {
 
     // 删除按钮
     const onClickRight = () => {
-      if(orderhao.value){
+      if(order.value){
         Dialog.confirm({
           message: `删除订单，请点击"确认"`,
         })
             .then(() => {
               // 删除订单
-              deleteorder({orderhao:orderhao.value}).then(res=>{
+              deleteorder({order:order.value}).then(res=>{
                 Toast(res)
               })
             })
@@ -265,7 +265,7 @@ export default {
       const data = {}
 
       // 检查销售订单是否输入
-      if (!orderhao.value) {
+      if (!order.value) {
         Toast({message: '请输入销售订单编号', duration: 1000})
         return
       }
@@ -276,7 +276,7 @@ export default {
       }
 
       data.delivery = delivery.value
-      data.orderhao = orderhao.value
+      data.order = order.value
       data.customer = customer.value
 
       data.remarks = message.value
@@ -297,7 +297,7 @@ export default {
       state.skulist.push({},{})
 
       // 校验订单编号是否重复----->如果重复，提示是否复盖，不重复直接创建
-      countOrderhao(data.orderhao).then(res=>{
+      countOrderhao(data.order).then(res=>{
         if (res.count >= 1) {
           // 订单已存在，弹出对话框选择是覆盖 还是取消
           console.log('订单已存在，弹出对话框选择是覆盖 还是取消');
@@ -333,7 +333,7 @@ export default {
     return {
       state,
       delivery,
-      orderhao,
+      order,
       customer,
       message,
 
