@@ -20,6 +20,22 @@
     </van-col>
   </van-row>
   </van-sticky>
+  <!--  系统设置-->
+  <div ref="container">
+    <van-sticky :container="container" :offset-top="90">
+      <van-row justify="center" @click="state.systemshow=!state.systemshow">
+        <van-col span="23">
+          <div class="textcss">系统设置</div>
+        </van-col>
+      </van-row>
+    </van-sticky>
+  </div>
+  <van-row justify="center" v-show="state.systemshow">
+    <van-col span="23" class="cellborder">
+      <unit-convert  v-for="(data, index) in state.systemdata" :data="data" :key="index" :serial="index" :serials="state.systemdata.length" @click="convert"></unit-convert>
+    </van-col>
+  </van-row>
+
 
   <!--  报表-->
   <div ref="container">
@@ -71,11 +87,12 @@ import { getuserinfo } from 'network/user'
 import {useRouter} from "vue-router";
 import TableGoods from "./ChildComps/TableGoods";
 import TableReport from "./ChildComps/TableReport";
+import UnitConvert from "./ChildComps/UnitConvert";
 
 
 export default {
   name: "Profile",
-  components: {TableGoods, TableReport },
+  components: {UnitConvert, TableGoods, TableReport },
   setup(){
     const router = useRouter()
 
@@ -115,6 +132,7 @@ export default {
 
       // 系统设置
       systemshow: true,
+      update: false,
       systemdata: [
         {name:'产品数量更新-常更新 ！！！', explain:'对新增订单数量转换为报表数量', url:'unit_convert'},
 
@@ -142,7 +160,6 @@ export default {
 
     return{
       state,
-
       setting,
 
     }
