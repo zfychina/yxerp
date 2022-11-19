@@ -16,7 +16,7 @@
     </van-col>
 
     <!--订单未完成需要显示详情-->
-    <van-col v-show="parseFloat(goodsdata.quantity) > parseFloat(goodsdata.quantityed)" span="1" @click="tocreateorderSC(goodsdata.order.orderhao, goodsdata.sku.coding)">
+    <van-col v-show="parseFloat(goodsdata.quantity) > parseFloat(goodsdata.quantityed)" span="1" @click="tocreateorderSC(goodsdata.order.order, goodsdata.sku.coding)">
       <van-icon name="arrow" color="var(--color-high-text)"/>
     </van-col>
     <!--订单完成显示完成图标-->
