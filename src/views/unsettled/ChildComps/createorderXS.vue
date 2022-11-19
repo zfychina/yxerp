@@ -126,7 +126,7 @@ export default {
                   state.skulist = [{},{},{},{},{},{}]
                   Toast('此订单无产品详情')
                 }else {
-                  delivery.value = res.results[0].order.order_date.split(' ')[0]
+                  delivery.value = res.results[0].order._date.split(' ')[0]
                   orderhao.value = res.results[0].order.order
                   productline.value = res.results[0].order.customer
                   message.value = res.results[0].order.remarks
