@@ -47,7 +47,7 @@
                         {{itemsku.order.delivery.slice(0,10)}}
                       </span>
                       <span v-else>
-                        {{itemsku.order.order_date.slice(0,10)}}
+                        {{itemsku.order._date.slice(0,10)}}
                       </span>
                     </van-col>
                     <van-col span="7"  style="text-align: right;font-size: 10px;color: var(--color-border)">
