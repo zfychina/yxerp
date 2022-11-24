@@ -78,7 +78,7 @@ export default {
       // 控制排序正倒序
       title_by: [true, true, true, true, true],
       tabtitle: ['锁体', '锁芯', '保护器', '面板', '配件'],
-      ordering: ['order__date', ''],
+      ordering: ['_date', ''],
 
       refreshing: false,
       loading: false,

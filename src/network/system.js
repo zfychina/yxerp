@@ -5,7 +5,7 @@ export function unit_convert() {
   return request({
     url: "/orders/unitconvert/",
     method: 'put',
-    timeout: 10000,
+    timeout: 100000,
     params: {
     }
   })
