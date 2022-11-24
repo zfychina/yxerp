@@ -25,6 +25,7 @@
           <van-field v-model="state.data.category2" name="category2" label="类别2：" placeholder="输入面板类别"/>
           <van-field v-model="state.data.category3" name="category3" label="类别3：" placeholder="输入保护器类别"/>
           <van-field v-model="state.data.category4" name="category4" label="类别4：" placeholder="输入锁芯类别"/>
+          <van-field v-model="state.data.case_pack" name="case_pack" label="装箱数：" placeholder="输入锁芯类别"/>
         </van-cell-group>
         <van-cell-group v-if="state.data.checked === 'category'" inset>
           <van-field v-model="state.data.name" name="name" label="型号：" readonly/>
