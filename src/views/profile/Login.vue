@@ -62,7 +62,7 @@
 import {onMounted, reactive} from "vue";
 import {useRouter} from "vue-router";
 import {nanoid} from "nanoid";
-import {login, } from "network/user";
+import {login, picvalidation} from "network/user";
 import { Toast } from 'vant';
 import { useStore } from 'vuex'
 
@@ -94,13 +94,13 @@ export default {
     // 登录按钮提交
     const onSubmit = () => {
       // 防止登录异常，先清除缓存
-      // window.localStorage.setItem('token', "")
-      // sessionStorage.clear();
-      // localStorage.clear();
+      window.localStorage.setItem('token', "")
+      sessionStorage.clear();
+      localStorage.clear();
 
-      // picvalidation({"img_code":state.img_code, 'image_code_id':state.image_code_id}).then(res=>{
-      //   console.log(res);
-      //   if (res === 'ok') {
+      picvalidation({"img_code":state.img_code, 'image_code_id':state.image_code_id}).then(res=>{
+        console.log(res);
+        if (res === 'ok') {
           // 图片验证码校验成功方进行登陆校验
           login(state).then(res=>{
             if (res.status === 400){
@@ -131,14 +131,14 @@ export default {
               }, 500)
             }
           })
-        // } else {
-        //   if (res === 'no') {
-        //     Toast.fail('图片验证码错误')
-        //   } else {
-        //     Toast.fail('浏览器异常，清除缓存后再试！')
-        //   }
-        // }
-      // })
+        } else {
+          if (res === 'no') {
+            Toast.fail('图片验证码错误')
+          } else {
+            Toast.fail('浏览器异常，清除缓存后再试！')
+          }
+        }
+      })
     };
 
     // 跳转到注册页面
