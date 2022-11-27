@@ -31,6 +31,7 @@ const ProcessGoodsDetail = () => import('@/views/profile/ChildComps/ProcessGoods
 const yearGoodsDetail = () => import('@/views/profile/ChildComps/yearGoodsDetail')
 const casaStatement = () => import('@/views/profile/ChildComps/casaStatement')
 const EditItem = () => import('@/views/search/ChildComps/EditItem')
+const Password = () => import('@/views/profile/ChildComps/Password')
 
 const routes = [
   {
@@ -317,6 +318,16 @@ const routes = [
     component: EditItem,
     meta: {
       title: '编辑',
+    }
+  },
+
+  // 修改密码
+  {
+    path: '/password',
+    name: 'password',
+    component: Password,
+    meta: {
+      title: '修改密码',
     }
   },
 ]

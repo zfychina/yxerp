@@ -56,7 +56,8 @@ export default {
 
     // 密码修改
     const updatepwd = () =>{
-      Toast('密码无法修改，请联系管理员')
+      // Toast('密码无法修改，请联系管理员')
+      router.push({path:'/password'})
     }
     // 退出登录
     const tologout = ()=>{

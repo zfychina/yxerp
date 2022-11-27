@@ -50,3 +50,13 @@ export function updateavatar(data) {
     data
   })
 }
+
+// 更改用户头像
+export function updatepwd(data) {
+  return request({
+    url: '/pwd/',
+    method: 'put',
+    timeout: 1000,
+    data
+  })
+}
