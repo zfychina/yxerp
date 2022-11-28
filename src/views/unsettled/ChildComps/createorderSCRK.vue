@@ -26,6 +26,8 @@
 
             <field-cell title="生产订单" required colon placeholder="   请输入源生产订单编号" name="xsorderhao" :autodata="state.xsorderhaodata" :data="xsorderhao" @inputvalue="receivexsorderhaovalue" @onfocus="xsorderhaoonfocus" @onblur="xsorderhaoonblur"></field-cell>
 
+            <van-checkbox v-model="in_storage" shape="square">成品仓</van-checkbox>
+
             <van-field  style="background-color: #fafafa" v-model="message" name="message" rows="1" autosize label="信息备注" type="textarea" colon clickable />
 
             <field-cell-list :skulist="state.skulist" @inputvalue="receiveskulistvalue"></field-cell-list>
@@ -275,6 +277,7 @@ export default {
     const orderhao = ref('')
     const xsorderhao = ref('')
     const productline = ref('');
+    const in_storage = ref(false);
     const state = reactive({
       orderhaodata: [],
       xsorderhaodata: [],
@@ -326,6 +329,7 @@ export default {
     const onSubmit = () => {
       let data = {}
       data.delivery = delivery.value
+      data.in_storage = in_storage.value
       if (!data.delivery){
         Toast({message:'请输入订单交货期', duration: 1000 })
         return
@@ -421,6 +425,8 @@ export default {
       orderhao,
       xsorderhao,
       productline,
+
+      in_storage,
 
       // 订单交期
       showCalendar,

@@ -71,6 +71,7 @@
 
           />
         </van-config-provider>
+
       </div>
     </van-col>
   </van-row>
@@ -128,13 +129,14 @@
 <script>
 import ErpOrderItem from "components/common/ErpOrderItem";
 import ErpGoodsItem from "components/common/ErpGoodsItem";
-import {onMounted, reactive, computed, ref } from "vue";
+import {onMounted, reactive, computed, ref,} from "vue";
 import {getMonthfinishinfo} from "network/order";
 import {useRouter} from "vue-router";
+// import Liuqiu from "components/chart/Liuqiu";
 
 export default {
   name: "Shortmold",
-  components: {ErpOrderItem, ErpGoodsItem, },
+  components: {ErpOrderItem, ErpGoodsItem},
   setup() {
     const Mydate = ref(new Date());
     const currentDate = ref()
@@ -199,7 +201,7 @@ export default {
         state.order_num = res.count_total
         // 本月未完成的数量
         state.order_num_finish = (res.count_total - res.count_unfinish)===0 ? 0 : (res.count_total - res.count_unfinish) / res.count_total * 100
-
+        console.log('结果',state.order_num_finish);
       })
     }
 
@@ -221,6 +223,7 @@ export default {
       circleTextFontWeight: '500',
       circleTextFontSize: '24px',
     };
+
 
     // 进度条
     const currentRate = ref(0);

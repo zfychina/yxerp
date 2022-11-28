@@ -1,7 +1,7 @@
 <template>
   <div class="register">
    <div>
-    <van-nav-bar title="密码修改" left-arrow>
+    <van-nav-bar title="密码修改" left-arrow  @click-left="onClickLeft">
       </van-nav-bar>
   </div>
   <van-form style="margin-top: 0px">
@@ -68,6 +68,8 @@ export default {
     onMounted(()=>{
     })
 
+    // 返回按钮和搜索按钮
+    const onClickLeft = () => history.back();
     // 注册按钮提交
     const onsubmit = ()=> {
       if (state.password === "" || state.password1 === "" || state.password2 === "") {
@@ -96,6 +98,7 @@ export default {
     return {
       state,
       onsubmit,
+      onClickLeft,
     }
   }
 }
