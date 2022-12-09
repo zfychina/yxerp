@@ -16,11 +16,11 @@
     </van-col>
 
     <!--订单未完成需要显示详情-->
-    <van-col v-show="parseFloat(goodsdata.quantity) > parseFloat(goodsdata.quantityed)" span="1" @click="tocreateorderSC(goodsdata.order.order, goodsdata.sku.coding)">
+    <van-col v-show="goodsdata.is_finish==false && parseFloat(goodsdata.quantity) > parseFloat(goodsdata.quantityed)" span="1" @click="tocreateorderSC(goodsdata.order.order, goodsdata.sku.coding)">
       <van-icon name="arrow" color="var(--color-high-text)"/>
     </van-col>
     <!--订单完成显示完成图标-->
-    <van-col v-show="parseFloat(goodsdata.quantity) <= parseFloat(goodsdata.quantityed)" span="1">
+    <van-col v-show="goodsdata.is_finish || parseFloat(goodsdata.quantity) <= parseFloat(goodsdata.quantityed)" span="1">
       <van-icon name="http://s.zfychina.cn/iconfinshed.svg" color="var(--color-high-text)" size="15"/>
     </van-col>
     <van-col span="1"></van-col>
