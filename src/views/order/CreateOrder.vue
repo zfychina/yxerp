@@ -24,6 +24,7 @@
 
             <field-cell title="订单编号" required colon placeholder="   请输入订单交货编号" name="order" :autodata="state.orderhaodata" :data="order" @inputvalue="receiveorderhaovalue" @onfocus="orderhaoonfocus" @onblur="orderhaoonblur"></field-cell>
             <field-cell title="客户名称" required colon placeholder="   请输入货主名称" name="customer" :autodata="state.customerdata" :data="customer" @inputvalue="receivecustomervalue" @onfocus="customeronfocus" @onblur="customeronblur"></field-cell>
+            <van-checkbox v-model="is_finish" shape="square">是否完成</van-checkbox>
             <van-field  style="background-color: #fafafa" v-model="message" name="message" rows="1" autosize label="信息备注" type="textarea" colon clickable />
 
             <field-cell-list :skulist="state.skulist" @inputvalue="receiveskulistvalue"></field-cell-list>
@@ -83,6 +84,7 @@ export default {
     const order = ref('')
     const customer = ref('')
     const message = ref('')
+    const is_finish = ref(false)
 
     const state = reactive({
       orderhaodata: [],
@@ -165,6 +167,7 @@ export default {
                   delivery.value = res[0].order.delivery.split(' ')[0]
                   order.value = res[0].order.order
                   customer.value = res[0].order.customer
+                  is_finish.value = res[0].order.is_finish
                   message.value = res[0].order.remarks
                   state.skulist = []
                   for (let i in res){
@@ -208,6 +211,7 @@ export default {
       orderhaolist( query, customer.value).then(res => {
         console.log(res);
         state.orderhaodata = res
+        console.log(res);
       })
     }
 
@@ -278,10 +282,11 @@ export default {
       data.delivery = delivery.value
       data.order = order.value
       data.customer = customer.value
+      data.is_finish = is_finish.value
 
       data.remarks = message.value
       data.sku = []
-
+      console.log(data);
       for (let i in state.skulist){
         if(state.skulist[i]?.coding && state.skulist[i]?.quantity && Number(state.skulist[i]?.quantity) !== 0) {
           data.sku.push({coding:state.skulist[i]?.coding, name:state.skulist[i]?.name, unit:state.skulist[i]?.unit, quantity:state.skulist[i]?.quantity})
@@ -336,6 +341,7 @@ export default {
       order,
       customer,
       message,
+      is_finish,
 
       receivecustomervalue,
       receiveorderhaovalue,
